@@ -81,10 +81,7 @@
       "title": "Sign in",
       "subtitle": "Login to using your accout"
     },
-    "forgotPassword": {
-      "title": "Request new password",
-      "subtitle": "Enter email associated with your account"
-    },
+    "forgotPassword": "Forgot password?",
     "home": {
       "title": "Home"
     },

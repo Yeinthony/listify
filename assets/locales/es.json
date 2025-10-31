@@ -54,10 +54,7 @@
     }
   },
   "link": {
-    "forgotPassword": {
-      "text": "¿No tienes contraseña o la olvidaste?",
-      "link": "Solicita una aquí"
-    }
+    "forgotPassword": "¿Has olvidado tu contraseña?"
   },
   "rules": {
     "required": "Campo requerido",
