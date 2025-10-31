@@ -18,6 +18,7 @@ import {
 } from "react-native-reanimated";
 import Carousel, { ICarouselInstance, Pagination } from "react-native-reanimated-carousel";
 import { Heading } from "@/components/ui/heading";
+import { useRouter } from "expo-router";
 
 const data = [1, 2, 3];
 
@@ -25,6 +26,8 @@ const width = Dimensions.get("window").width;
 const height = Dimensions.get("window").height;
 
 export default function Home(){
+  const router = useRouter()
+
   const progress = useSharedValue(0);
   const carouselRef = useRef<ICarouselInstance>(null);
 
@@ -151,7 +154,10 @@ export default function Home(){
             }}
           />
         </Box>
-        <TouchableOpacity className="bg-primary-500 rounded-2xl h-12 flex justify-center items-center">
+        <TouchableOpacity 
+          onPress={() => router.replace('/signin')}
+          className="bg-primary-500 rounded-2xl h-12 flex justify-center items-center"
+        >
           <Text className="text-center text-white text-md font-medium">Iniciar</Text>
         </TouchableOpacity>
       </Box>

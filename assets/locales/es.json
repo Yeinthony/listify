@@ -1,0 +1,142 @@
+{
+  "button": {
+    "signin": "Iniciar sesión",
+    "sendPassword": "Enviar Contraseña",
+    "accept": "Aceptar",
+    "cancel": "Cancelar",
+    "delete": "Eliminar",
+    "continue": "Continuar",
+    "goToRenovations": "Ir a Renovaciones",
+    "renew": "Renovar",
+    "add": "Agregar",
+    "total": "Total",
+    "back": "Volver",
+    "finish": "Finalizar",
+    "next": "Siguiente"
+  },
+  "input": {
+    "label": {
+      "email": "Correo electrónico",
+      "password": "Contraseña",
+      "confirmPassword": "Confirmar Contraseña",
+      "system": "Sistema",
+      "light": "Claro",
+      "dark": "Oscuro",
+      "spanish": "Español",
+      "english": "Ingles",
+      "cyclesToRenew": "Ciclos a renovar",
+      "paymentMethod": "Método de pago",
+      "accounts": "Cuentas",
+      "name": "Nombre",
+      "bank": "Banco",
+      "currency": "Moneda",
+      "date": "Fecha",
+      "refNumber": "Número de referencia",
+      "amount": "Monto",
+      "voucher": "Comprobante de pago",
+      "firstname": "Nombre",
+      "lastname": "Apellido"
+    },
+    "placeholder": {
+      "email": "Ingresa correo electrónico",
+      "password": "Ingresa contraseña",
+      "confirmPassword": "Confirma Contraseña",
+      "selectPaymentMethod": "Selecciona un método de pago",
+      "selectBank": "Selecciona un banco",
+      "selectCurrency": "Selecciona una moneda",
+      "selectDate": "Selecciona la fecha del pago",
+      "selectRefNumber": "Ingresa el número de referencia",
+      "enterAmount": "Ingresa el monto del pago",
+      "uploadVoucher": "Carga el comprobante de pago",
+      "search": "Buscar",
+      "firstname": "Ingresa el nombre",
+      "lastname": "Ingresa el apellido"
+    }
+  },
+  "link": {
+    "forgotPassword": {
+      "text": "¿No tienes contraseña o la olvidaste?",
+      "link": "Solicita una aquí"
+    }
+  },
+  "rules": {
+    "required": "Campo requerido",
+    "email": "El correo no es valido",
+    "min6": "Minimo 6 caracteres",
+    "notMatchPasswords": "Las contraseñas no coinciden"
+  },
+  "snackbar": {
+    "emailNotFount": "Correo electrónico no encontrado",
+    "passwordSend": "Contraseña enviada a su correo electrónico",
+    "headquartersSelected": "Sede seleccionada con éxito",
+    "changePasswordSuccess": "Cambio de contraseña exitoso",
+    "updatedTheme": "Tema actualizado con éxito",
+    "updatedLanguage": "Idioma actualizado con éxito"
+  },
+  "tabs": {
+
+  },
+  "screen":{
+    "signin": {
+      "title": "Iniciar sesión",
+      "subtitle": "Inicie sesión para usar su cuenta"
+    },
+    "forgotPassword": {
+      "title": "Solicitar nueva contraseña",
+      "subtitle": "Introduzca el correo electrónico asociado a su cuenta"
+    },
+    "home": {
+      "title": "Inicio"
+    },
+    "profile": {
+      "title": "Perfil",
+      "setting": {
+        "changePassword": "Cambiar Contraseña",
+        "theme": {
+          "title": "Tema",
+          "option": {
+            "system": "Sistema",
+            "light": "Claro",
+            "dark": "Oscuro"
+          }
+        },
+        "language": {
+          "title": "Idioma",
+          "option": {
+            "es": "Español",
+            "en": "Ingles"
+          }
+        }
+      },
+      "logout": "Salir"
+    },
+    "changePassword": {
+      "title": "Cambiar Contraseña"
+    }
+  },
+  "general": {
+    "customHeader": {
+      "logout": "Salir"
+    },
+    "noResults": {
+      "text": "Sin resultados"
+    }
+  },
+  "modal": {
+    "theme": {
+      "title": "Elige un tema"
+    },
+    "language": {
+      "title": "Elige un Idioma"
+    }
+  },
+  "terms": {
+
+  },
+  "card": {
+
+  },
+  "alerts": {
+
+  }
+}

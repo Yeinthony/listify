@@ -1,0 +1,142 @@
+{
+  "button": {
+    "signin": "Sign in",
+    "sendPassword": "Send Password",
+    "accept": "Accept",
+    "cancel": "Cancel",
+    "delete": "Delete",
+    "continue": "Continue",
+    "goToRenovations": "Go to Renovations",
+    "renew": "Renew",
+    "add": "Add",
+    "total": "Total",
+    "back": "Back",
+    "finish": "Finish",
+    "next": "Next"
+  },
+  "input": {
+    "label": {
+      "email": "Email",
+      "password": "Password",
+      "confirmPassword": "Confirm Password",
+      "system": "System",
+      "light": "Light",
+      "dark": "Dark",
+      "spanish": "Spanish",
+      "english": "English",
+      "cyclesToRenew": "Cycles to renew",
+      "paymentMethod": "Payment Method",
+      "accounts": "Accounts",
+      "name": "Name",
+      "bank": "Bank",
+      "currency": "Currency",
+      "date": "Date",
+      "refNumber": "Reference Number",
+      "amount": "Amount",
+      "voucher": "Proof of payment",
+      "firstname": "Firtname",
+      "lastname": "Lastname"
+    },
+    "placeholder": {
+      "email": "Enter email",
+      "password": "Enter password",
+      "confirmPassword": "Confirm Password",
+      "selectPaymentMethod": "Select a payment method",
+      "selectBank": "Select a bank",
+      "selectCurrency": "Select a currency",
+      "selectDate": "Select a payment date",
+      "selectRefNumber": "Enter reference number",
+      "enterAmount": "Enter payment amount",
+      "uploadVoucher": "Upload proof payment",
+      "search": "Search",
+      "firstname": "Enter the firstname",
+      "lastname": "Enter the lastname"
+    }
+  },
+  "link": {
+    "forgotPassword": {
+      "text": "Don't have a password or forgot it?",
+      "link": "Request one here"
+    }
+  },
+  "rules": {
+    "required": "Required field",
+    "email": "The email is not valid",
+    "min6": "Minimum 6 characters",
+    "notMatchPasswords": "Passwords do not match"
+  },
+  "snackbar": {
+    "emailNotFount": "Email not found",
+    "passwordSend": "Password sent to your email",
+    "headquartersSelected": "Successfully selected headquarters",
+    "changePasswordSuccess": "Successful password change",
+    "updatedTheme": "Theme updated successfully",
+    "updatedLanguage": "Language updated successfully"
+  },
+  "tabs": {
+
+  },
+  "screen": {
+    "signin": {
+      "title": "Sign in",
+      "subtitle": "Login to using your accout"
+    },
+    "forgotPassword": {
+      "title": "Request new password",
+      "subtitle": "Enter email associated with your account"
+    },
+    "home": {
+      "title": "Home"
+    },
+    "profile": {
+      "title": "Profile",
+      "setting": {
+        "changePassword": "Change Password",
+        "theme": {
+          "title": "Theme",
+          "option": {
+            "system": "System",
+            "light": "Light",
+            "dark": "Dark"
+          }
+        },
+        "language": {
+          "title": "Language",
+          "option": {
+            "es": "Spanish",
+            "en": "English"
+          }
+        }
+      },
+      "logout": "Logout"
+    },
+    "changePassword": {
+      "title": "Change Password"
+    }
+  },
+  "general": {
+    "customHeader": {
+      "logout": "Logout"
+    },
+    "noResults": {
+      "text": "No results"
+    }
+  },
+  "modal": {
+    "theme": {
+      "title": "Choose a theme"
+    },
+    "language": {
+      "title": "Choose a Language"
+    }
+  },
+  "terms": {
+
+  },
+  "card": {
+
+  },
+  "alerts": {
+
+  }
+}

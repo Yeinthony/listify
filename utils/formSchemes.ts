@@ -1,0 +1,38 @@
+import * as z from 'zod';
+import type { TFunction } from "i18next";
+
+export const recoverPassSchema = (t: TFunction) => z.object({
+  email: z.string().min(1, {
+    message: t('rules.required')
+  }).email({
+    message: t('rules.email')
+  }),
+})
+
+export const signinScheme = (t: TFunction) => z.object({
+  email: z.string().min(1, {
+      message: t('rules.required')
+    }).email({
+      message: t('rules.email')
+    }),
+  password: z.string().min(1, {
+    message: t('rules.required')
+  })
+})
+
+export const changePasswordScheme = (t: TFunction) => z.object({
+  password: z.string().min(1, {
+    message: t('rules.required')
+  }).min(6, {
+    message: t('rules.min6')
+  }),
+  confirmPassword: z.string().min(1, {
+    message: t('rules.required')
+  })
+}).refine(
+  (data) => data.password === data.confirmPassword,
+  {
+    message: t('rules.notMatchPasswords'),
+    path: ['confirmPassword'],
+  }
+)
