@@ -15,7 +15,7 @@
     "next": "Next"
   },
   "input": {
-    "label": {
+    "placeholder": {
       "email": "Email",
       "password": "Password",
       "confirmPassword": "Confirm Password",
@@ -35,22 +35,8 @@
       "amount": "Amount",
       "voucher": "Proof of payment",
       "firstname": "Firtname",
-      "lastname": "Lastname"
-    },
-    "placeholder": {
-      "email": "Enter email",
-      "password": "Enter password",
-      "confirmPassword": "Confirm Password",
-      "selectPaymentMethod": "Select a payment method",
-      "selectBank": "Select a bank",
-      "selectCurrency": "Select a currency",
-      "selectDate": "Select a payment date",
-      "selectRefNumber": "Enter reference number",
-      "enterAmount": "Enter payment amount",
-      "uploadVoucher": "Upload proof payment",
-      "search": "Search",
-      "firstname": "Enter the firstname",
-      "lastname": "Enter the lastname"
+      "lastname": "Lastname",
+      "username": "Username"
     }
   },
   "link": {

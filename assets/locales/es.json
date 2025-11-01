@@ -15,7 +15,7 @@
     "next": "Siguiente"
   },
   "input": {
-    "label": {
+    "placeholder": {
       "email": "Correo electrónico",
       "password": "Contraseña",
       "confirmPassword": "Confirmar Contraseña",
@@ -35,22 +35,8 @@
       "amount": "Monto",
       "voucher": "Comprobante de pago",
       "firstname": "Nombre",
-      "lastname": "Apellido"
-    },
-    "placeholder": {
-      "email": "Ingresa correo electrónico",
-      "password": "Ingresa contraseña",
-      "confirmPassword": "Confirma Contraseña",
-      "selectPaymentMethod": "Selecciona un método de pago",
-      "selectBank": "Selecciona un banco",
-      "selectCurrency": "Selecciona una moneda",
-      "selectDate": "Selecciona la fecha del pago",
-      "selectRefNumber": "Ingresa el número de referencia",
-      "enterAmount": "Ingresa el monto del pago",
-      "uploadVoucher": "Carga el comprobante de pago",
-      "search": "Buscar",
-      "firstname": "Ingresa el nombre",
-      "lastname": "Ingresa el apellido"
+      "lastname": "Apellido",
+      "username": "Nombre de usuario"
     }
   },
   "link": {
@@ -59,7 +45,7 @@
   "rules": {
     "required": "Campo requerido",
     "email": "El correo no es valido",
-    "min6": "Minimo 6 caracteres",
+    "min6": "Mínimo 6 caracteres",
     "notMatchPasswords": "Las contraseñas no coinciden"
   },
   "snackbar": {

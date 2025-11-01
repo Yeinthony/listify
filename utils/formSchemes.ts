@@ -20,6 +20,32 @@ export const signinScheme = (t: TFunction) => z.object({
   })
 })
 
+export const register1Scheme = (t: TFunction) => z.object({
+  email: z.string().min(1, {
+      message: t('rules.required')
+    }).email({
+      message: t('rules.email')
+    }),
+  username: z.string().optional()
+})
+
+export const register2Scheme = (t: TFunction) =>
+  z
+    .object({
+      password: z
+        .string()
+        .min(1, { message: t("rules.required") }) 
+        .min(6, { message: t("rules.min6", { num: 6 }) }), 
+
+      passwordConfirm: z
+        .string()
+        .min(1, { message: t("rules.required") }),
+    })
+    .refine((data) => data.password === data.passwordConfirm, {
+      message: t("rules.notMatchPasswords"), 
+      path: ["passwordConfirm"],
+    });
+
 export const changePasswordScheme = (t: TFunction) => z.object({
   password: z.string().min(1, {
     message: t('rules.required')
