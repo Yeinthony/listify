@@ -49,6 +49,7 @@
     "required": "Required field",
     "email": "The email is not valid",
     "min6": "Minimum 6 characters",
+    "exact6": "The code requires exactly 6 numbers",
     "notMatchPasswords": "Passwords do not match"
   },
   "snackbar": {

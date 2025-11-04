@@ -7,12 +7,14 @@ interface OtpInputProps {
   value: string;
   onChange?: (value: string) => void;
   length?: number;
+  error?: boolean
 }
 
 export const OtpInput: React.FC<OtpInputProps> = ({
   value,
   onChange,
   length = 6,
+  error = false
 }) => {
   const [focusedIndex, setFocusedIndex] = useState<number | null>(null);
   const inputsRef = useRef<Array<TextInput | null>>([]);
@@ -45,7 +47,7 @@ export const OtpInput: React.FC<OtpInputProps> = ({
       {Array.from({ length }).map((_, index) => (
         <Input
           key={index}
-          className={`my-1 rounded-2xl h-14 w-12 bg-background-0`}
+          className={`my-1 rounded-2xl h-14 w-12 bg-background-0 ${error && 'border-error-500'}`}
           size="lg"
         >
           <InputField

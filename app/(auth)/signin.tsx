@@ -36,7 +36,7 @@ export default function Signin() {
         <SigninForm />
         <Link 
           className="text-[14px] text-center text-primary-500 font-medium" 
-          href="/register"
+          href="/forgot-password"
         >
           {t('link.forgotPassword')}
         </Link>

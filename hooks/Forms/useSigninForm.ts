@@ -7,7 +7,7 @@ import { useTranslation } from "react-i18next";
 import { useLocalSearchParams } from "expo-router";
 //import useUserStore  from "@/store/userStore"
 
-export const useSignin = () => {
+export const useSigninForm = () => {
   //const signIn = useUserStore(state => state.signIn)
   const showSpinnerModal = useSpinnerModal();
   const { t } = useTranslation()

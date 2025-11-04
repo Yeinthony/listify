@@ -62,3 +62,20 @@ export const changePasswordScheme = (t: TFunction) => z.object({
     path: ['confirmPassword'],
   }
 )
+
+export const verifyCodeScheme = (t: TFunction) =>
+  z
+    .object({
+      code: z
+        .string()
+        .min(1, { message: t("rules.required") }) 
+        .length(6, { message: t("rules.exact6", { num: 6 }) }),
+    })
+
+export const ForgotPassword1Scheme = (t: TFunction) => z.object({
+  email: z.string().min(1, {
+      message: t('rules.required')
+    }).email({
+      message: t('rules.email')
+    })
+})

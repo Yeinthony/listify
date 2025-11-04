@@ -46,6 +46,7 @@
     "required": "Campo requerido",
     "email": "El correo no es valido",
     "min6": "Mínimo 6 caracteres",
+    "exact6": "El código requiere exactamente 6 números",
     "notMatchPasswords": "Las contraseñas no coinciden"
   },
   "snackbar": {
