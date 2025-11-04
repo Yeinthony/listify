@@ -302,9 +302,20 @@ export default function RegisterForm({className}: SigninFormProps) {
               <Heading className="text-center text-[22px] font-medium">
                 Verificación de correo
               </Heading>
-              <Text className="text-center text-[14px] text-typography-600">
-                Hemos enviado un codigo de verificacion a tu correo electrónico
+              <Text className="text-center text-[14px] text-typography-600 flex-1">
+                Ingresa el código enviado a tu correo.
               </Text>
+              <HStack space="xs" className="justify-center">
+                <Text className="text-center text-[14px] text-typography-600">¿Problemas? </Text>
+                <TouchableOpacity 
+                  onPress={() => {}}
+                  className="flex items-end justify-end"
+                >
+                  <Text className="text-[14px] text-center text-primary-500 font-medium">
+                    Pide uno nuevo
+                  </Text>
+                </TouchableOpacity>
+              </HStack>
             </VStack>
             <FormControl
               size="md"
@@ -347,9 +358,9 @@ export default function RegisterForm({className}: SigninFormProps) {
                 <Text className="font-medium text-white">
                   Confirmar
                 </Text>
-                </Center>
+              </Center>
             </TouchableOpacity>
-        </VStack>
+          </VStack>
         </StepItem>
       </Stepper>
     </VStack>
