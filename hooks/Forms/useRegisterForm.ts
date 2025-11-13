@@ -6,13 +6,15 @@ import { useSpinnerModal } from '../../contexts/SpinnerModalContext';
 import { useTranslation } from 'react-i18next';
 import { useLocalSearchParams, useRouter } from 'expo-router';
 import { BackHandler, Platform } from 'react-native';
-
-// import useUserStore from "@/store/userStore"
+import { useUserStore } from '@/store/userStore';
+import useSnackbarStore from '@/store/snackbarStore';
+import { SignUpProps } from '@/types/store/user-store';
 
 export const useRegisterForm = () => {
-  // const signIn = useUserStore(state => state.signIn)
-  const showSpinnerModal = useSpinnerModal();
+  const { signUp } = useUserStore()
+  const { showSnackbar } = useSnackbarStore()
   const { t } = useTranslation();
+  const showSpinnerModal = useSpinnerModal();
   const params = useLocalSearchParams();
   const router = useRouter()
  
@@ -54,6 +56,25 @@ export const useRegisterForm = () => {
   const onSubmitForm2 = form2.handleSubmit(async (data) => {
     setStep(3)
   });
+
+  const onRegister = async () => {
+    const form1Data = form1.getValues();
+    const form2Data = form2.getValues();
+
+    const payload: SignUpProps = {
+      userData: {
+        email: form1Data.email,
+        username: form1Data.username,
+        password: form2Data.password
+      },
+      actions: {
+        spinner: showSpinnerModal,
+        snackbar: showSnackbar
+      }
+    }
+
+    await signUp(payload)
+  }
 
   const onVerifyCode = (code: string) => {
     console.log('Verification code: ', code);

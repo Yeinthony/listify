@@ -12,6 +12,7 @@ import { useEffect, useState } from 'react';
 import { Slot, usePathname } from 'expo-router';
 import { SpinnerModalProvider } from '@/contexts/SpinnerModalContext';
 import { useColorScheme } from '@/components/useColorScheme';
+import Snackbar from '@/components/generals/Snackbar';
 import '@/utils/i18n'; 
 
 export {
@@ -50,6 +51,7 @@ function RootLayoutNav() {
       <ThemeProvider value={colorMode === 'dark' ? DarkTheme : DefaultTheme}>
         <SpinnerModalProvider>
           <Slot />
+          <Snackbar />
         </SpinnerModalProvider>
         {/* {pathname === '/' && (
           <Fab
