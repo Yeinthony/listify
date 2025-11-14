@@ -1,3 +1,4 @@
+import { email } from 'zod';
 import axios from '@/utils/interceptor'
 import { RegisterUser, User, VerifyUser } from '@/types/users' 
 import { AxiosError, AxiosResponse } from 'axios'
@@ -26,9 +27,9 @@ export const verifyUser = async(verifyData: VerifyUser): Promise<AxiosResponse<{
   }
 }
 
-export const resendUserCode = async(email: string): Promise<AxiosResponse<{message: string}>> => {
+export const resendUserCode = async(data: {email: string}): Promise<AxiosResponse<{message: string}>> => {
   try {
-    const response = await axios.post<{message: string}>(`${URL}/resend-code`, email)
+    const response = await axios.post<{message: string}>(`${URL}/resend-code`, data)
     console.log(response);
 
     return response

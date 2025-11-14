@@ -3,6 +3,11 @@ import { ActionDeps } from "../action-deps";
 import { RegisterUser, User, VerifyUser } from "../users";
 import { useSpinnerModal } from "@/contexts/SpinnerModalContext";
 
+
+interface SignUpActions extends ActionDeps {
+  onSuccess: () => void;
+}
+
 interface SigninActionDeps {
   spinner: ReturnType<typeof useSpinnerModal>;
   router: ReturnType<typeof useRouter>
@@ -13,8 +18,7 @@ export interface VerifyUserProps {
 }
 export interface SignUpProps {
   userData: RegisterUser;
-  actions: ActionDeps
-  onSuccess: () => void;
+  actions: SignUpActions
 }
 
 export interface SignInProps {
@@ -25,9 +29,17 @@ export interface SignInProps {
   actions: SigninActionDeps;
 }
 
+export interface ResendUserCodeProps {
+  data: {
+    email: string;
+  }
+  actions: ActionDeps;
+}
+
 export interface UserState {
   user: User | null;
   signUp: (userData: SignUpProps) => Promise<void>;
-  verifyUser: (verifyData: VerifyUserProps) => Promise<void>;
+  verifyUser: (verifyData: VerifyUserProps) => Promise<boolean>;
   signin: (signinData: SignInProps) => Promise<void>;
+  resendUserCode: (resendData: ResendUserCodeProps) => Promise<void>;
 }

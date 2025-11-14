@@ -8,9 +8,9 @@ import { OtpInput } from "../inputs/OtpInput";
 import { Center } from "../ui/center";
 import { useVerifyCode } from "@/hooks/Forms/useVerifyCode";
 import { Controller } from "react-hook-form";
-import { VerifyCodeProps } from "@/types/components/forms/verify-code";
+import { VerifyCodeFormProps, VerifyCodeProps } from "@/types/components/forms/verify-code";
 
-export default function(props: VerifyCodeProps) {
+export default function(props: VerifyCodeFormProps) {
   const { 
     control,
     errors,
@@ -29,7 +29,7 @@ export default function(props: VerifyCodeProps) {
         <HStack space="xs" className="justify-center">
           <Text className="text-center text-[14px] text-typography-600">¿Problemas? </Text>
           <TouchableOpacity 
-            onPress={() => {}}
+            onPress={props.onResend}
             className="flex items-end justify-end"
           >
             <Text className="text-[14px] text-center text-primary-500 font-medium">

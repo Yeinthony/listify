@@ -9,10 +9,10 @@ import { BackHandler, Platform } from 'react-native';
 import { useUserStore } from '@/store/userStore';
 import useSnackbarStore from '@/store/snackbarStore';
 import { SignUpProps } from '@/types/store/user-store';
-import { set } from 'zod';
+import { email, set } from 'zod';
 
 export const useRegisterForm = () => {
-  const { signUp, verifyUser } = useUserStore()
+  const { signUp, verifyUser, signin, resendUserCode } = useUserStore()
   const { showSnackbar } = useSnackbarStore()
   const { t } = useTranslation();
   const showSpinnerModal = useSpinnerModal();
@@ -55,31 +55,46 @@ export const useRegisterForm = () => {
   };
 
   const onRegister = async () => {
-    setStep(3)
-    // const form1Data = form1.getValues();
-    // const form2Data = form2.getValues();
+    const form1Data = form1.getValues();
+    const form2Data = form2.getValues();
 
-    // const payload: SignUpProps = {
-    //   userData: {
-    //     email: form1Data.email,
-    //     username: form1Data.username,
-    //     password: form2Data.password
-    //   },
-    //   actions: {
-    //     spinner: showSpinnerModal,
-    //     snackbar: showSnackbar
-    //   },
-    //   onSuccess: () => setStep(3)
-    // }
+    const payload: SignUpProps = {
+      userData: {
+        email: form1Data.email,
+        username: form1Data.username,
+        password: form2Data.password
+      },
+      actions: {
+        spinner: showSpinnerModal,
+        snackbar: showSnackbar,
+        onSuccess: () => setStep(3)
+      },
+    }
 
-    // await signUp(payload)
+    await signUp(payload)
   }
 
   const onSubmitForm1 = form1.handleSubmit(async (data) => setStep(2));
   const onSubmitForm2 = form2.handleSubmit(async (data) => onRegister());
 
+  const onResendCode = async () => {
+    const form1Data = form1.getValues();
+
+    const payload = {
+      data: {
+        email: form1Data.email
+      },
+      actions: {
+        spinner: showSpinnerModal,
+        snackbar: showSnackbar
+      }
+    }
+    resendUserCode(payload)
+  }
+
   const onVerifyCode = async (code: string) => {
     const form1Data = form1.getValues();
+    const form2Data = form2.getValues()
 
     const payload = {
       verifyData: {
@@ -92,7 +107,20 @@ export const useRegisterForm = () => {
       }
     }
 
-    await verifyUser(payload)
+   const isVerified = await verifyUser(payload)
+   if(isVerified) {
+    const payloadSigin = {
+      signinData: {
+        email: form1Data.email,
+        password: form2Data.password
+      },
+      actions: {
+        spinner: showSpinnerModal,
+        router
+      }
+    }
+    signin(payloadSigin)
+   }
   }
 
   const onBack = () => router.back()
@@ -153,6 +181,7 @@ export const useRegisterForm = () => {
     handleShowPasswordConfirm,
     setShowAlertModal,
     onVerifyCode,
-    onBack
+    onBack,
+    onResendCode
   };
 };

@@ -62,6 +62,10 @@ axios.interceptors.response.use(
       console.log("Error iterceptor: ", error.response);
       
 
+      if(status === 400) showSnackbar({
+        message: printMsg(data), 
+        type: 'info'
+      });
       if(status === 401 || status === 421) showSnackbar({
         message: printMsg(data), 
         type: 'info'
@@ -102,6 +106,9 @@ const printMsg = (data: {
     );
     return messages.join(" ");
   }
+
+  if (Array.isArray(data.message)) return data.message.join(", ");
+
   return data.message;
 };
 export default axios;

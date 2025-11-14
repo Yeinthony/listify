@@ -56,7 +56,7 @@ export const SpinnerModalProvider: React.FC<{ children: ReactNode }> = ({ childr
       <Modal isOpen={isVisible} size="xs" style={{ zIndex: 9999 }}>
         <ModalBackdrop className="bg-black" />
 
-        <ModalContent>
+        <ModalContent className='rounded-2xl'>
           <ModalBody>
             <Center>
               <VStack className="justify-center items-center">
@@ -64,20 +64,24 @@ export const SpinnerModalProvider: React.FC<{ children: ReactNode }> = ({ childr
                 {!description && (
                   colorScheme === 'dark' ? (
                     <Image
-                      size="xl"
+                      size="md"
                       source={require('../assets/icons/LogoDark.png')}
                       alt="image"
                     />
                   ) : (
                     <Image
-                      size="xl"
+                      size="md"
                       source={require('../assets/icons/Logo.png')}
                       alt="image"
                     />
                   )
                 )}
 
-                <Spinner size="large" className="mr-2 mt-2" />
+                <Spinner 
+                  size="large" 
+                  className="mr-2 mt-3" 
+                  color="#e44b5e"
+                />
 
                 {description && (
                   <Text className="mt-2">{description}</Text>

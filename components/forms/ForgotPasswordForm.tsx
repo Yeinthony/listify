@@ -226,6 +226,7 @@ export default function ForgotPasswordForm({className}: SigninFormProps) {
         <StepItem value={2}>
           <VerifyCodeForm 
             onAction={onVerifyCode}
+            onResend={() => {}}
             backButton={
               <TouchableOpacity  
                 onPress={() => setStep(1)}

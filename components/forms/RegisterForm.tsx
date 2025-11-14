@@ -49,7 +49,8 @@ export default function RegisterForm({className}: SigninFormProps) {
     handleShowPasswordConfirm,
     setShowAlertModal,
     onVerifyCode,
-    onBack
+    onBack,
+    onResendCode
   } = useRegisterForm() 
 
   return(
@@ -304,6 +305,7 @@ export default function RegisterForm({className}: SigninFormProps) {
         <StepItem value={3}>
           <VerifyCodeForm 
             onAction={onVerifyCode}
+            onResend={onResendCode}
           />
         </StepItem>
       </Stepper>

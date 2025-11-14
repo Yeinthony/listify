@@ -26,9 +26,9 @@ export default function TabLayout() {
         <HStack className='w-full justify-around items-center py-4 bg-gre'>
           <TabTrigger name="home">
             <VStack className='items-center'>
-              <Ionicons 
-                size={28} 
-                name='albums-outline' 
+              <MaterialCommunityIcons 
+                size={30} 
+                name='home-outline' 
                 color={colorScheme === 'dark' ? 'white' : 'black'} 
               />
               {pathname === '/main' && <Ionicons size={8} name='ellipse' color="#22c55e" />}
@@ -44,9 +44,9 @@ export default function TabLayout() {
           </TouchableOpacity>
           <TabTrigger name="lists">
             <VStack className='items-center'>
-              <Ionicons 
-                size={28} 
-                name='person-outline' 
+              <MaterialCommunityIcons 
+                size={30} 
+                name='clipboard-text-outline' 
                 color={colorScheme === 'dark' ? 'white' : 'black'} 
               />
               {pathname === '/main/lists' && <Ionicons size={8} name='ellipse' color="#22c55e" />}
@@ -56,7 +56,7 @@ export default function TabLayout() {
       </SafeAreaView>
       <TabList style={{ display: 'none' }}>
         <TabTrigger 
-          name="lists" 
+          name="home" 
           href="/"
           
         >
