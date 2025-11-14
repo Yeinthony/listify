@@ -13,25 +13,30 @@ import {
 import { VStack } from '@/components/ui/vstack';
 import { Pressable } from '@/components/ui/pressable';
 import { StyleOptions } from '@/types/components/generals/snackbar';
+import { TouchableOpacity } from 'react-native';
 import useSnackbarStore from '@/store/snackbarStore';
+import MaterialCommunityIcons from '@expo/vector-icons/MaterialCommunityIcons';
 
 const Snackbar = () => {
   const { isVisible, message, type, hideSnackbar, duration } = useSnackbarStore();
   const toast = useToast();
 
   const stylesOptions: StyleOptions = {
-    info: 'mb-14 p-4 gap-6 border-info-500 w-full bg-info-500 shadow-hard-2 max-w-[360px] flex-row justify-between',
-    success: 'mb-14 p-4 gap-6 border-success-500 w-full bg-success-500 shadow-hard-2 max-w-[360px] flex-row justify-between',
-    warning: 'mb-14 p-4 gap-6 border-warning-500 w-full bg-warning-500 shadow-hard-2 max-w-[360px] flex-row justify-between',
-    error: 'mb-14 p-4 gap-6 border-error-500 w-full bg-error-500 shadow-hard-2 max-w-[360px] flex-row justify-between'
+    info: 'mb-14 p-4 gap-6 rounded-2xl border-info-500 w-full bg-info-500 shadow-hard-2 max-w-[360px] flex-row justify-between',
+    success: 'mb-14 p-4 gap-6 rounded-2xl border-success-500 w-full bg-success-500 shadow-hard-2 max-w-[360px] flex-row justify-between',
+    warning: 'mb-14 p-4 gap-6 rounded-2xl border-warning-500 w-full bg-warning-500 shadow-hard-2 max-w-[360px] flex-row justify-between',
+    error: 'mb-14 p-4 gap-6 rounded-2xl border-error-500 w-full bg-error-500 shadow-hard-2 max-w-[360px] flex-row justify-between'
   }
 
-  const iconsOptions = {
-    info: InfoIcon,
-    success: CheckCircleIcon,
-    warning: HelpCircleIcon,
-    error: CloseCircleIcon
-  }
+  const iconsOptions: Record<
+    "info" | "success" | "warning" | "error",
+    keyof typeof MaterialCommunityIcons.glyphMap
+  > = {
+    info: "information-outline",
+    success: "check",
+    warning: "alert-outline",
+    error: "close-circle-outline"
+  };
 
   useEffect(() => {
     if (isVisible) {
@@ -49,7 +54,11 @@ const Snackbar = () => {
             style={{ zIndex: 9998 }}
           >
             <HStack space="md" className='items-center'>
-              <Icon as={icon} className="mt-0.5 text-2xl text-white" size='xl'/>
+              <MaterialCommunityIcons 
+                name={icon}
+                size={24} 
+                color="white" 
+              />
               <VStack space="xs">
                 <ToastTitle className="font-semibold max-w-[230px] text-white">
                   {message}
@@ -57,12 +66,12 @@ const Snackbar = () => {
               </VStack>
             </HStack>
             <Center className="">
-              <Pressable onPress={() => {
+              <TouchableOpacity onPress={() => {
                 hideSnackbar();
                 toast.close(toastId);
               }}>
                 <Icon as={CloseIcon}  className='text-white' size='xl'/>
-              </Pressable>
+              </TouchableOpacity>
             </Center>
           </Toast>
         ),

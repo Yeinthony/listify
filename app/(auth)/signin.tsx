@@ -2,7 +2,7 @@ import { Heading } from "@/components/ui/heading";
 import { HStack } from "@/components/ui/hstack";
 import { Text } from "@/components/ui/text";
 import { VStack } from "@/components/ui/vstack";
-import { Link } from "expo-router";
+import { Link, useRouter } from "expo-router";
 import { useTranslation } from "react-i18next";
 import { TouchableOpacity } from "react-native";
 import { Divider } from "@/components/ui/divider";
@@ -12,6 +12,7 @@ import SigninForm from "@/components/forms/SigninForm";
 
 export default function Signin() {
   const { t } = useTranslation()
+  const router = useRouter()
 
   return(
     <VStack space="xl" className="flex-1 px-8">
@@ -48,7 +49,7 @@ export default function Signin() {
       </HStack>
       <VStack className="mt-2">
         <TouchableOpacity  
-          onPress={() => {}}
+          onPress={() => router.push('/main')}
           className="mb-2"
         >
           <HStack 

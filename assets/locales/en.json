@@ -121,6 +121,13 @@
 
   },
   "alerts": {
-
+     "registerBack": {
+      "title": "Cancel registration?",
+      "message": "If you cancel your registration, all entered data will be lost."
+    },
+    "verifyUser": {
+      "title": "Cancel verification?",
+      "message": "If you cancel, your account will remain unverified and some features will be restricted until you complete the verification process."
+    }
   }
 }

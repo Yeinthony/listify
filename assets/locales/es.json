@@ -121,6 +121,13 @@
 
   },
   "alerts": {
-
+    "registerBack": {
+      "title": "¿Cancelar registro?",
+      "message": "Si cancelas el registro, se perderán todos los datos ingresados."
+    },
+    "verifyUser": {
+      "title": "¿Cancelar verificacón?",
+      "message": "Si cancelás, tu cuenta seguirá sin verificar y algunas funciones estarán restringidas hasta que completes la verificación."
+    }
   }
 }

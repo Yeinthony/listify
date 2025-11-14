@@ -1,3 +1,8 @@
+export interface VerifyUser {
+  email: string;
+  code: string;
+}
+
 export interface RegisterUser {
   username?: string;
   email: string;

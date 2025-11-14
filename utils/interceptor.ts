@@ -32,18 +32,27 @@ axios.interceptors.response.use(
     const { showSnackbar } = snackbarStore.getState();
     
     if (error.code === 'ERR_NETWORK' || !error.response) {
-      showSnackbar('Error de red: No se pudo conectar al servidor. Verifica tu conexión a internet.', 'error');
+      showSnackbar({
+        message: 'Error de red: No se pudo conectar al servidor. Verifica tu conexión a internet.', 
+        type: 'error'
+      });
       return Promise.reject(error);
     }
 
     if (error.code === 'ECONNABORTED') {
-      showSnackbar("La petición ha tardado demasiado. Por favor, inténtalo de nuevo.", 'error');
+      showSnackbar({
+        message: "La petición ha tardado demasiado. Por favor, inténtalo de nuevo.", 
+        type: 'error'
+      });
       return Promise.reject(error);
     }
 
     if (!error.response) {
       // No hay respuesta del servidor (posiblemente no hay conexión)
-      showSnackbar("Error de conexión. Verifica tu conexión a internet.", 'error');
+      showSnackbar({
+        message: "Error de conexión. Verifica tu conexión a internet.", 
+        type: 'error'
+      });
       return Promise.reject(error);
     }
 
@@ -53,12 +62,30 @@ axios.interceptors.response.use(
       console.log("Error iterceptor: ", error.response);
       
 
-      if(status === 401 || status === 421) showSnackbar(printMsg(data), 'info');
-      if(status === 422) showSnackbar(printMsg(data), 'info');
-      if(status === 404) showSnackbar(printMsg(data), 'error');
-      if(status === 413) showSnackbar(printMsg(data), 'error');
-      if(status === 503) showSnackbar('Servidor no disponible', 'error');
-      if(status >= 500 && status !== 503) showSnackbar(printMsg(data), 'error');
+      if(status === 401 || status === 421) showSnackbar({
+        message: printMsg(data), 
+        type: 'info'
+      });
+      if(status === 422) showSnackbar({
+        message: printMsg(data), 
+        type: 'info'
+      });
+      if(status === 404) showSnackbar({
+        message: printMsg(data), 
+        type: 'error'
+      });
+      if(status === 413) showSnackbar({
+        message: printMsg(data), 
+        type: 'error'
+      });
+      if(status === 503) showSnackbar({
+        message: 'Servidor no disponible', 
+        type: 'error'
+      });
+      if(status >= 500 && status !== 503) showSnackbar({
+        message: printMsg(data), 
+        type: 'error'
+      });
     }
     
     return Promise.reject(error);

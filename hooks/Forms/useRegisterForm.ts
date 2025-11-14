@@ -9,9 +9,10 @@ import { BackHandler, Platform } from 'react-native';
 import { useUserStore } from '@/store/userStore';
 import useSnackbarStore from '@/store/snackbarStore';
 import { SignUpProps } from '@/types/store/user-store';
+import { set } from 'zod';
 
 export const useRegisterForm = () => {
-  const { signUp } = useUserStore()
+  const { signUp, verifyUser } = useUserStore()
   const { showSnackbar } = useSnackbarStore()
   const { t } = useTranslation();
   const showSpinnerModal = useSpinnerModal();
@@ -38,6 +39,10 @@ export const useRegisterForm = () => {
   const [showPassword, setShowPassword] = useState<boolean>(false);
   const [showPasswordConfirm, setShowPasswordConfirm] = useState<boolean>(false);
   const [showAlertModal, setShowAlertModal] = useState<boolean>(false);
+  const [alertInfo, setAlertInfo] = useState({ 
+    title: t('alerts.registerBack.title'),
+    message: t('alerts.registerBack.message')
+  });
 
   const stepRef = useRef(step)
 
@@ -49,23 +54,37 @@ export const useRegisterForm = () => {
     setShowPasswordConfirm((prev) => !prev);
   };
 
-  const onSubmitForm1 = form1.handleSubmit(async (data) => {
-    setStep(2)
-  });
-
-  const onSubmitForm2 = form2.handleSubmit(async (data) => {
-    setStep(3)
-  });
-
   const onRegister = async () => {
-    const form1Data = form1.getValues();
-    const form2Data = form2.getValues();
+    setStep(3)
+    // const form1Data = form1.getValues();
+    // const form2Data = form2.getValues();
 
-    const payload: SignUpProps = {
-      userData: {
+    // const payload: SignUpProps = {
+    //   userData: {
+    //     email: form1Data.email,
+    //     username: form1Data.username,
+    //     password: form2Data.password
+    //   },
+    //   actions: {
+    //     spinner: showSpinnerModal,
+    //     snackbar: showSnackbar
+    //   },
+    //   onSuccess: () => setStep(3)
+    // }
+
+    // await signUp(payload)
+  }
+
+  const onSubmitForm1 = form1.handleSubmit(async (data) => setStep(2));
+  const onSubmitForm2 = form2.handleSubmit(async (data) => onRegister());
+
+  const onVerifyCode = async (code: string) => {
+    const form1Data = form1.getValues();
+
+    const payload = {
+      verifyData: {
         email: form1Data.email,
-        username: form1Data.username,
-        password: form2Data.password
+        code
       },
       actions: {
         spinner: showSpinnerModal,
@@ -73,11 +92,7 @@ export const useRegisterForm = () => {
       }
     }
 
-    await signUp(payload)
-  }
-
-  const onVerifyCode = (code: string) => {
-    console.log('Verification code: ', code);
+    await verifyUser(payload)
   }
 
   const onBack = () => router.back()
@@ -103,6 +118,14 @@ export const useRegisterForm = () => {
 
   useEffect(() => {
     stepRef.current = step
+    if (step === 1) setAlertInfo({
+      title: t('alerts.registerBack.title'),
+      message: t('alerts.registerBack.message')
+    })
+    if (step === 3) setAlertInfo({
+      title: t('alerts.verifyUser.title'),
+      message: t('alerts.verifyUser.message')
+    })
   }, [step])
 
   return {
@@ -124,6 +147,7 @@ export const useRegisterForm = () => {
     showPassword,
     showPasswordConfirm,
     showAlertModal,
+    alertInfo,
     setStep,
     handleShowPassword,
     handleShowPasswordConfirm,

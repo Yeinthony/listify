@@ -43,6 +43,7 @@ export default function RegisterForm({className}: SigninFormProps) {
     showPassword,
     showPasswordConfirm,
     showAlertModal,
+    alertInfo,
     setStep,
     handleShowPassword,
     handleShowPasswordConfirm,
@@ -68,12 +69,13 @@ export default function RegisterForm({className}: SigninFormProps) {
               </Text>
               <HStack space="xs" className="justify-center">
                 <Text className="text-center text-[14px] text-typography-600">O</Text>
-                <Link 
-                  className="text-[14px] text-primary-500 font-medium" 
-                  href="/signin"
+                <TouchableOpacity 
+                  onPress={() => setShowAlertModal(true)}
                 >
-                  Inicia sesión
-                </Link>
+                  <Text className="text-[14px] text-primary-500 font-medium">
+                    Inicia sesión
+                  </Text>
+                </TouchableOpacity>
               </HStack>
             </VStack>
 
@@ -310,8 +312,8 @@ export default function RegisterForm({className}: SigninFormProps) {
         onClose={() => setShowAlertModal(false)}
         onAction={onBack}
         type="error"
-        title="¿Cancelar el registro?"
-        description="Si confirmas esta acción, se cancelará el registro y perderás todos los datos que has ingresado hasta ahora. ¿Estás seguro de continuar?"
+        title={alertInfo.title}
+        description={alertInfo.message}
       />
     </VStack>
   )
