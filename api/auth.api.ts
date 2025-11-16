@@ -14,3 +14,14 @@ export const login = async(data: SigninProps): Promise<AxiosResponse<SigninRespo
     return Promise.reject(error as AxiosError)
   }
 }
+
+export const whoami = async(): Promise<AxiosResponse<SigninResponse>> => {
+  try {
+    const response = await axios.get<SigninResponse>(`${URL}/whoami`)
+    console.log(response);
+
+    return response
+  } catch (error) {
+    return Promise.reject(error as AxiosError)
+  }
+}

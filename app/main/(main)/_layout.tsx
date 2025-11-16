@@ -19,53 +19,86 @@ export default function TabLayout() {
   const { colorScheme } = useColorScheme();
 
   return (
-    <Tabs className='bg-background-0 relative flex-1'>
+    <Tabs>
       <StatusBar style="auto" />
+
+      {/* Contenido de las screens */}
       <TabSlot />
-      <SafeAreaView className='w-full'>
-        <HStack className='w-full justify-around items-center py-4 bg-gre'>
+
+      {/* TAB BAR CUSTOM ABAJO */}
+      <View 
+        style={{
+          position: 'absolute',
+          bottom: 0,
+          left: 0,
+          right: 0,
+        }}
+        className="bg-background-0 pb-10"
+      >
+        <HStack className='w-full justify-between items-center px-8'>
           <TabTrigger name="home">
             <VStack className='items-center'>
-              <MaterialCommunityIcons 
-                size={30} 
+              <Ionicons 
+                size={26} 
                 name='home-outline' 
                 color={colorScheme === 'dark' ? 'white' : 'black'} 
               />
-              {pathname === '/main' && <Ionicons size={8} name='ellipse' color="#22c55e" />}
+              <Text className='text-xs mt-2'>Home</Text>
             </VStack>
           </TabTrigger>
-          <TouchableOpacity 
-            className='p-2 rounded-full bg-primary-500/20'
-            onPress={() => {}}
-          >
-            <Center className='w-14 h-14 bg-primary-500 rounded-full'>
-              <MaterialCommunityIcons name="barcode-scan" size={24} color="white" />
-            </Center>
-          </TouchableOpacity>
+
           <TabTrigger name="lists">
             <VStack className='items-center'>
-              <MaterialCommunityIcons 
-                size={30} 
-                name='clipboard-text-outline' 
+              <Ionicons 
+                size={26} 
+                name='reader-outline' 
                 color={colorScheme === 'dark' ? 'white' : 'black'} 
               />
-              {pathname === '/main/lists' && <Ionicons size={8} name='ellipse' color="#22c55e" />}
+              <Text className='text-xs mt-2'>Listas</Text>
             </VStack>
           </TabTrigger>
+
+          <TouchableOpacity 
+            className='rounded-full bottom-10 border-8 border-background-100'
+            onPress={() => {}}
+          >
+            <Center className='w-20 h-20 bg-primary-500 rounded-full'>
+              <MaterialCommunityIcons name="barcode-scan" size={28} color="white" />
+            </Center>
+          </TouchableOpacity>
+
+          <TabTrigger name="recipes">
+            <VStack className='items-center'>
+              <Ionicons 
+                size={26} 
+                name='restaurant-outline' 
+                color={colorScheme === 'dark' ? 'white' : 'black'} 
+              />
+              <Text className='text-xs mt-2'>Recetas</Text>
+            </VStack>
+          </TabTrigger>
+
+          <TabTrigger name="profile">
+            <VStack className='items-center'>
+              <Ionicons 
+                size={26} 
+                name='person-outline' 
+                color={colorScheme === 'dark' ? 'white' : 'black'} 
+              />
+              <Text className='text-xs mt-2'>Perfil</Text>
+            </VStack>
+          </TabTrigger>
+
         </HStack>
-      </SafeAreaView>
+      </View>
+
+      {/* TabList oculto (mantiene navegación interna de tabs) */}
       <TabList style={{ display: 'none' }}>
-        <TabTrigger 
-          name="home" 
-          href="/"
-          
-        >
-          <Text>Home</Text>
-        </TabTrigger>
-        <TabTrigger name="lists" href="/main/lists">
-          <Text>settings</Text>
-        </TabTrigger>
+        <TabTrigger name="home" href="/" />
+        <TabTrigger name="lists" href="/main/lists" />
+        <TabTrigger name="recipes" href="/main/recipes" />
+        <TabTrigger name="profile" href="/main/profile" />
       </TabList>
     </Tabs>
-  )
+  );
 }

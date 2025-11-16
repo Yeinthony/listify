@@ -6,8 +6,8 @@ import { Text } from '@/components/ui/text';
 
 export default function Tab2() {
   return (
-    <Center className="flex-1 bg-background-100">
-      <Heading className="font-bold text-2xl">Home</Heading>
+    <Center className="flex-1">
+      <Heading className="font-bold text-2xl">Profile</Heading>
     </Center>
   );
 }

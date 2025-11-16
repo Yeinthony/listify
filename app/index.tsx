@@ -13,9 +13,11 @@ import { StatusBar } from 'expo-status-bar';
 import { Spinner } from '@/components/ui/spinner';
 import { Image } from '@/components/ui/image';
 import { useColorScheme } from '@/components/useColorScheme';
+import { useUserStore } from '@/store/userStore';
 import * as SecureStore from 'expo-secure-store';
 
 export default function Home() {
+  const { reloadSession } = useUserStore()
   const router = useRouter();
   const colorScheme = useColorScheme()
 
@@ -35,7 +37,7 @@ export default function Home() {
         firstStart = await SecureStore.getItemAsync('firstStart')
         console.log('firstStart: ', firstStart);
         if(sessionToken){
-          //reloadSession()
+          reloadSession()
         }else{
           router.replace('/signin');
         }

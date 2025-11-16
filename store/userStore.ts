@@ -1,12 +1,14 @@
 import { create } from "zustand";
 import { UserState } from "@/types/store/user-store";
 import { register, resendUserCode, verifyUser } from "@/api/user.api";
-import { login } from "@/api/auth.api";
+import { login, whoami } from "@/api/auth.api";
+import { router } from 'expo-router';
 import * as SecureStore from 'expo-secure-store';
+import axios, { AxiosError } from "axios";
 
 export const useUserStore = create<UserState>((set) => ({
   user: null,
-  signUp: async (signUpData) => {
+  signUp: async(signUpData) => {
     const { spinner, onSuccess, snackbar } = signUpData.actions;
 
     spinner(true);
@@ -28,7 +30,7 @@ export const useUserStore = create<UserState>((set) => ({
       spinner(false);
     }
   },
-  resendUserCode: async (resendData) => {
+  resendUserCode: async(resendData) => {
     const { spinner, snackbar } = resendData.actions;
 
     spinner(true);
@@ -49,7 +51,7 @@ export const useUserStore = create<UserState>((set) => ({
       spinner(false);
     }
   },
-  verifyUser: async (verifyProps) => {
+  verifyUser: async(verifyProps) => {
     const { spinner, snackbar } = verifyProps.actions;
 
     spinner(true);
@@ -68,11 +70,11 @@ export const useUserStore = create<UserState>((set) => ({
       console.log('error verifying user:', error);
       return false
     } finally {
-      spinner(false);
+      if(!verifyProps.noCloseSpinner) spinner(false);
     }
   },
-  signin: async (signinProps) => {
-    const { spinner, router } = signinProps.actions;
+  signin: async(signinProps) => {
+    const { spinner } = signinProps;
 
     spinner(true);
     try {
@@ -87,6 +89,30 @@ export const useUserStore = create<UserState>((set) => ({
       console.log('error signing in user:', error);
     } finally {
       spinner(false);
+    }
+  },
+  reloadSession: async() => {
+    try {
+      const response = await whoami()
+      if (response.status === 200) {
+        const userData = response.data;
+        set({ user: userData.user });
+        await SecureStore.setItemAsync('sessionToken', userData.token);
+        router.replace('/main');
+      }
+    } catch (error) {
+      if (axios.isAxiosError(error)) {
+        if (error.response?.status === 401) {
+          await SecureStore.deleteItemAsync("sessionToken");
+          set({ user: null });
+          router.replace("/signin");
+          return;
+        }
+
+        console.log("Axios error:", error.response);
+      } else {
+        console.log("Unknown error:", error);
+      }
     }
   }
 }));

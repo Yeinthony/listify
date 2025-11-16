@@ -9,12 +9,12 @@ interface SignUpActions extends ActionDeps {
 }
 
 interface SigninActionDeps {
-  spinner: ReturnType<typeof useSpinnerModal>;
-  router: ReturnType<typeof useRouter>
+  
 }
 export interface VerifyUserProps {
   verifyData: VerifyUser;
   actions: ActionDeps;
+  noCloseSpinner?: boolean
 }
 export interface SignUpProps {
   userData: RegisterUser;
@@ -26,7 +26,7 @@ export interface SignInProps {
     email: string;
     password: string;
   }
-  actions: SigninActionDeps;
+  spinner: ReturnType<typeof useSpinnerModal>;
 }
 
 export interface ResendUserCodeProps {
@@ -42,4 +42,5 @@ export interface UserState {
   verifyUser: (verifyData: VerifyUserProps) => Promise<boolean>;
   signin: (signinData: SignInProps) => Promise<void>;
   resendUserCode: (resendData: ResendUserCodeProps) => Promise<void>;
+  reloadSession: () => Promise<void>;
 }

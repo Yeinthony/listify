@@ -104,7 +104,8 @@ export const useRegisterForm = () => {
       actions: {
         spinner: showSpinnerModal,
         snackbar: showSnackbar
-      }
+      },
+      noCloseSpinner: true
     }
 
    const isVerified = await verifyUser(payload)
@@ -114,10 +115,7 @@ export const useRegisterForm = () => {
         email: form1Data.email,
         password: form2Data.password
       },
-      actions: {
-        spinner: showSpinnerModal,
-        router
-      }
+      spinner: showSpinnerModal
     }
     signin(payloadSigin)
    }
