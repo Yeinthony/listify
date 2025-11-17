@@ -1,99 +1,178 @@
-import React, { useEffect, useState } from 'react';
-import FontAwesome from '@expo/vector-icons/FontAwesome';
+import React, { useEffect } from 'react';
+import { View } from 'react-native';
 import { Tabs, TabList, TabTrigger, TabSlot } from 'expo-router/ui';
+import { Stack } from "expo-router";
 import { Text } from '@/components/ui/text';
-import { TouchableOpacity, View } from 'react-native';
-import { SafeAreaView } from 'react-native-safe-area-context';
+import { Motion } from '@legendapp/motion';
 import { HStack } from '@/components/ui/hstack';
 import { VStack } from '@/components/ui/vstack';
 import { Center } from '@/components/ui/center';
 import { usePathname } from 'expo-router';
 import { useColorScheme } from 'nativewind';
-import { StatusBar } from 'expo-status-bar'
-import Ionicons from '@expo/vector-icons/Ionicons';;
+import { StatusBar } from 'expo-status-bar';
+import { useSegments } from "expo-router";
+import { useSafeAreaInsets, SafeAreaView } from 'react-native-safe-area-context';
+import Ionicons from '@expo/vector-icons/Ionicons';
 import MaterialCommunityIcons from '@expo/vector-icons/MaterialCommunityIcons';
 
+const MotionView = Motion.View as any;
+const MotionPressable = Motion.Pressable as any;
 
 export default function TabLayout() {
-  const pathname = usePathname();
   const { colorScheme } = useColorScheme();
+  const { bottom } = useSafeAreaInsets();
+  const segments = useSegments();
+  const active = segments[segments.length - 1];
+
+  useEffect(() => {
+    console.log('active: ', active);
+    
+  }, [active])
+  
 
   return (
     <Tabs>
       <StatusBar style="auto" />
 
-      {/* Contenido de las screens */}
+      {/* CONTENIDO */}
       <TabSlot />
 
-      {/* TAB BAR CUSTOM ABAJO */}
-      <View 
+      {/* BOTÓN FLOANTE */}
+      <View
+        pointerEvents="box-none"
         style={{
-          position: 'absolute',
+          position: "absolute",
+          bottom: bottom + 35,
+          left: 0,
+          right: 0,
+          alignItems: "center",
+          zIndex: 50,
+        }}
+      >
+        <Center className='bg-background-100 rounded-full p-2'>
+          <MotionPressable onPress={() => {}}>
+            <MotionView
+              whileTap={{ scale: 1.05 }}
+              transition={{
+                type: "spring",
+                damping: 20,
+                stiffness: 300,
+              }}
+            >
+              <Center className="w-16 h-16 bg-primary-500 rounded-full shadow-xl">
+                <MaterialCommunityIcons name="barcode-scan" size={28} color="white" />
+              </Center>
+            </MotionView>
+          </MotionPressable>
+        </Center>
+      </View>
+
+      {/* TAB BAR */}
+      <View
+        pointerEvents="box-none"
+        style={{
+          position: "absolute",
           bottom: 0,
           left: 0,
           right: 0,
+          height: 70 + bottom,      // RESPETA SAFE AREA
+          paddingBottom: bottom,    // evita que se tape
+          backgroundColor: "transparent",
         }}
-        className="bg-background-0 pb-10"
       >
-        <HStack className='w-full justify-between items-center px-8'>
-          <TabTrigger name="home">
-            <VStack className='items-center'>
-              <Ionicons 
-                size={26} 
-                name='home-outline' 
-                color={colorScheme === 'dark' ? 'white' : 'black'} 
-              />
-              <Text className='text-xs mt-2'>Home</Text>
-            </VStack>
-          </TabTrigger>
-
-          <TabTrigger name="lists">
-            <VStack className='items-center'>
-              <Ionicons 
-                size={26} 
-                name='reader-outline' 
-                color={colorScheme === 'dark' ? 'white' : 'black'} 
-              />
-              <Text className='text-xs mt-2'>Listas</Text>
-            </VStack>
-          </TabTrigger>
-
-          <TouchableOpacity 
-            className='rounded-full bottom-10 border-8 border-background-100'
-            onPress={() => {}}
+        <HStack className="flex-1 bg-background-0 justify-between items-center px-2 border-t-8 border-t-background-100">
+          <TabTrigger 
+            className='h-full w-[21%] justify-center items-center' 
+            name="home"
           >
-            <Center className='w-20 h-20 bg-primary-500 rounded-full'>
-              <MaterialCommunityIcons name="barcode-scan" size={28} color="white" />
-            </Center>
-          </TouchableOpacity>
-
-          <TabTrigger name="recipes">
-            <VStack className='items-center'>
-              <Ionicons 
-                size={26} 
-                name='restaurant-outline' 
-                color={colorScheme === 'dark' ? 'white' : 'black'} 
+            <VStack className="items-center justify-center flex-1">
+              <Ionicons
+                size={26}
+                name={active === '(main)' ? 'home' : 'home-outline'}
+                color={active === "(main)" ? "#e44b5e" : (colorScheme === "dark" ? "white" : "#6b7280")}
               />
-              <Text className='text-xs mt-2'>Recetas</Text>
+              <Text 
+                className="text-xs mt-1"
+                style={{
+                  color: active === "(main)" ? "#e44b5e" : (colorScheme === "dark" ? "white" : "#6b7280")
+                }}
+              >
+                Home
+              </Text>
             </VStack>
           </TabTrigger>
 
-          <TabTrigger name="profile">
-            <VStack className='items-center'>
-              <Ionicons 
-                size={26} 
-                name='person-outline' 
-                color={colorScheme === 'dark' ? 'white' : 'black'} 
+          <TabTrigger 
+            className='h-full w-[21%] justify-center items-center' 
+            name="lists"
+          >
+            <VStack className="items-center justify-center flex-1">
+              <Ionicons
+                size={26}
+                name={active === 'lists' ? 'reader' : 'reader-outline'}
+                color={active === "lists" ? "#e44b5e" : (colorScheme === "dark" ? "white" : "#6b7280")}
               />
-              <Text className='text-xs mt-2'>Perfil</Text>
+              <Text 
+                className="text-xs mt-1"
+                style={{
+                  color: active === "lists" ? "#e44b5e" : (colorScheme === "dark" ? "white" : "#6b7280")
+                }}
+              >
+                Listas
+              </Text>
+            </VStack>
+          </TabTrigger>
+
+          {/* ESPACIO CENTRAL PARA EL BOTÓN FLOANTE */}
+          <View style={{ width: '14%' }} />
+
+          <TabTrigger 
+            name="recipes"
+            className='h-full w-[21%] justify-center items-center'
+          >
+            <VStack className="items-center justify-center flex-1">
+              <Ionicons
+                size={26}
+                name={active === 'recipes' ? 'restaurant' : 'restaurant-outline'}
+                color={active === "recipes" ? "#e44b5e" : (colorScheme === "dark" ? "white" : "#6b7280")}
+              />
+              <Text 
+                className="text-xs mt-1"
+                style={{
+                  color: active === "recipes" ? "#e44b5e" : (colorScheme === "dark" ? "white" : "#6b7280")
+                }}
+              >
+                Recetas
+              </Text>
+            </VStack>
+          </TabTrigger>
+
+          <TabTrigger 
+            name="profile"
+            className='h-full w-[21%] justify-center items-center'
+          >
+            <VStack className="items-center justify-center flex-1">
+              <Ionicons
+                size={26}
+                name={active === 'profile' ? 'person' : 'person-outline'}
+                color={active === "profile" ? "#e44b5e" : (colorScheme === "dark" ? "white" : "#6b7280")}
+              />
+              <Text 
+                className="text-xs mt-1"
+                style={{
+                  color: active === "profile" ? "#e44b5e" : (colorScheme === "dark" ? "white" : "#6b7280")
+                }}
+              >
+                Perfil
+              </Text>
             </VStack>
           </TabTrigger>
 
         </HStack>
       </View>
 
-      {/* TabList oculto (mantiene navegación interna de tabs) */}
-      <TabList style={{ display: 'none' }}>
+      {/* TABLIST OCULTO */}
+      <TabList style={{ display: "none" }}>
         <TabTrigger name="home" href="/" />
         <TabTrigger name="lists" href="/main/lists" />
         <TabTrigger name="recipes" href="/main/recipes" />
