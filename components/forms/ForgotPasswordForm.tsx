@@ -19,10 +19,9 @@ import {
 } from "@/components/ui/icon";
 import { TouchableOpacity } from "react-native";
 import { Center } from "@/components/ui/center";
-import { SigninFormProps } from "@/types/components/forms/signin-form";
+import { SigninFormProps } from "@/components/forms/types/signin-form";
 import { StepItem, Stepper } from "../generals/Stepper";
-import { useRegisterForm } from "@/hooks/Forms/useRegisterForm";
-import { useForgotPasswordForm } from "@/hooks/Forms/useForgotPasswordForm";
+import { useForgotPasswordForm } from "./hooks/useForgotPasswordForm"; 
 import { HStack } from "../ui/hstack";
 import { OtpInput } from "../inputs/OtpInput";
 import { Heading } from "../ui/heading";
@@ -227,22 +226,6 @@ export default function ForgotPasswordForm({className}: SigninFormProps) {
           <VerifyCodeForm 
             onAction={onVerifyCode}
             onResend={() => {}}
-            backButton={
-              <TouchableOpacity  
-                onPress={() => setStep(1)}
-                className="mb-2 mt-3 w-[35%]"
-              >
-                <Center 
-                  className={
-                    `bg-primary-500/20 rounded-2xl px-4 h-14`
-                  }
-                >
-                  <Text className="font-medium text-primary-500">
-                    {t('button.back')}
-                  </Text>
-                </Center>
-              </TouchableOpacity>
-            } 
           />
         </StepItem>
       </Stepper>

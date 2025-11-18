@@ -6,7 +6,7 @@ import { Text } from '@/components/ui/text';
 
 export default function Tab2() {
   return (
-    <Center className="flex-1">
+    <Center className="flex-1 bg-background-100">
       <Heading className="font-bold text-2xl">Lists</Heading>
     </Center>
   );

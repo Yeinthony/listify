@@ -19,9 +19,9 @@ import {
 } from "@/components/ui/icon";
 import { TouchableOpacity } from "react-native";
 import { Center } from "@/components/ui/center";
-import { SigninFormProps } from "@/types/components/forms/signin-form";
+import { SigninFormProps } from "@/components/forms/types/signin-form";
 import { StepItem, Stepper } from "../generals/Stepper";
-import { useRegisterForm } from "@/hooks/Forms/useRegisterForm";
+import { useRegisterForm } from "./hooks/useRegisterForm";
 import { useState } from "react";
 import { HStack } from "../ui/hstack";
 import { Divider } from "../ui/divider";

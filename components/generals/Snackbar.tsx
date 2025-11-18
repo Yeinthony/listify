@@ -12,7 +12,7 @@ import {
 } from '@/components/ui/icon';
 import { VStack } from '@/components/ui/vstack';
 import { Pressable } from '@/components/ui/pressable';
-import { StyleOptions } from '@/types/components/generals/snackbar';
+import { StyleOptions } from '@/components/generals/types/snackbar';
 import { TouchableOpacity } from 'react-native';
 import useSnackbarStore from '@/store/snackbarStore';
 import MaterialCommunityIcons from '@expo/vector-icons/MaterialCommunityIcons';

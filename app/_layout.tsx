@@ -8,10 +8,11 @@ import {
 } from '@react-navigation/native';
 import { useFonts } from 'expo-font';
 import * as SplashScreen from 'expo-splash-screen';
-import { useEffect, useState } from 'react';
+import { useCallback, useEffect, useState } from 'react';
 import { Slot, usePathname } from 'expo-router';
 import { SpinnerModalProvider } from '@/contexts/SpinnerModalContext';
-import { useColorScheme } from '@/components/useColorScheme';
+import { useColorScheme } from 'react-native';
+import useThemeStore from '@/store/themeStore';
 import Snackbar from '@/components/generals/Snackbar';
 import '@/utils/i18n'; 
 
@@ -29,6 +30,7 @@ export default function RootLayout() {
   });
 
   const [styleLoaded, setStyleLoaded] = useState(false);
+
   // Expo Router uses Error Boundaries to catch errors in the navigation tree.
   useEffect(() => {
     if (error) throw error;
@@ -43,27 +45,32 @@ export default function RootLayout() {
 }
 
 function RootLayoutNav() {
+  const { theme, loadTheme } = useThemeStore()
+  const colorScheme = useColorScheme()
   const pathname = usePathname();
+
   const [colorMode, setColorMode] = useState<'light' | 'dark'>('light');
+  
+  useEffect(() => {
+    loadTheme()
+  }, [])
+
+  useEffect(() => { 
+    if(theme === 'system'){
+      setColorMode(colorScheme === 'light' ? 'light' : 'dark')
+    }else {
+      setColorMode(theme)
+    }
+  }, [theme, colorScheme])
+  
 
   return (
-    <GluestackUIProvider mode={colorMode}>
+    <GluestackUIProvider mode={theme}>
       <ThemeProvider value={colorMode === 'dark' ? DarkTheme : DefaultTheme}>
         <SpinnerModalProvider>
           <Slot />
           <Snackbar />
         </SpinnerModalProvider>
-        {/* {pathname === '/' && (
-          <Fab
-            onPress={() =>
-              setColorMode(colorMode === 'dark' ? 'light' : 'dark')
-            }
-            className="m-6"
-            size="lg"
-          >
-            <FabIcon as={colorMode === 'dark' ? MoonIcon : SunIcon} />
-          </Fab>
-        )} */}
       </ThemeProvider>
     </GluestackUIProvider>
   );

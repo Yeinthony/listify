@@ -1,4 +1,4 @@
-import { GradientProps } from '@/types/components/generals/gradient-background';
+import { GradientProps } from '@/components/generals/types/gradient-background';
 import React from 'react';
 import { StyleSheet } from 'react-native';
 import Svg, { Defs, LinearGradient, RadialGradient, Rect, Stop } from 'react-native-svg';

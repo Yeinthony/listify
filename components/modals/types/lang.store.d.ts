@@ -1,0 +1,1 @@
+export type LangMode = 'es' | 'en';

@@ -15,7 +15,7 @@ import { Pressable } from "@/components/ui/pressable";
 import { Text } from "@/components/ui/text";
 import { useState } from "react"
 import Ionicons from '@expo/vector-icons/Ionicons';
-import { AlertModalProps, IconColor, IconTypes } from "@/types/components/modals/alert-modal";
+import { AlertModalProps, IconColor, IconTypes } from "@/components/modals/types/alert-modal";
 import { TouchableOpacity } from "react-native";
 
 const AlertModal = ({

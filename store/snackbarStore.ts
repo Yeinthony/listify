@@ -1,4 +1,4 @@
-import { SnackbarState } from '@/types/store/snackbar-store';
+import { SnackbarState } from './types/snackbar-store';
 import { create } from 'zustand';
 
 const useSnackbarStore = create<SnackbarState>((set) => ({

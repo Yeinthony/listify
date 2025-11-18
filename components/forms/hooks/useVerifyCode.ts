@@ -1,4 +1,4 @@
-import { VerifyCodeProps } from "@/types/components/forms/verify-code";
+import { VerifyCodeProps } from "@/components/forms/types/verify-code";
 import { verifyCodeScheme } from "@/utils/formSchemes";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useState } from "react"

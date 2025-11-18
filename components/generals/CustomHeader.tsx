@@ -6,7 +6,7 @@ import { useColorScheme } from "@/components/useColorScheme";
 import { useRouter } from 'expo-router';
 import { useTranslation } from 'react-i18next';
 import { Platform, TouchableOpacity } from 'react-native';
-import { CustomHeaderProps } from '@/types/components/generals/custom-header';
+import { CustomHeaderProps } from '@/components/generals/types/custom-header';
 import { Heading } from '../ui/heading';
 import * as SecureStore from 'expo-secure-store';
 import Ionicons from '@expo/vector-icons/Ionicons';
@@ -31,7 +31,11 @@ const CustomHeader = ({ title, leftButtom = null }: CustomHeaderProps) => {
             space='md'
           >
             <TouchableOpacity className='bg-background-0 p-2 rounded-xl'>
-              <Ionicons name="chevron-back" size={20} color="black" />
+              <Ionicons 
+                name="chevron-back" 
+                size={20} 
+                color={colorScheme === 'dark' ? 'white' : 'black'}
+              />
             </TouchableOpacity>
             <Heading className="font-semibold text-lg text-white">{title}</Heading>
           </HStack>

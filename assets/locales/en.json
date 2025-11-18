@@ -54,7 +54,9 @@
   },
   "snackbar": {
     "emailNotFount": "Email not found",
-    "passwordSend": "Password sent to your email",
+    "verifyCodeSend": "Verification code sent",
+    "userVerified": "User successfully verified.",
+    "userRegistered": "User successfully registered.",
     "headquartersSelected": "Successfully selected headquarters",
     "changePasswordSuccess": "Successful password change",
     "updatedTheme": "Theme updated successfully",
@@ -72,25 +74,23 @@
     "home": {
       "title": "Home"
     },
+    "lists": {
+      "title": "Lists"
+    },
+    "recipes": {
+      "title": "Recipes"
+    },
     "profile": {
       "title": "Profile",
+       "bannerPlan": {
+        "noPlan": "Get Premium"
+      },
       "setting": {
         "changePassword": "Change Password",
-        "theme": {
-          "title": "Theme",
-          "option": {
-            "system": "System",
-            "light": "Light",
-            "dark": "Dark"
-          }
-        },
-        "language": {
-          "title": "Language",
-          "option": {
-            "es": "Spanish",
-            "en": "English"
-          }
-        }
+        "theme": "Theme",
+        "language": "Language",
+        "favorites": "Fovorites",
+        "locations": "Locations"
       },
       "logout": "Logout"
     },
@@ -108,10 +108,23 @@
   },
   "modal": {
     "theme": {
-      "title": "Choose a theme"
+      "title": "Choose a theme",
+      "options": {
+        "system": "System",
+        "light": "Light",
+        "dark": "Dark"
+      }
     },
     "language": {
-      "title": "Choose a Language"
+      "title": "Choose a Language",
+      "options": {
+        "spanish": "Spanish",
+        "english": "English"
+      }
+    },
+    "logout": {
+      "title": "Log out?",
+      "description": "Come back when you're ready to keep saving."
     }
   },
   "terms": {

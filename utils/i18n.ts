@@ -16,13 +16,11 @@ const resources = {
 };
 
 const getOrSetLanguage = async () => {
-  // Intenta obtener el idioma guardado en SecureStore
-  let lang = await SecureStore.getItemAsync('lang');
+  let lang = await SecureStore.getItemAsync('userLang');
 
-  // Si no hay un idioma guardado, establece el predeterminado ('es') y guárdalo
   if (!lang) {
     lang = 'es';
-    await SecureStore.setItemAsync('lang', lang);
+    await SecureStore.setItemAsync('userLang', lang);
   }
 
   return lang;

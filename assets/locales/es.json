@@ -51,7 +51,10 @@
   },
   "snackbar": {
     "emailNotFount": "Correo electrónico no encontrado",
-    "passwordSend": "Contraseña enviada a su correo electrónico",
+    "verifyCodeSend": "Código de verificación enviado",
+    "verifyCodeResend": "Código de verificación reenviado",
+    "userVerified": "Usuario verificado con éxito.",
+    "userRegistered": "Usuario registrado con éxito.",
     "headquartersSelected": "Sede seleccionada con éxito",
     "changePasswordSuccess": "Cambio de contraseña exitoso",
     "updatedTheme": "Tema actualizado con éxito",
@@ -72,25 +75,23 @@
     "home": {
       "title": "Inicio"
     },
+    "lists": {
+      "title": "Listas"
+    },
+    "recipes": {
+      "title": "Recetas"
+    },
     "profile": {
       "title": "Perfil",
+      "bannerPlan": {
+        "noPlan": "Obtener Premiun"
+      },
       "setting": {
+        "theme": "Tema",
+        "language": "Idioma",
         "changePassword": "Cambiar Contraseña",
-        "theme": {
-          "title": "Tema",
-          "option": {
-            "system": "Sistema",
-            "light": "Claro",
-            "dark": "Oscuro"
-          }
-        },
-        "language": {
-          "title": "Idioma",
-          "option": {
-            "es": "Español",
-            "en": "Ingles"
-          }
-        }
+        "favorites": "Fovoritos",
+        "locations": "Ubicaciones"
       },
       "logout": "Salir"
     },
@@ -108,10 +109,23 @@
   },
   "modal": {
     "theme": {
-      "title": "Elige un tema"
+      "title": "Elegí un tema",
+      "options": {
+        "system": "Sistema",
+        "light": "Claro",
+        "dark": "Oscuro"
+      }
     },
     "language": {
-      "title": "Elige un Idioma"
+      "title": "Elegí un Idioma",
+      "options": {
+        "spanish": "Español",
+        "english": "Ingles"
+      }
+    },
+    "logout": {
+      "title": "¿Cerrar sesión?",
+      "description": "Volvé cuando estés listo para seguir ahorrando."
     }
   },
   "terms": {

@@ -6,9 +6,9 @@ import { VStack } from "../ui/vstack";
 import { FormControl, FormControlError, FormControlErrorText } from "../ui/form-control";
 import { OtpInput } from "../inputs/OtpInput";
 import { Center } from "../ui/center";
-import { useVerifyCode } from "@/hooks/Forms/useVerifyCode";
+import { useVerifyCode } from "./hooks/useVerifyCode";
 import { Controller } from "react-hook-form";
-import { VerifyCodeFormProps, VerifyCodeProps } from "@/types/components/forms/verify-code";
+import { VerifyCodeFormProps, VerifyCodeProps } from "@/components/forms/types/verify-code";
 
 export default function(props: VerifyCodeFormProps) {
   const { 

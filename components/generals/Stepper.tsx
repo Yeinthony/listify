@@ -1,7 +1,7 @@
 import React, { useRef, useEffect, Children, ReactElement } from 'react';
 import { View, StyleSheet, Dimensions } from 'react-native';
 import { Motion } from '@legendapp/motion';
-import { StepItemProps, StepperProps } from '@/types/components/generals/stepper';
+import { StepItemProps, StepperProps } from '@/components/generals/types/stepper';
 
 const { width } = Dimensions.get('window');
 

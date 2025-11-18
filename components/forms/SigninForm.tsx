@@ -1,6 +1,6 @@
 import { Text } from "@/components/ui/text";
 import { VStack } from "@/components/ui/vstack";
-import { useSigninForm } from "@/hooks/Forms/useSigninForm";
+import { useSigninForm } from "./hooks/useSigninForm";
 import { useTranslation } from "react-i18next";
 import { 
   FormControl, 
@@ -20,7 +20,8 @@ import {
 } from "@/components/ui/icon";
 import { TouchableOpacity } from "react-native";
 import { Center } from "@/components/ui/center";
-import { SigninFormProps } from "@/types/components/forms/signin-form";
+import { SigninFormProps } from "@/components/forms/types/signin-form";
+import { Link } from "expo-router";
 
 
 export default function SigninForm({className}: SigninFormProps) {
@@ -31,7 +32,7 @@ export default function SigninForm({className}: SigninFormProps) {
     showPassword,
     handleShowPassword,
     onSubmit,
-    getValues
+    toForgotPassword
   } = useSigninForm() 
 
   return(
@@ -113,6 +114,16 @@ export default function SigninForm({className}: SigninFormProps) {
             {t('button.signin')}
           </Text>
           </Center>
+      </TouchableOpacity>
+
+      <TouchableOpacity
+        onPress={toForgotPassword}
+      >
+        <Text 
+          className="text-[14px] text-center text-primary-500 font-medium" 
+        >
+          {t('link.forgotPassword')}
+        </Text>
       </TouchableOpacity>
     </VStack>
   )

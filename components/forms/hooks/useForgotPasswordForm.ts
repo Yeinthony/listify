@@ -1,25 +1,29 @@
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { useEffect, useRef, useState } from 'react';
-import { register1Scheme, register2Scheme, ForgotPassword1Scheme } from '../../utils/formSchemes';
-import { useSpinnerModal } from '../../contexts/SpinnerModalContext';
+import { register2Scheme, ForgotPassword1Scheme } from '@/utils/formSchemes';
+import { useSpinnerModal } from '@/contexts/SpinnerModalContext';
 import { useTranslation } from 'react-i18next';
 import { useLocalSearchParams, useRouter } from 'expo-router';
 import { BackHandler, Platform } from 'react-native';
-
-// import useUserStore from "@/store/userStore"
+import { useUserStore } from '@/store/userStore';
+import useSnackbarStore from '@/store/snackbarStore';
+import { email } from 'zod';
 
 export const useForgotPasswordForm = () => {
-  // const signIn = useUserStore(state => state.signIn)
-  const showSpinnerModal = useSpinnerModal();
+  const { sendCodeChangePass } = useUserStore()
+  const { showSnackbar } = useSnackbarStore()
   const { t } = useTranslation();
+  const showSpinnerModal = useSpinnerModal();
   const params = useLocalSearchParams();
   const router = useRouter()
+
+  const emailParam = Array.isArray(params.email) ? params.email[0] : params.email || "";
  
   const form1 = useForm({
     resolver: zodResolver(ForgotPassword1Scheme(t)),
     defaultValues: {
-      email: '',
+      email: emailParam,
     },
   });
 
@@ -37,7 +41,19 @@ export const useForgotPasswordForm = () => {
   const stepRef = useRef(step)
 
   const onSubmitForm1 = form1.handleSubmit(async (data) => {
-    setStep(2)
+    const payload = {
+      data: {
+        email: data.email
+      },
+      actions: {
+        spinner: showSpinnerModal,
+        snackbar: showSnackbar,
+        t,
+        onSuccess: () => setStep(2)
+      }
+    }
+
+    sendCodeChangePass(payload)
   });
 
   const onSubmitForm2 = form2.handleSubmit(async (data) => {
@@ -52,15 +68,13 @@ export const useForgotPasswordForm = () => {
   const onBack = () => router.back()
 
   useEffect(() => {
-     if (Platform.OS === 'android') {
-      const backHandler = BackHandler.addEventListener('hardwareBackPress', () => {
-        if (stepRef.current === 1 || stepRef.current === 3) {
-          setShowAlertModal(true)
-          return true; 
-        }
+    console.log('params: ', params);
+    
 
-        if (stepRef.current === 2) {
-          setStep(1)
+    if (Platform.OS === 'android') {
+      const backHandler = BackHandler.addEventListener('hardwareBackPress', () => {
+        if (stepRef.current === 2 || stepRef.current === 3) {
+          setShowAlertModal(true)
           return true; 
         }
         return false;

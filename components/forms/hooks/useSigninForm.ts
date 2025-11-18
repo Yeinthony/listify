@@ -1,16 +1,16 @@
 import { useForm, Controller } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { useState } from "react";
-import { signinScheme } from '../../utils/formSchemes';
-import { useSpinnerModal } from '../../contexts/SpinnerModalContext';
+import { signinScheme } from '@/utils/formSchemes';
+import { useSpinnerModal } from '@/contexts/SpinnerModalContext';
 import { useTranslation } from "react-i18next";
-import { useLocalSearchParams } from "expo-router";
-//import useUserStore  from "@/store/userStore"
+import { router, useLocalSearchParams } from "expo-router";
+import { useUserStore } from '@/store/userStore';
 
 export const useSigninForm = () => {
-  //const signIn = useUserStore(state => state.signIn)
-  const showSpinnerModal = useSpinnerModal();
+  const { signin } = useUserStore()
   const { t } = useTranslation()
+  const showSpinnerModal = useSpinnerModal();
   const params = useLocalSearchParams();
   const emailParam = Array.isArray(params.email) ? params.email[0] : params.email || "";
 
@@ -31,8 +31,21 @@ export const useSigninForm = () => {
   }
 
   const onSubmit = handleSubmit(async(data) => {
-    //signIn(data, showSpinnerModal, reset)
+    const payload = {
+      signinData: data,
+      spinner: showSpinnerModal
+    }
+    signin(payload)
   })
+
+  const toForgotPassword = () =>{
+    router.push({
+      pathname: '/forgot-password',
+      params: {
+        email: getValues().email
+      }
+    })
+  }
 
   return {
     control,
@@ -40,6 +53,6 @@ export const useSigninForm = () => {
     showPassword,
     handleShowPassword,
     onSubmit,
-    getValues
+    toForgotPassword
   }
 }

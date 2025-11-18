@@ -1,4 +1,4 @@
-import { ContainerProps } from '@/types/components/generals/container';
+import { ContainerProps } from '@/components/generals/types/container';
 import React from 'react';
 import { KeyboardAvoidingView, RefreshControl, ScrollView, View, Platform } from 'react-native';
 

@@ -7,10 +7,10 @@ import { Motion } from '@legendapp/motion';
 import { HStack } from '@/components/ui/hstack';
 import { VStack } from '@/components/ui/vstack';
 import { Center } from '@/components/ui/center';
-import { usePathname } from 'expo-router';
 import { useColorScheme } from 'nativewind';
 import { StatusBar } from 'expo-status-bar';
 import { useSegments } from "expo-router";
+import { useTranslation } from 'react-i18next';
 import { useSafeAreaInsets, SafeAreaView } from 'react-native-safe-area-context';
 import Ionicons from '@expo/vector-icons/Ionicons';
 import MaterialCommunityIcons from '@expo/vector-icons/MaterialCommunityIcons';
@@ -21,6 +21,7 @@ const MotionPressable = Motion.Pressable as any;
 export default function TabLayout() {
   const { colorScheme } = useColorScheme();
   const { bottom } = useSafeAreaInsets();
+  const { t } = useTranslation()
   const segments = useSegments();
   const active = segments[segments.length - 1];
 
@@ -97,7 +98,7 @@ export default function TabLayout() {
                   color: active === "(main)" ? "#e44b5e" : (colorScheme === "dark" ? "white" : "#6b7280")
                 }}
               >
-                Home
+                {t('screen.home.title')}
               </Text>
             </VStack>
           </TabTrigger>
@@ -118,7 +119,7 @@ export default function TabLayout() {
                   color: active === "lists" ? "#e44b5e" : (colorScheme === "dark" ? "white" : "#6b7280")
                 }}
               >
-                Listas
+                {t('screen.lists.title')}
               </Text>
             </VStack>
           </TabTrigger>
@@ -142,7 +143,7 @@ export default function TabLayout() {
                   color: active === "recipes" ? "#e44b5e" : (colorScheme === "dark" ? "white" : "#6b7280")
                 }}
               >
-                Recetas
+                {t('screen.recipes.title')}
               </Text>
             </VStack>
           </TabTrigger>
@@ -163,7 +164,7 @@ export default function TabLayout() {
                   color: active === "profile" ? "#e44b5e" : (colorScheme === "dark" ? "white" : "#6b7280")
                 }}
               >
-                Perfil
+                {t('screen.profile.title')}
               </Text>
             </VStack>
           </TabTrigger>

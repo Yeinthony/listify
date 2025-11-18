@@ -35,12 +35,6 @@ export default function Signin() {
       </VStack>
       <VStack space="sm" className="w-full mt-6">
         <SigninForm />
-        <Link 
-          className="text-[14px] text-center text-primary-500 font-medium" 
-          href="/forgot-password"
-        >
-          {t('link.forgotPassword')}
-        </Link>
       </VStack>
       <HStack className="justify-between items-center">
         <Divider className="my-0.5 w-[45%] bg-typography-300" />

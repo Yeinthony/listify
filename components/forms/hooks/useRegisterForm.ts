@@ -1,14 +1,14 @@
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { useEffect, useRef, useState } from 'react';
-import { register1Scheme, register2Scheme } from '../../utils/formSchemes';
-import { useSpinnerModal } from '../../contexts/SpinnerModalContext';
+import { register1Scheme, register2Scheme } from '@/utils/formSchemes';
+import { useSpinnerModal } from '@/contexts/SpinnerModalContext';
 import { useTranslation } from 'react-i18next';
 import { useLocalSearchParams, useRouter } from 'expo-router';
 import { BackHandler, Platform } from 'react-native';
 import { useUserStore } from '@/store/userStore';
 import useSnackbarStore from '@/store/snackbarStore';
-import { SignUpProps } from '@/types/store/user-store';
+import { SignUpProps } from '@/store/types/user-store';
 import { email, set } from 'zod';
 
 export const useRegisterForm = () => {
@@ -67,7 +67,8 @@ export const useRegisterForm = () => {
       actions: {
         spinner: showSpinnerModal,
         snackbar: showSnackbar,
-        onSuccess: () => setStep(3)
+        onSuccess: () => setStep(3),
+        t: t
       },
     }
 
@@ -103,7 +104,8 @@ export const useRegisterForm = () => {
       },
       actions: {
         spinner: showSpinnerModal,
-        snackbar: showSnackbar
+        snackbar: showSnackbar,
+        t: t
       },
       noCloseSpinner: true
     }

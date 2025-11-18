@@ -14,29 +14,42 @@ import {
   AvatarImage,
   AvatarBadge,
 } from '@/components/ui/avatar';
-import { TouchableOpacity } from 'react-native';
+import { TouchableOpacity, useColorScheme } from 'react-native';
+import { ThemeModal } from '@/components/modals/ThemeModal';
+import { LangModal } from '@/components/modals/LangModal';
+import { LogoutModal } from '@/components/modals/LogutModal';
+import { useProfile } from '@/hooks/screens/useProfile';
+import { useTranslation } from 'react-i18next';
 import CustomHeader from '@/components/generals/CustomHeader';
 import Ionicons from '@expo/vector-icons/Ionicons';
-import MaterialCommunityIcons from '@expo/vector-icons/MaterialCommunityIcons';
 
 
 
 export default function Profile() {
   const { user } = useUserStore()
+  const { t } = useTranslation()
+  const { 
+    showThemeModal,
+    showLangModal,
+    showLogoutModal,
+    setShowThemeModal,
+    setShowLangModal,
+    setShowLogoutModal
+  } = useProfile()
+   const colorScheme = useColorScheme()
 
   return (
-    <VStack className="flex-1">
+    <VStack className="flex-1 bg-background-100">
       <StatusBar style='light' />
-      <VStack className='bg-primary-500 rounded-b-[20%] relative'>
+      <VStack className='w-full bg-primary-500 rounded-b-[20%] relative'>
         <SafeAreaView>
-          <CustomHeader title='Perfil' />
+          <CustomHeader title={t('screen.profile.title')} />
         </SafeAreaView>
         <HStack 
           className='mx-6 pb-16 items-center justify-between -mt-4'
-          space='md'
         >
           <HStack 
-            className='items-center' 
+            className='items-center flex-shrink' 
             space='md'
           >
             <Avatar 
@@ -47,11 +60,11 @@ export default function Profile() {
               </AvatarFallbackText>
               <AvatarImage
                 source={{
-                  uri: 'https://images.unsplash.com/photo-1494790108377-be9c29b29330?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=687&q=80',
+                  uri: 'https://xsgames.co/randomusers/avatar.php?g=male',
                 }}
               />
             </Avatar>
-            <VStack>
+            <VStack className='flex-1 mr-4'>
               <Heading className='text-white text-xl'>
                 {user?.username ? user.username : '-------'}
               </Heading>
@@ -64,7 +77,7 @@ export default function Profile() {
             <Ionicons 
               name="pencil" 
               size={20} 
-              color="black" 
+              color={colorScheme === 'dark' ? 'white' : 'black'}
             />
           </TouchableOpacity>
         </HStack>
@@ -72,11 +85,6 @@ export default function Profile() {
           className='w-[85%] bg-background-0 p-3 rounded-2xl absolute bottom-[-18px] self-center items-center justify-between'
         >
           <HStack className='items-center' space='sm'>
-            {/* <MaterialCommunityIcons 
-              name="shield-crown-outline" 
-              size={30} 
-              color="#e44b5e" 
-            /> */}
             <Ionicons 
               name="trophy" 
               size={30} 
@@ -85,7 +93,7 @@ export default function Profile() {
             <Heading 
               className='font-normal text-xl'
             >
-              Obtener premium
+              {t('screen.profile.bannerPlan.noPlan')}
             </Heading>
             </HStack>
           <Ionicons name="chevron-forward-outline" size={25} color="black" />
@@ -93,19 +101,52 @@ export default function Profile() {
       </VStack>
       <SafeAreaView className='flex-1'>
         <VStack className='bg-background-0 rounded-2xl mx-4 mt-6 mb-32'>
-          <TouchableOpacity className='px-4 py-3'>
+          <TouchableOpacity 
+            className='px-4 py-3'
+            onPress={() => setShowLangModal(true)}
+          >
             <HStack className='items-center justify-between'>
-              <HStack className='items-center' space='md'>
+              <HStack 
+                className='items-center' 
+                space='md'
+              >
                 <Ionicons 
                   name="language-outline" 
                   size={22} 
-                  color="balck" 
+                  color={colorScheme === 'dark' ? 'white' : 'black'}
                 />
                 <Text className='text-lg'>
-                  Idioma
+                  {t('screen.profile.setting.language')}
                 </Text>
               </HStack>
-              <Ionicons name="chevron-forward-outline" size={20} color="black" />
+              <Ionicons 
+                name="chevron-forward-outline" 
+                size={20} 
+                color={colorScheme === 'dark' ? 'white' : 'black'}
+              />
+            </HStack>
+          </TouchableOpacity>
+          <Divider className="w-[95%] self-center" />
+          <TouchableOpacity 
+            onPress={() => setShowThemeModal(true)}
+            className='px-4 py-3'
+          >
+            <HStack className='items-center justify-between'>
+              <HStack className='items-center' space='md'>
+                <Ionicons 
+                  name="contrast-outline" 
+                  size={22} 
+                  color={colorScheme === 'dark' ? 'white' : 'black'}
+                />
+                <Text className='text-lg'>
+                  {t('screen.profile.setting.theme')}
+                </Text>
+              </HStack>
+              <Ionicons 
+                name="chevron-forward-outline" 
+                size={20} 
+                color={colorScheme === 'dark' ? 'white' : 'black'}
+              />
             </HStack>
           </TouchableOpacity>
           <Divider className="w-[95%] self-center" />
@@ -113,15 +154,19 @@ export default function Profile() {
             <HStack className='items-center justify-between'>
               <HStack className='items-center' space='md'>
                 <Ionicons 
-                  name="contrast-outline" 
+                  name="lock-closed-outline" 
                   size={22} 
-                  color="balck" 
+                  color={colorScheme === 'dark' ? 'white' : 'black'}
                 />
                 <Text className='text-lg'>
-                  Tema
+                  {t('screen.profile.setting.changePassword')}
                 </Text>
               </HStack>
-              <Ionicons name="chevron-forward-outline" size={20} color="black" />
+              <Ionicons 
+                name="chevron-forward-outline" 
+                size={20} 
+                color={colorScheme === 'dark' ? 'white' : 'black'}
+              />
             </HStack>
           </TouchableOpacity>
           <Divider className="w-[95%] self-center" />
@@ -131,13 +176,17 @@ export default function Profile() {
                 <Ionicons 
                   name="heart-outline" 
                   size={22} 
-                  color="balck" 
+                  color={colorScheme === 'dark' ? 'white' : 'black'}
                 />
                 <Text className='text-lg'>
-                  Favoritos
+                  {t('screen.profile.setting.favorites')}
                 </Text>
               </HStack>
-              <Ionicons name="chevron-forward-outline" size={20} color="black" />
+              <Ionicons 
+                name="chevron-forward-outline" 
+                size={20} 
+                color={colorScheme === 'dark' ? 'white' : 'black'}
+              />
             </HStack>
           </TouchableOpacity>
           <Divider className="w-[95%] self-center" />
@@ -147,13 +196,17 @@ export default function Profile() {
                 <Ionicons 
                   name="location-outline" 
                   size={22} 
-                  color="balck" 
+                  color={colorScheme === 'dark' ? 'white' : 'black'}
                 />
                 <Text className='text-lg'>
-                  Ubicaciones
+                  {t('screen.profile.setting.locations')}
                 </Text>
               </HStack>
-              <Ionicons name="chevron-forward-outline" size={20} color="black" />
+              <Ionicons 
+                name="chevron-forward-outline" 
+                size={20} 
+                color={colorScheme === 'dark' ? 'white' : 'black'}
+              />
             </HStack>
           </TouchableOpacity>
           <Divider className="w-[95%] self-center" />
@@ -163,17 +216,24 @@ export default function Profile() {
                 <Ionicons 
                   name="help-circle-outline" 
                   size={22} 
-                  color="balck" 
+                  color={colorScheme === 'dark' ? 'white' : 'black'} 
                 />
                 <Text className='text-lg'>
                   FAQS
                 </Text>
               </HStack>
-              <Ionicons name="chevron-forward-outline" size={20} color="black" />
+              <Ionicons 
+                name="chevron-forward-outline" 
+                size={20} 
+                color={colorScheme === 'dark' ? 'white' : 'black'}
+              />
             </HStack>
           </TouchableOpacity>
           <Divider className="w-[95%] self-center" />
-          <TouchableOpacity className='px-4 py-3'>
+          <TouchableOpacity 
+            onPress={() => setShowLogoutModal(true)}
+            className='px-4 py-3'
+          >
             <HStack className='items-center justify-between'>
               <HStack className='items-center' space='md'>
                 <Ionicons 
@@ -182,7 +242,7 @@ export default function Profile() {
                   color="#E63535" 
                 />
                 <Text className='text-lg text-error-500'>
-                  Cerra sesión
+                  {t('screen.profile.logout')}
                 </Text>
               </HStack>
               <Ionicons 
@@ -194,6 +254,21 @@ export default function Profile() {
           </TouchableOpacity>
         </VStack>
       </SafeAreaView>
+      
+      {/* Modals */}
+      <LangModal 
+        isOpen={showLangModal}
+        onClose={() => setShowLangModal(false)}
+      />
+      <ThemeModal 
+        isOpen={showThemeModal}
+        onClose={() => setShowThemeModal(false)}
+      />
+
+      <LogoutModal 
+        isOpen={showLogoutModal}
+        onClose={() => setShowLogoutModal(false)}
+      />
     </VStack>
   );
 }
