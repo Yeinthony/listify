@@ -2,5 +2,6 @@ import { ReactNode } from 'react';
 
 export interface CustomHeaderProps {
   title: string;
-  leftButtom?: ReactNode
+  leftButtom?: ReactNode,
+  white?: boolean
 }

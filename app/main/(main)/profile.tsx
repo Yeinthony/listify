@@ -6,7 +6,6 @@ import { Text } from '@/components/ui/text';
 import { VStack } from '@/components/ui/vstack';
 import { useUserStore } from '@/store/userStore';
 import { SafeAreaView } from 'react-native-safe-area-context';
-import { StatusBar } from 'expo-status-bar';
 import { HStack } from '@/components/ui/hstack';
 import {
   Avatar,
@@ -20,6 +19,7 @@ import { LangModal } from '@/components/modals/LangModal';
 import { LogoutModal } from '@/components/modals/LogutModal';
 import { useProfile } from '@/hooks/screens/useProfile';
 import { useTranslation } from 'react-i18next';
+import { router } from 'expo-router';
 import CustomHeader from '@/components/generals/CustomHeader';
 import Ionicons from '@expo/vector-icons/Ionicons';
 
@@ -36,14 +36,16 @@ export default function Profile() {
     setShowLangModal,
     setShowLogoutModal
   } = useProfile()
-   const colorScheme = useColorScheme()
+  const colorScheme = useColorScheme()
 
   return (
     <VStack className="flex-1 bg-background-100">
-      <StatusBar style='light' />
-      <VStack className='w-full bg-primary-500 rounded-b-[20%] relative'>
+      <VStack className='w-full bg-primary-500 rounded-b-[15%] relative'>
         <SafeAreaView>
-          <CustomHeader title={t('screen.profile.title')} />
+          <CustomHeader 
+            title={t('screen.profile.title')} 
+            white
+          />
         </SafeAreaView>
         <HStack 
           className='mx-6 pb-16 items-center justify-between -mt-4'
@@ -73,7 +75,10 @@ export default function Profile() {
               </Text>
             </VStack>
           </HStack>
-          <TouchableOpacity className='bg-background-0 p-2 rounded-xl'>
+          <TouchableOpacity 
+            onPress={() => router.push('/main/personal-data')}
+            className='bg-background-0 p-2 rounded-xl'
+          >
             <Ionicons 
               name="pencil" 
               size={20} 
@@ -154,12 +159,12 @@ export default function Profile() {
             <HStack className='items-center justify-between'>
               <HStack className='items-center' space='md'>
                 <Ionicons 
-                  name="lock-closed-outline" 
+                  name="notifications-outline" 
                   size={22} 
                   color={colorScheme === 'dark' ? 'white' : 'black'}
                 />
                 <Text className='text-lg'>
-                  {t('screen.profile.setting.changePassword')}
+                  {t('screen.profile.setting.notifications')}
                 </Text>
               </HStack>
               <Ionicons 

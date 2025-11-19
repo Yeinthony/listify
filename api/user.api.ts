@@ -1,6 +1,6 @@
 import { email } from 'zod';
 import axios from '@/utils/interceptor'
-import { RegisterUser, User, VerifyUser } from '@/types/users' 
+import { RegisterUser, User, VerifyCode } from '@/types/users' 
 import { AxiosError, AxiosResponse } from 'axios'
 
 const URL = `${process.env.EXPO_PUBLIC_API_URL}/users`
@@ -16,7 +16,7 @@ export const register = async(user: RegisterUser): Promise<AxiosResponse<User>> 
   }
 }
 
-export const verifyUser = async(verifyData: VerifyUser): Promise<AxiosResponse<{message: string}>> => {
+export const verifyUser = async(verifyData: VerifyCode): Promise<AxiosResponse<{message: string}>> => {
   try {
     const response = await axios.post<{message: string}>(`${URL}/verify`, verifyData)
     console.log(response);

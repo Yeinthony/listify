@@ -57,6 +57,7 @@
     "verifyCodeSend": "Verification code sent",
     "userVerified": "User successfully verified.",
     "userRegistered": "User successfully registered.",
+    "updatedPass": "Password successfully updated.",
     "headquartersSelected": "Successfully selected headquarters",
     "changePasswordSuccess": "Successful password change",
     "updatedTheme": "Theme updated successfully",
@@ -87,6 +88,7 @@
       },
       "setting": {
         "changePassword": "Change Password",
+        "notifications": "Notifications",
         "theme": "Theme",
         "language": "Language",
         "favorites": "Fovorites",
@@ -96,6 +98,9 @@
     },
     "changePassword": {
       "title": "Change Password"
+    },
+    "personalData": {
+      "title": "Personal Data"
     }
   },
   "general": {

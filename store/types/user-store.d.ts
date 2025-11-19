@@ -1,16 +1,16 @@
 import { useRouter } from "expo-router";
 import { ActionDeps, ActionDepsT } from "@/types/action-deps"; 
-import { RegisterUser, User, VerifyUser } from "@/types/users";
+import { RegisterUser, User, VerifyCode } from "@/types/users";
 import { useSpinnerModal } from "@/contexts/SpinnerModalContext";
 import { TFunction } from "i18next";
 
 
 interface SignUpActions extends ActionDepsT {
-  onSuccess: () => void;
+  onSuccess?: () => void;
 }
 
 export interface VerifyUserProps {
-  verifyData: VerifyUser;
+  verifyData: VerifyCode;
   actions: ActionDepsT;
   noCloseSpinner?: boolean
 }
@@ -45,6 +45,19 @@ export interface SendPassCodeProps {
   actions: SignUpActions;
 }
 
+export interface VerifyPassCodeProps {
+  verifyData: VerifyCode;
+  actions: SignUpActions;
+}
+
+export interface ChangePassProps {
+  changePassData: {
+    email: string;
+    password: string;
+  };
+  actions: SignUpActions;
+}
+
 export interface UserState {
   user: User | null;
   signUp: (userData: SignUpProps) => Promise<void>;
@@ -53,5 +66,8 @@ export interface UserState {
   resendUserCode: (resendData: ResendUserCodeProps) => Promise<void>;
   reloadSession: () => Promise<void>;
   logoutSession: (logoutProps: LogoutProps) => Promise<void>;
-  sendCodeChangePass: (sendPassCodeProps: SendPassCodeProps) => Promise<void>
+  sendCodeChangePass: (sendPassCodeProps: SendPassCodeProps) => Promise<void>;
+  verifyPassCode: (verifyData: VerifyPassCodeProps) => Promise<void>;
+  changePass: (changePassData: ChangePassProps) => Promise<void>;
+  resendPassCode: (resendPassData: ResendUserCodeProps) => Promise<void>;
 }

@@ -3,7 +3,7 @@ import { Text } from '@/components/ui/text';
 import { Divider } from '@/components/ui/divider'
 import { VStack } from "@/components/ui/vstack"
 import { useColorScheme } from "@/components/useColorScheme";
-import { useRouter } from 'expo-router';
+import { useRouter, useSegments } from 'expo-router';
 import { useTranslation } from 'react-i18next';
 import { Platform, TouchableOpacity } from 'react-native';
 import { CustomHeaderProps } from '@/components/generals/types/custom-header';
@@ -12,11 +12,14 @@ import * as SecureStore from 'expo-secure-store';
 import Ionicons from '@expo/vector-icons/Ionicons';
 
 
-const CustomHeader = ({ title, leftButtom = null }: CustomHeaderProps) => {
+const CustomHeader = ({ title, leftButtom = null, white = false }: CustomHeaderProps) => {
 
   const { t } = useTranslation()
   const colorScheme = useColorScheme()
   const router = useRouter()
+  const segments = useSegments();
+  
+  const route = segments[segments.length - 1];
 
   return (
     <>
@@ -30,14 +33,26 @@ const CustomHeader = ({ title, leftButtom = null }: CustomHeaderProps) => {
             className='items-center'
             space='md'
           >
-            <TouchableOpacity className='bg-background-0 p-2 rounded-xl'>
-              <Ionicons 
-                name="chevron-back" 
-                size={20} 
-                color={colorScheme === 'dark' ? 'white' : 'black'}
-              />
-            </TouchableOpacity>
-            <Heading className="font-semibold text-lg text-white">{title}</Heading>
+            {route !== '(main)' && (
+              <TouchableOpacity 
+                className='bg-background-0 p-2 rounded-xl'
+                onPress={() => router.back()}
+              >
+                <Ionicons 
+                  name="chevron-back" 
+                  size={20} 
+                  color={colorScheme === 'dark' ? 'white' : 'black'}
+                />
+              </TouchableOpacity>
+            )}
+            <Heading 
+              className={`
+                font-semibold text-lg 
+                ${white && 'text-white'}
+              `}
+            >
+              {title}
+            </Heading>
           </HStack>
           {leftButtom && leftButtom}
         </HStack>

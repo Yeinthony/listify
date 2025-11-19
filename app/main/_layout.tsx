@@ -9,13 +9,24 @@ export const unstable_settings = {
 };
 
 import { Stack } from 'expo-router';
+import { StatusBar } from 'expo-status-bar';
 import { GestureHandlerRootView } from 'react-native-gesture-handler';
 
 export default function AppLayout() {
   return (
-    <GestureHandlerRootView>
+    <GestureHandlerRootView style={{ flex: 1 }}>
+      <StatusBar 
+        style='light'
+      />
       <Stack>
-        <Stack.Screen name="(main)" options={{ headerShown: false }} />
+        <Stack.Screen 
+          name="(main)" 
+          options={{ headerShown: false }} 
+        />
+        <Stack.Screen 
+          name="personal-data" 
+          options={{ headerShown: false }} 
+        />
       </Stack>
     </GestureHandlerRootView>
   );

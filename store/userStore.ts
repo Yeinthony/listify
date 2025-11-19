@@ -1,7 +1,7 @@
 import { create } from "zustand";
 import { UserState } from "./types/user-store";
 import { register, resendUserCode, verifyUser } from "@/api/user.api";
-import { login, logout, sendPassCode, whoami } from "@/api/auth.api";
+import { changePassword, login, logout, resendPassCode, sendPassCode, verifyPassCode, whoami } from "@/api/auth.api";
 import { router } from 'expo-router';
 import * as SecureStore from 'expo-secure-store';
 import axios, { AxiosError } from "axios";
@@ -22,7 +22,7 @@ export const useUserStore = create<UserState>((set) => ({
           type: 'success'
         });
 
-        onSuccess()
+        if(onSuccess) onSuccess()
       }
     } catch (error) {
       console.log('error registering user:', error);
@@ -142,12 +142,69 @@ export const useUserStore = create<UserState>((set) => ({
           message: t('snackbar.verifyCodeSend'), 
           type: 'success'
         });
-        onSuccess()
+        if(onSuccess) onSuccess()
       }
     } catch (error) {
       console.log('error verifying user:', error);
     } finally {
       spinner(false);
     }
-  }
+  },
+  verifyPassCode: async(verifyProps) => {
+    const { spinner, onSuccess, snackbar, t } = verifyProps.actions;
+
+    spinner(true);
+    try {
+      const response = await verifyPassCode(verifyProps.verifyData);
+      if (response.status === 200) {
+        snackbar({
+          message: t('snackbar.userVerified'), 
+          type: 'success'
+        });
+        if(onSuccess) onSuccess()
+      }
+    } catch (error) {
+      console.log('error verifying user:', error);
+    } finally {
+      spinner(false);
+    }
+  },
+  changePass: async(changePassData) => {
+    const { spinner, onSuccess, snackbar, t } = changePassData.actions;
+
+    spinner(true);
+    try {
+      const response = await changePassword(changePassData.changePassData);
+      if (response.status === 200) {
+        snackbar({
+          message: t('snackbar.updatedPass'), 
+          type: 'success'
+        });
+        if(onSuccess) onSuccess()
+      }
+    } catch (error) {
+      console.log('error change pass:', error);
+    } finally {
+      spinner(false);
+    }
+  },
+  resendPassCode: async(resendPassData) => {
+    const { spinner, snackbar } = resendPassData.actions;
+
+    spinner(true);
+
+     try {
+      const response = await resendPassCode(resendPassData.data);
+      if (response.status === 200) {        
+        snackbar({
+          message: response.data.message, 
+          type: 'success'
+        });
+      }
+    } catch (error) {
+      console.log('error reesend pass code:', error);
+    } finally {
+      spinner(false);
+    }
+  },
 }));

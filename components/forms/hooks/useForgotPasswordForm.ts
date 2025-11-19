@@ -1,17 +1,16 @@
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { useEffect, useRef, useState } from 'react';
-import { register2Scheme, ForgotPassword1Scheme } from '@/utils/formSchemes';
+import { ForgotPassword1Scheme } from '@/utils/formSchemes';
 import { useSpinnerModal } from '@/contexts/SpinnerModalContext';
 import { useTranslation } from 'react-i18next';
 import { useLocalSearchParams, useRouter } from 'expo-router';
 import { BackHandler, Platform } from 'react-native';
 import { useUserStore } from '@/store/userStore';
 import useSnackbarStore from '@/store/snackbarStore';
-import { email } from 'zod';
 
 export const useForgotPasswordForm = () => {
-  const { sendCodeChangePass } = useUserStore()
+  const { sendCodeChangePass, verifyPassCode, resendPassCode } = useUserStore()
   const { showSnackbar } = useSnackbarStore()
   const { t } = useTranslation();
   const showSpinnerModal = useSpinnerModal();
@@ -24,14 +23,6 @@ export const useForgotPasswordForm = () => {
     resolver: zodResolver(ForgotPassword1Scheme(t)),
     defaultValues: {
       email: emailParam,
-    },
-  });
-
-  const form2 = useForm({
-    resolver: zodResolver(register2Scheme(t)),
-    defaultValues: {
-      password: '',
-      passwordConfirm: ''
     },
   });
 
@@ -56,12 +47,39 @@ export const useForgotPasswordForm = () => {
     sendCodeChangePass(payload)
   });
 
-  const onSubmitForm2 = form2.handleSubmit(async (data) => {
-    setStep(3)
-  });
+  const resendChangePassCode = () => {
+    const form1Data = form1.getValues();
+
+    const payload = {
+      data: {
+        email: form1Data.email
+      },
+      actions: {
+        spinner: showSpinnerModal,
+        snackbar: showSnackbar
+      }
+    }
+    resendPassCode(payload)
+  }
 
   const onVerifyCode = (code: string) => {
     console.log('Verification code: ', code);
+    const form1Data = form1.getValues()
+
+    const payload = {
+      verifyData: {
+        email: form1Data.email,
+        code: code
+      },
+      actions: {
+        spinner: showSpinnerModal,
+        snackbar: showSnackbar,
+        t,
+        onSuccess: () => setStep(3)
+      }
+    }
+
+    verifyPassCode(payload)
   }
 
 
@@ -100,6 +118,7 @@ export const useForgotPasswordForm = () => {
     showAlertModal,
     setStep,
     setShowAlertModal,
+    resendChangePassCode,
     onVerifyCode,
     onBack
   };

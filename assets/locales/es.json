@@ -55,6 +55,7 @@
     "verifyCodeResend": "Código de verificación reenviado",
     "userVerified": "Usuario verificado con éxito.",
     "userRegistered": "Usuario registrado con éxito.",
+    "updatedPass": "Contraseña actualizada con éxito.",
     "headquartersSelected": "Sede seleccionada con éxito",
     "changePasswordSuccess": "Cambio de contraseña exitoso",
     "updatedTheme": "Tema actualizado con éxito",
@@ -89,6 +90,7 @@
       "setting": {
         "theme": "Tema",
         "language": "Idioma",
+        "notifications": "Notificaciones",
         "changePassword": "Cambiar Contraseña",
         "favorites": "Fovoritos",
         "locations": "Ubicaciones"
@@ -97,6 +99,9 @@
     },
     "changePassword": {
       "title": "Cambiar Contraseña"
+    },
+    "personalData": {
+      "title": "Datos Personales"
     }
   },
   "general": {

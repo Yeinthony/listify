@@ -25,9 +25,10 @@ import { useForgotPasswordForm } from "./hooks/useForgotPasswordForm";
 import { HStack } from "../ui/hstack";
 import { OtpInput } from "../inputs/OtpInput";
 import { Heading } from "../ui/heading";
-import { Link } from "expo-router";
+import { Link, router } from "expo-router";
 import AlertModal from "../modals/AlertModal";
 import VerifyCodeForm from "./VerifyCodeForm";
+import ChangePassForm from "./ChangePassForm";
 
 
 export default function ForgotPasswordForm({className}: SigninFormProps) {
@@ -36,8 +37,8 @@ export default function ForgotPasswordForm({className}: SigninFormProps) {
     step,
     form1,
     showAlertModal,
-    setStep,
     setShowAlertModal,
+    resendChangePassCode,
     onVerifyCode,
     onBack
   } = useForgotPasswordForm() 
@@ -115,117 +116,16 @@ export default function ForgotPasswordForm({className}: SigninFormProps) {
             </VStack>
           </VStack>
         </StepItem>
-        {/* <StepItem value={2}>
-          <VStack space="xl">
-            <VStack className="justify-center">
-              <Heading className="text-center text-[22px] font-medium">
-                Establece tu contraseña
-              </Heading>
-              <Text className="text-center text-[14px] text-typography-600">
-                La contraseña debe tener minimo 6 caracteres
-              </Text>
-            </VStack>
-            <VStack space="sm">
-              <FormControl
-                isInvalid={!!form2.errors.password}
-                size="md"
-                isRequired={true}
-              >
-                <Input className="my-1 rounded-2xl h-14 bg-background-0" size="lg">
-                  <Controller 
-                    name="password" 
-                    control={form2.control} 
-                    render={({ field: { onChange, value } }) => ( 
-                      <>
-                        <InputField 
-                          placeholder={t('input.placeholder.password')} 
-                          className="text-md"
-                          value={value} 
-                          onChangeText={onChange} 
-                          type={showPassword ? "text" : "password"}
-                        /> 
-                        <InputSlot className="pr-3" onPress={handleShowPassword}>
-                          <InputIcon as={showPassword ? EyeIcon : EyeOffIcon} />
-                        </InputSlot>
-                      </>
-                    )} 
-                  />
-                </Input>
-                <FormControlError>
-                  <FormControlErrorText>
-                    { form2.errors.password?.message }
-                  </FormControlErrorText>
-                </FormControlError>
-              </FormControl>
-              <FormControl
-                isInvalid={!!form2.errors.passwordConfirm}
-                size="md"
-                isRequired={true}
-              >
-                <Input className="my-1 rounded-2xl h-14 bg-background-0" size="lg">
-                  <Controller 
-                    name="passwordConfirm" 
-                    control={form2.control} 
-                    render={({ field: { onChange, value } }) => ( 
-                      <>
-                        <InputField 
-                          placeholder={t('input.placeholder.confirmPassword')} 
-                          className="text-md"
-                          value={value} 
-                          onChangeText={onChange} 
-                          type={showPasswordConfirm ? "text" : "password"}
-                        /> 
-                        <InputSlot className="pr-3" onPress={handleShowPasswordConfirm}>
-                          <InputIcon as={showPasswordConfirm ? EyeIcon : EyeOffIcon} />
-                        </InputSlot>
-                      </>
-                    )} 
-                  />
-                </Input>
-                <FormControlError>
-                  <FormControlErrorText>
-                    { form2.errors.passwordConfirm?.message }
-                  </FormControlErrorText>
-                </FormControlError>
-              </FormControl>
-
-              <HStack className="w-full justify-between">
-                <TouchableOpacity  
-                  onPress={() => setStep(1)}
-                  className="mb-2 mt-3 w-[35%]"
-                >
-                  <Center 
-                    className={
-                      `bg-primary-500/20 rounded-2xl px-4 h-14`
-                    }
-                  >
-                    <Text className="font-medium text-primary-500">
-                      {t('button.back')}
-                    </Text>
-                  </Center>
-                </TouchableOpacity>
-                <TouchableOpacity  
-                  onPress={form2.onSubmit}
-                  className="mb-2 mt-3 w-[60%]"
-                >
-                  <Center 
-                    className={
-                      `bg-primary-500 rounded-2xl px-4 h-14`
-                    }
-                  >
-                    <Text className="font-medium text-white">
-                      {t('button.next')}
-                    </Text>
-                  </Center>
-                </TouchableOpacity>
-              </HStack>
-            </VStack>
-          </VStack>
-        </StepItem> */}
         <StepItem value={2}>
           <VerifyCodeForm 
             onAction={onVerifyCode}
-            onResend={() => {}}
+            onResend={resendChangePassCode}
+          />
+        </StepItem>
+        <StepItem value={3}>
+          <ChangePassForm 
+            email={form1.getValues().email}
+            onSuccess={() => router.replace('/signin')}
           />
         </StepItem>
       </Stepper>
@@ -234,8 +134,8 @@ export default function ForgotPasswordForm({className}: SigninFormProps) {
         onClose={() => setShowAlertModal(false)}
         onAction={onBack}
         type="error"
-        title="¿Cancelar el registro?"
-        description="Si confirmas esta acción, se cancelará el registro y perderás todos los datos que has ingresado hasta ahora. ¿Estás seguro de continuar?"
+        title="¿Cancelar cambio de contraseña?"
+        description="Si confirmás, volverás atrás y no se actualizará tu contraseña."
       />
     </VStack>
   )

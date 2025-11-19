@@ -8,7 +8,6 @@ import { HStack } from '@/components/ui/hstack';
 import { VStack } from '@/components/ui/vstack';
 import { Center } from '@/components/ui/center';
 import { useColorScheme } from 'nativewind';
-import { StatusBar } from 'expo-status-bar';
 import { useSegments } from "expo-router";
 import { useTranslation } from 'react-i18next';
 import { useSafeAreaInsets, SafeAreaView } from 'react-native-safe-area-context';
@@ -33,8 +32,6 @@ export default function TabLayout() {
 
   return (
     <Tabs>
-      <StatusBar style="auto" />
-
       {/* CONTENIDO */}
       <TabSlot />
 
@@ -43,7 +40,7 @@ export default function TabLayout() {
         pointerEvents="box-none"
         style={{
           position: "absolute",
-          bottom: bottom + 35,
+          bottom: bottom + 25,
           left: 0,
           right: 0,
           alignItems: "center",

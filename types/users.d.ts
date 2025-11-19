@@ -1,4 +1,4 @@
-export interface VerifyUser {
+export interface VerifyCode {
   email: string;
   code: string;
 }
