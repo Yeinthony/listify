@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react';
+import React, { useEffect, useState } from 'react';
 import { View } from 'react-native';
 import { Tabs, TabList, TabTrigger, TabSlot } from 'expo-router/ui';
 import { Stack } from "expo-router";
@@ -11,6 +11,7 @@ import { useColorScheme } from 'nativewind';
 import { useSegments } from "expo-router";
 import { useTranslation } from 'react-i18next';
 import { useSafeAreaInsets, SafeAreaView } from 'react-native-safe-area-context';
+import { BarcodeScanModal } from '@/components/modals/BarcodeScanModal';
 import Ionicons from '@expo/vector-icons/Ionicons';
 import MaterialCommunityIcons from '@expo/vector-icons/MaterialCommunityIcons';
 
@@ -21,8 +22,11 @@ export default function TabLayout() {
   const { colorScheme } = useColorScheme();
   const { bottom } = useSafeAreaInsets();
   const { t } = useTranslation()
+
   const segments = useSegments();
   const active = segments[segments.length - 1];
+
+  const [showBarcodeScan, setShowBarcodeScan] = useState<boolean>(false)
 
   useEffect(() => {
     console.log('active: ', active);
@@ -48,7 +52,7 @@ export default function TabLayout() {
         }}
       >
         <Center className='bg-background-100 rounded-full p-2'>
-          <MotionPressable onPress={() => {}}>
+          <MotionPressable onPress={() => setShowBarcodeScan(true)}>
             <MotionView
               whileTap={{ scale: 1.05 }}
               transition={{
@@ -63,6 +67,10 @@ export default function TabLayout() {
             </MotionView>
           </MotionPressable>
         </Center>
+        <BarcodeScanModal 
+          isOpen={showBarcodeScan}
+          onClose={() => setShowBarcodeScan(false)}
+        />
       </View>
 
       {/* TAB BAR */}
