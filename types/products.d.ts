@@ -1,8 +1,4 @@
-interface ProductCardProps {
-  data: ProductLight | null
-}
-
-export interface ProductLight {
+export interface LightProduct {
   product: Product
   stats: Stats
 }
@@ -22,5 +18,3 @@ export interface Stats {
   max: string
   avg: string
 }
-
-export interface Bounds { x: number; y: number; width: number; height: number }

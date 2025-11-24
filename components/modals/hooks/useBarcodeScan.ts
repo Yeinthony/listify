@@ -1,4 +1,4 @@
-import { Bounds } from "@/api/types/products";
+import { Bounds, ProductLight } from "@/api/types/products";
 import { useSpinnerModal } from "@/contexts/SpinnerModalContext";
 
 import { Skia } from "@shopify/react-native-skia";
@@ -6,8 +6,10 @@ import { BarcodeScanningResult, CameraType, useCameraPermissions } from "expo-ca
 import { useCallback, useEffect, useMemo, useState } from "react";
 import { useTranslation } from "react-i18next";
 import { Dimensions } from "react-native";
-import useSnackbarStore from "@/store/snackbarStore";
 import { getProductByEanLight } from "@/api/products.api";
+import { LightProduct } from "@/types/products";
+import useSnackbarStore from "@/store/snackbarStore";
+
 
 export const useBarcodeScan = (isOpen: boolean) => {
   const { height, width } = Dimensions.get('window');
@@ -18,6 +20,7 @@ export const useBarcodeScan = (isOpen: boolean) => {
 
   const [facing] = useState<CameraType>('back');
   const [eanScanned, setEanScanned] = useState(''); 
+  const [product, setProduct] = useState<ProductLight | null>(null)
   const [detectedBounds, setDetectedBounds] = useState<Bounds | null>(null);
 
   // Rectángulo central de escaneo
@@ -45,7 +48,7 @@ export const useBarcodeScan = (isOpen: boolean) => {
     const w = Math.max(...flippedXs) - x;
     const h = Math.max(...ys) - y;
 
-    setDetectedBounds({ x, y, width: w, height: h });
+    //setDetectedBounds({ x, y, width: w, height: h });
 
     // Validación dentro del rectángulo
     const isInsideRect = flippedXs.every((px, i) => {
@@ -62,6 +65,10 @@ export const useBarcodeScan = (isOpen: boolean) => {
     showSpinnerModal(true)
     try {
       const res = await getProductByEanLight(eanScanned)
+      if(res.status === 200) {
+        setProduct(res.data)
+        if (!res.data) showSnackbar({message: "Producto no encontrado."})
+      }
       console.log('Product: ', res);
       
     } catch (error) {
@@ -72,22 +79,33 @@ export const useBarcodeScan = (isOpen: boolean) => {
     }
   }
 
+  const getAnimationProps = useCallback(() => {
+  const hiddenY = height + 200; // un poco más abajo del borde
+
+  return {
+    initial: { y: hiddenY, opacity: 0 },
+    animate: product
+      ? { y: 0, opacity: 1 }
+      : { y: hiddenY, opacity: 0 },
+    transition: { type: "timing", duration: 450 }
+  };
+}, [product, height]);
+
   // Reset flag al abrir modal
   useEffect(() => {
     if (isOpen) {
       setDetectedBounds(null);
       setEanScanned('')
+      setProduct(null)
+      if (permission && !permission.granted) requestPermission();
     }
   }, [isOpen]);
 
   useEffect(() => {
-    if(eanScanned) loadProductByEan()
+    if(eanScanned) {
+      loadProductByEan()
+    }
   }, [eanScanned])
-  
-
-  useEffect(() => {
-    if (!permission?.granted) requestPermission();
-  }, []);
 
   const rectPath = useMemo(() => {
     const p = Skia.Path.Make();
@@ -111,6 +129,8 @@ export const useBarcodeScan = (isOpen: boolean) => {
     RECT_H,
     RECT_X,
     RECT_Y,
+    product,
+    getAnimationProps,
     handleBarcodeScanned
   }
 }

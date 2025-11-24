@@ -10,32 +10,38 @@ import { Heading } from '@/components/ui/heading';
 import { Text } from '@/components/ui/text';
 import { Icon, CloseIcon } from '@/components/ui/icon';
 import { ModalProps } from "./types/modal";
-import { Dimensions, StyleSheet, TouchableOpacity, useColorScheme, View } from 'react-native';
-import { CameraView, CameraType, useCameraPermissions, BarcodeScanningResult } from 'expo-camera';
-import { useEffect, useMemo, useState, useCallback } from 'react';
-import { Canvas, Skia, Rect, Group, RoundedRect } from '@shopify/react-native-skia';
+import { StyleSheet, TouchableOpacity, useColorScheme, View } from 'react-native';
+import { CameraView } from 'expo-camera';
+import { Canvas, Rect, Group, RoundedRect } from '@shopify/react-native-skia';
 import { VStack } from '../ui/vstack';
 import { HStack } from '../ui/hstack';
 import { useBarcodeScan } from './hooks/useBarcodeScan';
+import { ProductCard } from '../cards/ProductCard';
+import { SafeAreaView } from 'react-native-safe-area-context';
+import { Motion } from '@legendapp/motion';
 import Ionicons from '@expo/vector-icons/Ionicons';
 
+const MotionView = Motion.View as any;
+
 export const BarcodeScanModal = ({ isOpen, onClose }: ModalProps) => {
-    const colorScheme = useColorScheme();
-    const { 
-      permission,
-      facing,
-      rectPath,
-      detectedBounds,
-      width,
-      height,
-      CORNER_SIZE,
-      CORNER_RADIUS,
-      RECT_W,
-      RECT_H,
-      RECT_X,
-      RECT_Y,
-      handleBarcodeScanned
-    } = useBarcodeScan(isOpen)
+  const colorScheme = useColorScheme();
+  const { 
+    permission,
+    facing,
+    rectPath,
+    detectedBounds,
+    width,
+    height,
+    CORNER_SIZE,
+    CORNER_RADIUS,
+    RECT_W,
+    RECT_H,
+    RECT_X,
+    RECT_Y,
+    product,
+    getAnimationProps,
+    handleBarcodeScanned
+  } = useBarcodeScan(isOpen)
 
   if (!isOpen) return null;
 
@@ -80,7 +86,7 @@ export const BarcodeScanModal = ({ isOpen, onClose }: ModalProps) => {
             <RoundedRect x={RECT_X} y={RECT_Y} width={RECT_W} height={RECT_H} r={10} color="transparent" />
 
             {/* Detección de código */}
-            {detectedBounds && (
+             {/* {detectedBounds && (
               <RoundedRect
                 x={detectedBounds.x}
                 y={detectedBounds.y}
@@ -91,7 +97,7 @@ export const BarcodeScanModal = ({ isOpen, onClose }: ModalProps) => {
                 style="stroke"
                 strokeWidth={2}
               />
-            )}
+            )} */}
           </Group>
         </Canvas>
 
@@ -117,21 +123,31 @@ export const BarcodeScanModal = ({ isOpen, onClose }: ModalProps) => {
             />
           ))}
         </View>
-
-        <VStack>
-          <HStack space="md" className="items-center mt-6">
-            <TouchableOpacity 
-              onPress={onClose}
-              className="bg-background-0 p-2 rounded-xl"
-            >
-              <Ionicons name="chevron-back" size={20} color={colorScheme === 'dark' ? 'white' : 'black'} />
-            </TouchableOpacity>
-          </HStack>
-          <VStack className="mt-16 mx-6">
-            <Heading className="text-white text-center font-semibold text-xl">
-              Asegúrese de colocar el código de barras dentro del rectángulo
-            </Heading>
+        <VStack className='flex-1 justify-between'>
+          <VStack>
+            <HStack space="md" className="items-center mt-6">
+              <TouchableOpacity 
+                onPress={onClose}
+                className="bg-background-0 p-2 rounded-xl"
+              >
+                <Ionicons name="chevron-back" size={20} color={colorScheme === 'dark' ? 'white' : 'black'} />
+              </TouchableOpacity>
+            </HStack>
+            <VStack className="mt-16 mx-6">
+              <Heading className="text-white text-center font-semibold text-xl">
+                Asegúrese de colocar el código de barras dentro del rectángulo
+              </Heading>
+            </VStack>
           </VStack>
+
+          <SafeAreaView className='mb-4'>
+            <MotionView
+              {...getAnimationProps()}
+              transition={{ type: 'timing', duration: 500 }}
+            >
+              <ProductCard data={product || null} />
+            </MotionView>
+          </SafeAreaView>
         </VStack>
       </ModalContent>
     </Modal>
