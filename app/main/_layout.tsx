@@ -27,6 +27,10 @@ export default function AppLayout() {
           name="personal-data" 
           options={{ headerShown: false }} 
         />
+        <Stack.Screen 
+          name="product-details" 
+          options={{ headerShown: false }} 
+        />
       </Stack>
     </GestureHandlerRootView>
   );

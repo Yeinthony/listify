@@ -1,17 +1,17 @@
-import { Bounds, ProductLight } from "@/api/types/products";
+import { Bounds } from "@/api/types/products";
 import { useSpinnerModal } from "@/contexts/SpinnerModalContext";
-
 import { Skia } from "@shopify/react-native-skia";
 import { BarcodeScanningResult, CameraType, useCameraPermissions } from "expo-camera";
 import { useCallback, useEffect, useMemo, useState } from "react";
 import { useTranslation } from "react-i18next";
 import { Dimensions } from "react-native";
 import { getProductByEanLight } from "@/api/products.api";
-import { LightProduct } from "@/types/products";
+import { ModalProps } from "../types/modal";
+import { ProductLight } from "@/types/products";
 import useSnackbarStore from "@/store/snackbarStore";
 
 
-export const useBarcodeScan = (isOpen: boolean) => {
+export const useBarcodeScan = ({ isOpen, onClose }: ModalProps) => {
   const { height, width } = Dimensions.get('window');
   const { t } = useTranslation()
   const { showSnackbar } = useSnackbarStore()
@@ -80,16 +80,16 @@ export const useBarcodeScan = (isOpen: boolean) => {
   }
 
   const getAnimationProps = useCallback(() => {
-  const hiddenY = height + 200; // un poco más abajo del borde
+    const hiddenY = height + 200; // un poco más abajo del borde
 
-  return {
-    initial: { y: hiddenY, opacity: 0 },
-    animate: product
-      ? { y: 0, opacity: 1 }
-      : { y: hiddenY, opacity: 0 },
-    transition: { type: "timing", duration: 450 }
-  };
-}, [product, height]);
+    return {
+      initial: { y: hiddenY, opacity: 0 },
+      animate: product
+        ? { y: 0, opacity: 1 }
+        : { y: hiddenY, opacity: 0 },
+      transition: { type: "timing", duration: 450 }
+    };
+  }, [product, height]);
 
   // Reset flag al abrir modal
   useEffect(() => {

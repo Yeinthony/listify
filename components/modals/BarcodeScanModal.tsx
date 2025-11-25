@@ -41,7 +41,7 @@ export const BarcodeScanModal = ({ isOpen, onClose }: ModalProps) => {
     product,
     getAnimationProps,
     handleBarcodeScanned
-  } = useBarcodeScan(isOpen)
+  } = useBarcodeScan({isOpen, onClose})
 
   if (!isOpen) return null;
 
@@ -145,7 +145,10 @@ export const BarcodeScanModal = ({ isOpen, onClose }: ModalProps) => {
               {...getAnimationProps()}
               transition={{ type: 'timing', duration: 500 }}
             >
-              <ProductCard data={product || null} />
+              <ProductCard 
+                data={product || null} 
+                onCloseModal={onClose}
+              />
             </MotionView>
           </SafeAreaView>
         </VStack>

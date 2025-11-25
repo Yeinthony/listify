@@ -1,7 +1,5 @@
-import { LightProduct } from "@/types/products"
 import { HStack } from "../ui/hstack"
 import { Image } from "../ui/image"
-import { ProductCardProps, ProductLight } from "@/api/types/products"
 import { Box } from "../ui/box"
 import { VStack } from "../ui/vstack"
 import { Heading } from "../ui/heading"
@@ -10,6 +8,8 @@ import helpers from "@/utils/helpers"
 import { TouchableOpacity, View } from "react-native"
 import Ionicons from '@expo/vector-icons/Ionicons';
 import MaterialIcons from '@expo/vector-icons/MaterialIcons';
+import { router } from "expo-router"
+import { ProductCardProps } from "./types/product-card"
 
 
 export const ProductCard = (props: ProductCardProps) => {
@@ -32,10 +32,10 @@ export const ProductCard = (props: ProductCardProps) => {
             />
           </View>
           <VStack className="flex-1 p-2 justify-between">
-            <Heading className="text-[15px] font-semibold uppercase">
+            <Heading className="text-[13px] font-bold uppercase">
               {props.data.product.name} 
             </Heading>
-            <HStack space="sm" className="flex-1 items-center">
+            <HStack className="flex-1 items-center justify-between">
               <Text className="text-success-500 text-lg font-extrabold">
                 ${helpers.roundOrDecimals(props.data.stats.min)}
               </Text>
@@ -50,19 +50,29 @@ export const ProductCard = (props: ProductCardProps) => {
               <Text className="capitalize text-sm font-medium">
                 {`${props.data.product.presentationQty} ${props.data.product.presentationUnit}`}
               </Text>
-              <HStack space="sm" className="">
-                <TouchableOpacity>
+              <HStack space="xs" className="">
+                <TouchableOpacity
+                  onPress={() => {
+                    if(props.onCloseModal) props.onCloseModal()
+                    router.push({
+                      pathname: '/main/product-details',
+                      params: {
+                        ean: props.data.product.ean
+                      }
+                    })
+                  }}
+                >
                   <HStack  
                     className="bg-primary-500 px-4 py-1.5 rounded-xl justify-center items-center"
                   >
-                    <Text className="text-xs text-white">Ver mas</Text>
+                    <Text className="text-sm text-white">Ver mas</Text>
                   </HStack>
                 </TouchableOpacity>
                 <TouchableOpacity>
                   <HStack  
                     className="bg-primary-500 px-4 py-1.5 rounded-xl justify-center items-center"
                   >
-                    <Text className="text-xs text-white">Agregar</Text>
+                    <Text className="text-sm text-white">Agregar</Text>
                   </HStack>
                 </TouchableOpacity>
               </HStack>
