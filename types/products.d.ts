@@ -19,11 +19,6 @@ export interface Product {
   presentationUnit: string
 }
 
-export interface Availability {
-  store: Store
-  branches: Branch[]
-}
-
 export interface Store {
   id: string
   name: string
@@ -33,21 +28,59 @@ export interface Store {
   website: string
 }
 
-export interface Branch {
-  branch: Branch2
+export interface Stats {
+  min: string
+  max: string
+  avg: string
+}
+
+export interface PriceBranchByProduct {
+  branch: Branch
   price: Price
 }
 
-export interface Branch2 {
+export interface Branch {
   id: string
+  storeId: string
+  sepaId: number
   name: string
   type: string
-  locality: string
+  street: string
+  number: string
   latitude: number
   longitude: number
+  observations: string
+  neighborhood: string
+  postalCode: string
+  locality: string
+  schedules: Schedules
+  createdAt: string
+  updatedAt: string
+  province: Province
+}
+
+export interface Schedules {
+  friday: string
+  monday: string
+  sunday: string
+  tuesday: string
+  saturday: string
+  thursday: string
+  wednesday: string
+}
+
+export interface Province {
+  code: string
+  name: string
+  description: any
+  country: string
+  createdAt: string
 }
 
 export interface Price {
+  id: string
+  productId: string
+  branchId: string
   listPrice: string
   referencePrice: string
   promo1Price: any
@@ -56,10 +89,6 @@ export interface Price {
   promo2Legend: any
   unitPriceNormalized: string
   currency: string
-}
-
-export interface Stats {
-  min: string
-  max: string
-  avg: string
+  updatedAt: string
+  createdAt: string
 }

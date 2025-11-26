@@ -17,6 +17,7 @@ import { useProductDetails } from "@/hooks/screens/useProductDetails";
 import { Spinner } from "@/components/ui/spinner";
 import { Text } from "@/components/ui/text";
 import { Divider } from '@/components/ui/divider';
+import { StoreByProductModal } from "@/components/modals/StoreByProductModal";
 import helpers from "@/utils/helpers";
 
 
@@ -24,7 +25,11 @@ export default function ProductDetails() {
   const { 
     bannerImages,
     loading,
-    productData 
+    productData,
+    showStoreByProductModal,
+    selectedStore,
+    setShowStoreByProductModal,
+    setSelectedStore,
   } = useProductDetails()
   const { t } = useTranslation()
   const colorScheme = useColorScheme();
@@ -108,7 +113,7 @@ export default function ProductDetails() {
                 }}
               />
             </View>
-            <SafeAreaView 
+            <SafeAreaView
               className="w-full h-[200px]"
               pointerEvents="box-none"
             >
@@ -173,7 +178,10 @@ export default function ProductDetails() {
                       <VStack key={store.id}>
                         <TouchableOpacity 
                           className='px-4 py-3'
-                          onPress={() => {}}
+                          onPress={() => {
+                            setSelectedStore(store)
+                            setShowStoreByProductModal(true)
+                          }}
                         >
                           <HStack className='items-center justify-between'>
                             <HStack 
@@ -220,6 +228,12 @@ export default function ProductDetails() {
               </TouchableOpacity>
             </VStack>
           </SafeAreaView>
+          <StoreByProductModal 
+            isOpen={showStoreByProductModal}
+            ean={productData?.product.ean || ''} 
+            store={selectedStore}
+            onClose={() => setShowStoreByProductModal(false)}
+          />
         </>
       )}
     </VStack>

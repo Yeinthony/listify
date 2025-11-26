@@ -1,6 +1,6 @@
 import { getProductByEanAll } from "@/api/products.api";
 import useSnackbarStore from "@/store/snackbarStore";
-import { ProductAll } from "@/types/products";
+import { ProductAll, Store } from "@/types/products";
 import { useLocalSearchParams } from "expo-router";
 import { useEffect, useState } from "react"
 
@@ -37,7 +37,9 @@ export const useProductDetails = () => {
   const params = useLocalSearchParams();
 
   const [loading, setloading] = useState<boolean>(true)
+  const [showStoreByProductModal, setShowStoreByProductModal] = useState<boolean>(false)
   const [productData, setproductData] = useState<ProductAll | null>(null)
+  const [selectedStore, setSelectedStore] = useState<Store | null>(null)
 
   const ean = Array.isArray(params.ean) ? params.ean[0] : params.ean || "";
 
@@ -65,6 +67,10 @@ export const useProductDetails = () => {
   return {
     bannerImages,
     loading,
-    productData
+    productData,
+    showStoreByProductModal,
+    selectedStore,
+    setShowStoreByProductModal,
+    setSelectedStore,
   }
 }
