@@ -129,7 +129,7 @@ export default function ProductDetails() {
           </VStack>
 
           <SafeAreaView className='flex-1'>
-            <VStack space="2xl" className='flex-1 mb-2'>
+            <VStack space="xl" className='flex-1 mb-2'>
               <VStack className="mx-4">
                 <Heading className="text-lg uppercase">
                   {productData?.product.name}
@@ -138,7 +138,7 @@ export default function ProductDetails() {
                   {`${productData?.product.presentationQty} ${productData?.product.presentationUnit}`}
                 </Text>
               </VStack>
-              <VStack space="sm" className="mx-4">
+              <VStack space="md" className="mx-4">
                 <Heading className="text-[14px] font-semibold">
                   Rango de precios
                 </Heading>
