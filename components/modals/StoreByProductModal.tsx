@@ -1,4 +1,4 @@
-
+import React from 'react';
 import {
   Modal,
   ModalBackdrop,
@@ -35,25 +35,27 @@ import {
   PopoverBody,
   PopoverContent,
 } from '@/components/ui/popover';
+import { Menu, MenuItem, MenuItemLabel } from '@/components/ui/menu';
 import Ionicons from '@expo/vector-icons/Ionicons';
+import { useState } from 'react';
 
-export const StoreByProductModal = ({
-  isOpen, 
+const StoreByProductModal = ({
+  isOpen,
   ean,
   store,
-  onClose
+  location,
+  onClose,
 }: StoreByProductModalProps) => {
   const { t } = useTranslation()
-  const { 
+  const {
     data,
     loading,
-    showDistanceList,
     showLocationList,
     distance,
-    setShowDistanceList,
+    distances,
     setShowLocationList,
     setDistance,
-  } = useStoreByProduct({isOpen, ean, store})
+  } = useStoreByProduct({ isOpen, ean, store, location })
 
   return (
     <Modal
@@ -62,9 +64,9 @@ export const StoreByProductModal = ({
       size="lg"
     >
       <ModalBackdrop />
-      <ModalContent className='rounded-2xl max-h-[88%] pa-3'>
+      <ModalContent className='pb-0 px-4 pt-4 rounded-2xl max-h-[88%]'>
         <ModalHeader>
-          <VStack 
+          <VStack
             className='w-full'
             space='sm'
           >
@@ -76,119 +78,140 @@ export const StoreByProductModal = ({
                 <Icon as={CloseIcon} />
               </ModalCloseButton>
             </HStack>
-            <HStack 
+            <HStack
               className='items-center w-full flex-wrap'
               space='xs'
             >
               <Text className='text-md text-typography-600'>
                 Sucursales a
               </Text>
-              <Popover
-                isOpen={showDistanceList}
-                onClose={() => setShowDistanceList(false)}
-                onOpen={() => setShowDistanceList(true)}
+              <Menu
                 placement="bottom"
-                size="md"
-                trigger={(triggerProps) => {
+                className='min-w-[80px]'
+                offset={5}
+                closeOnSelect={true}
+                trigger={({ ...triggerProps }) => {
                   return (
                     <TouchableOpacity {...triggerProps}>
-                      <HStack 
-                        space='xs' 
+                      <HStack
+                        space='xs'
                         className='items-center bg-primary-500/20 px-2 py-0.5 rounded-full border-[1px] border-primary-500'
                       >
                         <Text className='text-sm text-primary-500'>
                           {distance} km
                         </Text>
-                        <Ionicons 
-                          name="chevron-down-outline" 
-                          size={14} 
-                          color="#e44b5e" 
+                        <Ionicons
+                          name="chevron-down-outline"
+                          size={14}
+                          color="#e44b5e"
                         />
                       </HStack>
                     </TouchableOpacity>
                   );
                 }}
               >
-                <PopoverBackdrop />
-                <PopoverContent className=''>
-                  <PopoverArrow />
-                  <PopoverBody>
-                    <Text className="text-sm text-primary-500">
-                      5 km
-                    </Text>
-                  </PopoverBody>
-                </PopoverContent>
-              </Popover>
+                {distances.map(dis => (
+                  <MenuItem
+                    key={dis}
+                    textValue={dis.toString()}
+                    className={`justify-center ${distance === dis && 'bg-primary-500/20'}`}
+                    onPress={() => setDistance(dis)}
+                  >
+                    <MenuItemLabel
+                      className={`${distance === dis && 'text-primary-500'}`}
+                      size="sm"
+                    >
+                      {dis} km
+                    </MenuItemLabel>
+                  </MenuItem>
+                ))}
+              </Menu>
               <Text className='text-md text-typography-600'>
-                de 
+                de
               </Text>
-              <Popover
-                isOpen={showLocationList}
-                onClose={() => setShowLocationList(false)}
-                onOpen={() => setShowLocationList(true)}
+              <Menu
                 placement="bottom"
-                size="md"
-                trigger={(triggerProps) => {
+                className='min-w-[150px]'
+                offset={5}
+                closeOnSelect={true}
+                trigger={({ ...triggerProps }) => {
                   return (
                     <TouchableOpacity {...triggerProps}>
-                      <HStack 
-                        space='xs' 
+                      <HStack
+                        space='xs'
                         className='items-center bg-primary-500/20 px-2 py-0.5 rounded-full border-[1px] border-primary-500'
                       >
                         <Text className='text-sm text-primary-500'>
                           mi ubicación
                         </Text>
-                        <Ionicons 
-                          name="chevron-down-outline" 
-                          size={14} 
-                          color="#e44b5e" 
+                        <Ionicons
+                          name="chevron-down-outline"
+                          size={14}
+                          color="#e44b5e"
                         />
                       </HStack>
                     </TouchableOpacity>
                   );
                 }}
               >
-                <PopoverBackdrop />
-                <PopoverContent className=''>
-                  <PopoverArrow />
-                  <PopoverBody>
-                    <Text className="text-sm text-primary-500">
-                      Ubicación actual
-                    </Text>
-                  </PopoverBody>
-                </PopoverContent>
-              </Popover>
+                <MenuItem
+                  key="my-location"
+                  textValue="my-location"
+                  className={`justify-center`}
+                  onPress={() => {}}
+                >
+                  <MenuItemLabel
+                    className={``}
+                    size="sm"
+                  >
+                    Mi ubicación
+                  </MenuItemLabel>
+                </MenuItem>
+                <MenuItem
+                  key="add-location"
+                  textValue="add-location"
+                  className={`justify-center bg-primary-500 py-1.5`}
+                  onPress={() => {}}
+                >
+                  <MenuItemLabel
+                    className={`text-white`}
+                    size="sm"
+                  >
+                    Agregar
+                  </MenuItemLabel>
+                </MenuItem>
+              </Menu>
             </HStack>
           </VStack>
         </ModalHeader>
         <ModalBody className='mt-6'>
           {loading ? (
             <Center className="flex-1">
-              <Spinner 
-                size="large" 
-                className="mr-2 mt-3" 
+              <Spinner
+                size="large"
+                className="mr-2 mt-3"
                 color="#e44b5e"
               />
             </Center>
           ) : (
             <VStack space='lg'>
               {data?.map((item, i) => (
-                <HStack 
+                <HStack
                   key={i}
                   space='xs'
                   className='items-start w-full'
                 >
-                  <Ionicons 
-                    name="location-outline" 
-                    size={20} 
-                    color="#e44b5e" 
+                  <Ionicons
+                    name="location-outline"
+                    size={20}
+                    color="#e44b5e"
                   />
                   <VStack className='flex-1'>
                     <Text className='text-md text-typography-600 flex-1'>
                       {`${item.branch.name}, ${item.branch.province.name} | a ${item.distanceKm.toFixed(2)} km`}
                     </Text>
                     <Text className=' text-md font-semibold'>
-                      {`$${item.price.listPrice}`}
+                      {`Precio de lista: $${item.price.listPrice}`}
                     </Text>
                   </VStack>
                 </HStack>
@@ -196,26 +219,25 @@ export const StoreByProductModal = ({
             </VStack>
           )}
         </ModalBody>
-        {/* <ModalFooter className='justify-between'>
-          <TouchableOpacity
-            onPress={onClose}
-            className="w-[47%] rounded-2xl h-12 border-[1.5px] border-typography-600 justify-center items-center"
-          >
-            <Text className="font-medium text-sm">
-              {t('button.cancel')}
-            </Text>
-          </TouchableOpacity>
-          <TouchableOpacity
-            onPress={() => {}}
-            className="w-[47%] rounded-2xl h-12 bg-primary-500 justify-center items-center"
-          >
-            <Text className="font-medium text-white text-sm">
-              {t('button.accept')}
-            </Text>
-          </TouchableOpacity>
-        </ModalFooter> */}
       </ModalContent>
-      </Modal>
+    </Modal>
   )
 }
- 
+
+// Custom comparison function to prevent unnecessary re-renders
+const arePropsEqual = (
+  prevProps: StoreByProductModalProps,
+  nextProps: StoreByProductModalProps
+) => {
+  return (
+    prevProps.isOpen === nextProps.isOpen &&
+    prevProps.ean === nextProps.ean &&
+    prevProps.store?.id === nextProps.store?.id &&
+    prevProps.location.lat === nextProps.location.lat &&
+    prevProps.location.lng === nextProps.location.lng &&
+    prevProps.onClose === nextProps.onClose
+  );
+};
+
+export default React.memo(StoreByProductModal, arePropsEqual);
+export { StoreByProductModal };

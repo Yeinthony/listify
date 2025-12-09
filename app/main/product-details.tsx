@@ -19,6 +19,7 @@ import { Text } from "@/components/ui/text";
 import { Divider } from '@/components/ui/divider';
 import { StoreByProductModal } from "@/components/modals/StoreByProductModal";
 import helpers from "@/utils/helpers";
+import { BranchsMapModal } from "@/components/modals/BranchsMapModal";
 
 
 export default function ProductDetails() {
@@ -28,6 +29,9 @@ export default function ProductDetails() {
     productData,
     showStoreByProductModal,
     selectedStore,
+    location,
+    showBranchsMapModal,
+    setShowBranchsMapModal,
     setShowStoreByProductModal,
     setSelectedStore,
   } = useProductDetails()
@@ -168,7 +172,10 @@ export default function ProductDetails() {
                   <Heading className="text-[14px] font-semibold">
                     Disponible en
                   </Heading>
-                  <TouchableOpacity className="">
+                  <TouchableOpacity 
+                    className=""
+                    onPress={() => setShowBranchsMapModal(true)}
+                  >
                     <Text className="text-md text-primary-500 font-medium">Ver mapa</Text>
                   </TouchableOpacity>
                 </HStack>
@@ -232,7 +239,12 @@ export default function ProductDetails() {
             isOpen={showStoreByProductModal}
             ean={productData?.product.ean || ''} 
             store={selectedStore}
+            location={location}
             onClose={() => setShowStoreByProductModal(false)}
+          />
+          <BranchsMapModal 
+            isOpen={showBranchsMapModal}
+            onClose={() => setShowBranchsMapModal(false)}
           />
         </>
       )}

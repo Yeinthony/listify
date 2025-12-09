@@ -23,7 +23,12 @@
       },
       "edgeToEdgeEnabled": true,
       "softwareKeyboardLayoutMode": "pan",
-      "package": "com.yeinthony.listify"
+      "package": "com.yeinthony.listify",
+      "config": {
+        "googleMaps": {
+          "apiKey": "AIzaSyCYTpLsxO3IELRUCdBcqpJxfaIslIkBV2Y"
+        }
+      }
     },
     "web": {
       "bundler": "metro",
@@ -38,6 +43,13 @@
         "expo-location",
         {
           "locationAlwaysAndWhenInUsePermission": "Allow $(PRODUCT_NAME) to use your location."
+        }
+      ],
+      [
+        "expo-maps",
+        {
+          "requestLocationPermission": true,
+          "locationPermission": "Allow $(PRODUCT_NAME) to use your location"
         }
       ]
     ],

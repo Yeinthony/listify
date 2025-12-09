@@ -2,40 +2,30 @@ import { useEffect, useState } from "react"
 import { StoreByProductProps } from "../types/store-by-product"
 import { getNearbyBranches } from "@/api/products.api"
 import { NearbyBranch } from "@/types/products"
-import * as Location from 'expo-location';
 import { NearbyBranchesProps } from "@/api/types/products";
 
-export const useStoreByProduct = ({ean, store, isOpen }: StoreByProductProps) => {
+export const useStoreByProduct = ({ 
+  ean, 
+  store, 
+  isOpen,
+  location 
+}: StoreByProductProps) => {
   const [data, setData] = useState<NearbyBranch[] | null>(null)
   const [loading, setLoading] = useState<boolean>(true)
-  const [location, setLocation] = useState<Location.LocationObject | null>(null);
-  const [showDistanceList, setShowDistanceList] = useState<boolean>(false);
   const [showLocationList, setShowLocationList] = useState<boolean>(false);
   const [distance, setDistance] = useState<number>(5)
 
-  const getCurrentLocation = async() => {
-      
-    let { status } = await Location.requestForegroundPermissionsAsync();
-    if (status !== 'granted') {
-      console.log('Permiso de geolocalizacion denegado');
-      return;
-    }
+  const distances = [1, 5, 10, 20, 40, 80, 160, 320];
 
-    let location = await Location.getCurrentPositionAsync({});
-    console.log('location: ', location);
-    
-    setLocation(location);
-  }
 
   const loadData = async() => {
     try {
       setLoading(true)
-      await getCurrentLocation()
 
       const payload: NearbyBranchesProps = {
         ean,
-        lat: location?.coords.latitude || 0,
-        lng: location?.coords.longitude || 0,
+        lat: location.lat,
+        lng: location.lng,
         km: distance,
       }
 
@@ -52,17 +42,25 @@ export const useStoreByProduct = ({ean, store, isOpen }: StoreByProductProps) =>
   }
 
   useEffect(() => {
-    if(store && isOpen) loadData()
+    if(store && isOpen) {
+      loadData()
+    }
+  }, [isOpen, distance, store?.id])
+
+  // Reset state when modal closes
+  useEffect(() => {
+    if (!isOpen) {
+      setData(null)
+      setDistance(5)
+    }
   }, [isOpen])
-  
 
   return {
     data,
     loading,
-    showDistanceList,
     showLocationList,
     distance,
-    setShowDistanceList,
+    distances,
     setShowLocationList,
     setDistance,
   }

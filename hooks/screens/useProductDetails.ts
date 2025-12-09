@@ -2,7 +2,9 @@ import { getProductByEanAll } from "@/api/products.api";
 import useSnackbarStore from "@/store/snackbarStore";
 import { ProductAll, Store } from "@/types/products";
 import { useLocalSearchParams } from "expo-router";
-import { useEffect, useState } from "react"
+import { useEffect, useState, useCallback } from "react"
+import { Loc } from "@/components/modals/types/store-by-product";
+import * as Location from 'expo-location';
 
 const bannerImages = [
   {
@@ -37,7 +39,9 @@ export const useProductDetails = () => {
   const params = useLocalSearchParams();
 
   const [loading, setloading] = useState<boolean>(true)
+  const [location, setLocation] = useState<Loc>({ lat: 0, lng: 0 });
   const [showStoreByProductModal, setShowStoreByProductModal] = useState<boolean>(false)
+  const [showBranchsMapModal, setShowBranchsMapModal] = useState<boolean>(false)
   const [productData, setproductData] = useState<ProductAll | null>(null)
   const [selectedStore, setSelectedStore] = useState<Store | null>(null)
 
@@ -59,10 +63,32 @@ export const useProductDetails = () => {
     }
   }
 
+  const getCurrentLocation = async() => {
+    let { status } = await Location.requestForegroundPermissionsAsync();
+    if (status !== 'granted') {
+      console.log('Permiso de geolocalizacion denegado');
+      return;
+    }
+
+    let location = await Location.getCurrentPositionAsync({});
+    console.log('location: ', location);
+    
+    setLocation({ lat: location.coords.latitude, lng: location.coords.longitude });
+  }
+
   useEffect(() => {
+    getCurrentLocation()
     loadProduct()
   }, [])
   
+
+  const handleSetShowStoreByProductModal = useCallback((value: boolean) => {
+    setShowStoreByProductModal(value);
+  }, []);
+
+  const handleSetSelectedStore = useCallback((store: Store | null) => {
+    setSelectedStore(store);
+  }, []);
 
   return {
     bannerImages,
@@ -70,7 +96,10 @@ export const useProductDetails = () => {
     productData,
     showStoreByProductModal,
     selectedStore,
-    setShowStoreByProductModal,
-    setSelectedStore,
+    location,
+    showBranchsMapModal,
+    setShowBranchsMapModal,
+    setShowStoreByProductModal: handleSetShowStoreByProductModal,
+    setSelectedStore: handleSetSelectedStore,
   }
 }
