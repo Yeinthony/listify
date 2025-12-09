@@ -9,6 +9,12 @@ export interface ProductLight {
   stats: Stats
 }
 
+export interface NearbyBranch {
+  branch: Branch
+  price: Price
+  distanceKm: number
+}
+
 export interface Product {
   id: string
   ean: string

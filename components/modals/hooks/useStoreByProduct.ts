@@ -1,16 +1,45 @@
 import { useEffect, useState } from "react"
 import { StoreByProductProps } from "../types/store-by-product"
-import { getPriceBranchByProduct } from "@/api/products.api"
-import { PriceBranchByProduct } from "@/types/products"
+import { getNearbyBranches } from "@/api/products.api"
+import { NearbyBranch } from "@/types/products"
+import * as Location from 'expo-location';
+import { NearbyBranchesProps } from "@/api/types/products";
 
 export const useStoreByProduct = ({ean, store, isOpen }: StoreByProductProps) => {
-  const [data, setData] = useState<PriceBranchByProduct[] | null>(null)
+  const [data, setData] = useState<NearbyBranch[] | null>(null)
   const [loading, setLoading] = useState<boolean>(true)
+  const [location, setLocation] = useState<Location.LocationObject | null>(null);
+  const [showDistanceList, setShowDistanceList] = useState<boolean>(false);
+  const [showLocationList, setShowLocationList] = useState<boolean>(false);
+  const [distance, setDistance] = useState<number>(5)
+
+  const getCurrentLocation = async() => {
+      
+    let { status } = await Location.requestForegroundPermissionsAsync();
+    if (status !== 'granted') {
+      console.log('Permiso de geolocalizacion denegado');
+      return;
+    }
+
+    let location = await Location.getCurrentPositionAsync({});
+    console.log('location: ', location);
+    
+    setLocation(location);
+  }
 
   const loadData = async() => {
     try {
       setLoading(true)
-      const res = await getPriceBranchByProduct({ean, storeId: store?.id || ''})
+      await getCurrentLocation()
+
+      const payload: NearbyBranchesProps = {
+        ean,
+        lat: location?.coords.latitude || 0,
+        lng: location?.coords.longitude || 0,
+        km: distance,
+      }
+
+      const res = await getNearbyBranches(payload)
       console.log('res get StoreByProduct: ', res);
       if(res.status === 200) setData(res.data)
       
@@ -29,6 +58,12 @@ export const useStoreByProduct = ({ean, store, isOpen }: StoreByProductProps) =>
 
   return {
     data,
-    loading
+    loading,
+    showDistanceList,
+    showLocationList,
+    distance,
+    setShowDistanceList,
+    setShowLocationList,
+    setDistance,
   }
 }

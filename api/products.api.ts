@@ -1,8 +1,8 @@
 import { AxiosError, AxiosResponse } from 'axios'
 import axios from '@/utils/interceptor'
-import { PriceBranchByProduct, ProductAll, ProductLight } from '@/types/products'
+import { NearbyBranch, PriceBranchByProduct, ProductAll, ProductLight } from '@/types/products'
 import { StoreByProductProps } from '@/components/modals/types/store-by-product'
-import { StoreByProductApiProps } from './types/products'
+import { NearbyBranchesProps, StoreByProductApiProps } from './types/products'
 
 const URL = `${process.env.EXPO_PUBLIC_API_URL}/products`
 
@@ -32,6 +32,17 @@ export const getProductByEanLight = async(ean: string): Promise<AxiosResponse<Pr
 export const getPriceBranchByProduct = async(data: StoreByProductApiProps): Promise<AxiosResponse<PriceBranchByProduct[]>> => {
   try {
     const response = await axios.post<PriceBranchByProduct[]>(`${URL}/brach-prices`, data)
+    console.log(response);
+
+    return response
+  } catch (error) {
+    return Promise.reject(error as AxiosError)
+  }
+}
+
+export const getNearbyBranches = async(data: NearbyBranchesProps): Promise<AxiosResponse<NearbyBranch[]>> => {
+  try {
+    const response = await axios.post<NearbyBranch[]>(`${URL}/nearby-branches`, data)
     console.log(response);
 
     return response

@@ -5,4 +5,11 @@ export interface StoreByProductApiProps {
   storeId:  string;
 }
 
+export interface NearbyBranchesProps {
+  ean:       string;
+  lat:  number;
+  lng: number;
+  km:  number;
+}
+
 export interface Bounds { x: number; y: number; width: number; height: number }
