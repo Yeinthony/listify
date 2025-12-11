@@ -245,6 +245,9 @@ export default function ProductDetails() {
           <BranchsMapModal 
             isOpen={showBranchsMapModal}
             onClose={() => setShowBranchsMapModal(false)}
+            location={location}
+            availableStores={productData?.availableStores || []}
+            ean={productData?.product.ean || ''}
           />
         </>
       )}

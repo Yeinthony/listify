@@ -28,16 +28,10 @@ import { Center } from '../ui/center';
 import { Spinner } from '../ui/spinner';
 import { HStack } from '../ui/hstack';
 import { VStack } from '../ui/vstack';
-import {
-  Popover,
-  PopoverBackdrop,
-  PopoverArrow,
-  PopoverBody,
-  PopoverContent,
-} from '@/components/ui/popover';
 import { Menu, MenuItem, MenuItemLabel } from '@/components/ui/menu';
 import Ionicons from '@expo/vector-icons/Ionicons';
-import { useState } from 'react';
+import MaterialCommunityIcons from '@expo/vector-icons/MaterialCommunityIcons';
+
 
 const StoreByProductModal = ({
   isOpen,
@@ -50,10 +44,8 @@ const StoreByProductModal = ({
   const {
     data,
     loading,
-    showLocationList,
     distance,
     distances,
-    setShowLocationList,
     setDistance,
   } = useStoreByProduct({ isOpen, ean, store, location })
 
@@ -195,6 +187,20 @@ const StoreByProductModal = ({
             </Center>
           ) : (
             <VStack space='lg'>
+              {data?.length === 0 && (
+                <Center className='mx-6'>
+                  <Center className='rounded-full p-4 bg-primary-500/20'>
+                    <MaterialCommunityIcons
+                      name="cube-off-outline"
+                      size={50}
+                      color="#e44b5e"
+                    />
+                  </Center>
+                  <Text className='text-md text-typography-700 text-center mt-2'>
+                    Sin resultados en el rango seleccionado.
+                  </Text>
+                </Center>
+              )}
               {data?.map((item, i) => (
                 <HStack
                   key={i}

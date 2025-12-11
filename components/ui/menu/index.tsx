@@ -3,7 +3,7 @@ import React from 'react';
 import { createMenu } from '@gluestack-ui/core/menu/creator';
 import { tva } from '@gluestack-ui/utils/nativewind-utils';
 import { cssInterop } from 'nativewind';
-import { Pressable, Text, View, ViewStyle } from 'react-native';
+import { Pressable, Text, View, ViewStyle, ScrollView } from 'react-native';
 import {
   Motion,
   AnimatePresence,
@@ -15,6 +15,23 @@ type IMotionViewProps = React.ComponentProps<typeof View> &
   MotionComponentProps<typeof View, ViewStyle, unknown, unknown, unknown>;
 
 const MotionView = Motion.View as React.ComponentType<IMotionViewProps>;
+
+// Crear un componente que envuelve MotionView con ScrollView
+const ScrollableMotionView = React.forwardRef<any, IMotionViewProps>(
+  function ScrollableMotionView({ children, style, ...props }, ref) {
+    return (
+      <MotionView style={style} {...props}>
+        <ScrollView
+          style={{ maxHeight: (style as any)?.maxHeight }}
+          showsVerticalScrollIndicator={true}
+          nestedScrollEnabled={true}
+        >
+          {children}
+        </ScrollView>
+      </MotionView>
+    );
+  }
+);
 
 const menuStyle = tva({
   base: 'rounded-md bg-background-0 border border-outline-100 p-1 shadow-hard-5',
@@ -78,7 +95,7 @@ const menuItemLabelStyle = tva({
 const BackdropPressable = React.forwardRef<
   React.ComponentRef<typeof Pressable>,
   React.ComponentPropsWithoutRef<typeof Pressable> &
-    VariantProps<typeof menuBackdropStyle>
+  VariantProps<typeof menuBackdropStyle>
 >(function BackdropPressable({ className, ...props }, ref) {
   return (
     <Pressable
@@ -113,7 +130,7 @@ const Item = React.forwardRef<
 const Separator = React.forwardRef<
   React.ComponentRef<typeof View>,
   React.ComponentPropsWithoutRef<typeof View> &
-    VariantProps<typeof menuSeparatorStyle>
+  VariantProps<typeof menuSeparatorStyle>
 >(function Separator({ className, ...props }, ref) {
   return (
     <View
@@ -124,7 +141,7 @@ const Separator = React.forwardRef<
   );
 });
 export const UIMenu = createMenu({
-  Root: MotionView,
+  Root: ScrollableMotionView,
   Item: Item,
   Label: Text,
   Backdrop: BackdropPressable,

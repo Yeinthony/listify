@@ -3,6 +3,7 @@ import { StoreByProductProps } from "../types/store-by-product"
 import { getNearbyBranches } from "@/api/products.api"
 import { NearbyBranch } from "@/types/products"
 import { NearbyBranchesProps } from "@/api/types/products";
+import { DISTANCES_FILTER } from "@/assets/globalsConst";
 
 export const useStoreByProduct = ({ 
   ean, 
@@ -12,11 +13,9 @@ export const useStoreByProduct = ({
 }: StoreByProductProps) => {
   const [data, setData] = useState<NearbyBranch[] | null>(null)
   const [loading, setLoading] = useState<boolean>(true)
-  const [showLocationList, setShowLocationList] = useState<boolean>(false);
   const [distance, setDistance] = useState<number>(5)
 
-  const distances = [1, 5, 10, 20, 40, 80, 160, 320];
-
+  const distances = DISTANCES_FILTER
 
   const loadData = async() => {
     try {
@@ -27,6 +26,7 @@ export const useStoreByProduct = ({
         lat: location.lat,
         lng: location.lng,
         km: distance,
+        ...(store && { storeId: [store.id] })
       }
 
       const res = await getNearbyBranches(payload)
@@ -58,10 +58,8 @@ export const useStoreByProduct = ({
   return {
     data,
     loading,
-    showLocationList,
     distance,
     distances,
-    setShowLocationList,
     setDistance,
   }
 }
