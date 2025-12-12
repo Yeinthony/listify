@@ -12,6 +12,10 @@ export interface ProductLight {
 export interface NearbyBranch {
   branch: Branch
   price: Price
+  store: {
+    id: string
+    name: string
+  }
   distanceKm: number
 }
 

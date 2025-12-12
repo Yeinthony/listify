@@ -1,11 +1,14 @@
-import { Store } from "@/types/products";
+import { Branch, Store } from "@/types/products";
 import { ModalProps } from "./modal";
 import { Loc } from "./store-by-product";
 
 export interface BranchsMapModalProps extends ModalProps {
   location: Loc,
   availableStores: Store[],
-  ean: string;
+  product: {
+    name: string;
+    ean: string;
+  }
 }
 
 export interface useBranchsMapModalProps {

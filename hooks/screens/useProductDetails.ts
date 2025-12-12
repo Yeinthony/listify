@@ -1,6 +1,6 @@
 import { getProductByEanAll } from "@/api/products.api";
 import useSnackbarStore from "@/store/snackbarStore";
-import { ProductAll, Store } from "@/types/products";
+import { Branch, ProductAll, Store } from "@/types/products";
 import { useLocalSearchParams } from "expo-router";
 import { useEffect, useState, useCallback } from "react"
 import { Loc } from "@/components/modals/types/store-by-product";

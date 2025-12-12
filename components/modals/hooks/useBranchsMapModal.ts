@@ -5,10 +5,16 @@ import { useEffect, useRef, useState } from "react";
 import { DISTANCES_FILTER } from "@/assets/globalsConst";
 import { useSpinnerModal } from "@/contexts/SpinnerModalContext";
 import { getNearbyBranches } from "@/api/products.api";
+
 import * as Location from "expo-location";
 import helpers from "@/utils/helpers";
-
-export const useBranchsMapModal = ({ isOpen, location, availableStores, ean }: useBranchsMapModalProps) => {
+import { set } from "zod";
+export const useBranchsMapModal = ({ 
+  isOpen, 
+  location, 
+  availableStores, 
+  ean 
+}: useBranchsMapModalProps) => {
   const { t } = useTranslation();
   const insets = useSafeAreaInsets();
   const showSpinnerModal = useSpinnerModal();
@@ -17,10 +23,12 @@ export const useBranchsMapModal = ({ isOpen, location, availableStores, ean }: u
   const [locationSelected, setLocationSelected] = useState(location);
   const [storesId, setStoresId] = useState<string[]>([]);
   const [selectedStoresName, setSelectedStoresName] = useState<string>("Todos los comercios");
-  const [zoom, setZoom] = useState<number>(15)
-  const [distance, setDistance] = useState<number>(5)
+  const [zoom, setZoom] = useState<number>(12)
+  const [distance, setDistance] = useState<number>(2.5)
   const [markersbranches, setMarkersBranches] = useState<BranchMapMarker[]>([])
 
+  const prevStoresId = useRef<string[]>([])
+  
   const locationSubscription = useRef<Location.LocationSubscription | null>(null);
 
   const distances = DISTANCES_FILTER
@@ -136,12 +144,13 @@ export const useBranchsMapModal = ({ isOpen, location, availableStores, ean }: u
               latitude: branch.branch.latitude,
               longitude: branch.branch.longitude
             },
-            title: `${branch.branch.name} - $${branch.price.listPrice}`,
+            title: `$${branch.price.listPrice} - ${branch.store.name}`,
             snippet: `${branch.branch.name}, ${branch.branch.province.name} | a ${branch.distanceKm.toFixed(2)} km`,
-            //icon: require("@/assets/images/store.png"),
+            icon: require("../../../assets/images/store.png"),
           }
         });
         setMarkersBranches(marksBranches);
+        prevStoresId.current = [...storesId];
       } 
     } catch (error) {
       console.log('error loadBranchesByLocation: ', error);
@@ -150,11 +159,83 @@ export const useBranchsMapModal = ({ isOpen, location, availableStores, ean }: u
     }
   }
 
+  const zoomLevelsByDistance = () => {
+    switch (distance) {
+      case 1:
+        setZoom(14);
+        centerOnCurrentLocation()
+        break;
+      
+      case 2.5:
+        setZoom(13);
+        centerOnCurrentLocation()
+        break;
+      
+      case 5:
+        setZoom(12);
+        centerOnCurrentLocation()
+        break;
+
+      case 10:
+        setZoom(11);
+        centerOnCurrentLocation()
+        break;
+      
+      case 20:
+        setZoom(10);
+        centerOnCurrentLocation()
+        break;
+      
+      case 40:
+        setZoom(9);
+        centerOnCurrentLocation()
+        break;
+
+      case 80:
+        setZoom(8);
+        centerOnCurrentLocation()
+        break;
+
+      case 160:
+        setZoom(7);
+        centerOnCurrentLocation()
+        break;
+
+      case 320:
+        setZoom(6);
+        centerOnCurrentLocation()
+        break;
+      
+      case 640:
+        setZoom(5);
+        centerOnCurrentLocation()
+        break;
+      
+      case 900:
+        setZoom(4);
+        centerOnCurrentLocation()
+        break;
+    
+      default:
+        break;
+    }
+  }
+
+  const handleCloseMenuStore = () => {
+    const isSame = storesId.length === prevStoresId.current.length && 
+                   storesId.every(id => prevStoresId.current.includes(id));
+    
+    if (!isSame) {
+      loadBranchesByLocation();
+    }
+  }
+
   useEffect(() => {
     if (isOpen) {
       loadBranchesByLocation()
+      zoomLevelsByDistance()
     } else {
-      setDistance(5)
+      setDistance(2.5)
       setStoresId([]);
       return;
     } 
@@ -196,6 +277,7 @@ export const useBranchsMapModal = ({ isOpen, location, availableStores, ean }: u
     zoomOn,
     zoomOut,
     centerOnCurrentLocation,
-    loadBranchesByLocation
+    loadBranchesByLocation,
+    handleCloseMenuStore
   }
 }

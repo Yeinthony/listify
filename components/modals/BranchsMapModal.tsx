@@ -18,7 +18,7 @@ import { SafeAreaView } from "react-native-safe-area-context";
 import { Menu, MenuItem, MenuItemLabel } from "../ui/menu";
 import { set } from "zod";
 
-export const BranchsMapModal = ({ isOpen, onClose, location, availableStores, ean }: BranchsMapModalProps) => {
+export const BranchsMapModal = ({ isOpen, onClose, location, availableStores, product }: BranchsMapModalProps) => {
   const colorScheme = useColorScheme();
   const {
     t,
@@ -36,8 +36,9 @@ export const BranchsMapModal = ({ isOpen, onClose, location, availableStores, ea
     zoomOn,
     zoomOut,
     centerOnCurrentLocation,
-    loadBranchesByLocation
-  } = useBranchsMapModal({ isOpen, location, availableStores, ean });
+    loadBranchesByLocation,
+    handleCloseMenuStore
+  } = useBranchsMapModal({ isOpen, location, availableStores, ean: product.ean });
 
   return (
     <Modal isOpen={isOpen} onClose={onClose} size="full">
@@ -56,7 +57,7 @@ export const BranchsMapModal = ({ isOpen, onClose, location, availableStores, ea
               StyleSheet.absoluteFill,
               { bottom: insets.bottom }
             ]}
-            contentPadding={{ start: 10, end: 0, top: 0, bottom: 10 }}
+            contentPadding={{ start: 15, end: 0, top: 0, bottom: 105 }}
             cameraPosition={{
               coordinates: {
                 latitude: currentLocation.lat,
@@ -72,10 +73,20 @@ export const BranchsMapModal = ({ isOpen, onClose, location, availableStores, ea
               zoomControlsEnabled: false
             }}
             markers={markersbranches}
+            circles={[{
+              center: {
+                latitude: currentLocation.lat,
+                longitude: currentLocation.lng,
+              },
+              radius: distance * 1000,
+              color: 'rgba(228, 75, 94, 0.1)',
+              lineColor: '#e44b5e',
+              lineWidth: 2,
+            }]}
           />
         )}
         <SafeAreaView className="flex-1" pointerEvents="box-none">
-          <HStack space="md" className="items-center ml-4">
+          <HStack space="md" className="items-start mx-4">
             <TouchableOpacity
               onPress={onClose}
               className="bg-background-0 p-2 rounded-xl"
@@ -86,6 +97,11 @@ export const BranchsMapModal = ({ isOpen, onClose, location, availableStores, ea
                 color={colorScheme === "dark" ? "white" : "black"}
               />
             </TouchableOpacity>
+            <Center className="bg-background-0/90 rounded-xl px-4 py-2 flex-1">
+              <Heading size="xs" className="flex-1 uppercase">
+                {product.name}
+              </Heading>
+            </Center>
           </HStack>
           <VStack className="flex-1 relative">
             <VStack
@@ -126,7 +142,7 @@ export const BranchsMapModal = ({ isOpen, onClose, location, availableStores, ea
             </VStack>
           </VStack>
           <VStack
-            className='w-[90%] bg-background-0 mx-auto mb-8 px-4 py-3 rounded-2xl'
+            className='w-[90%] bg-background-0/90 mx-auto mb-8 px-4 py-3 rounded-2xl'
             space='md'
           >
             <HStack className="items-center flex-wrap" space="sm">
@@ -253,7 +269,7 @@ export const BranchsMapModal = ({ isOpen, onClose, location, availableStores, ea
                 style={{ maxWidth: 200, maxHeight: 500 }}
                 offset={5}
                 closeOnSelect={false}
-                onClose={loadBranchesByLocation}
+                onClose={handleCloseMenuStore}
                 trigger={({ ...triggerProps }) => {
                   return (
                     <TouchableOpacity
@@ -342,6 +358,6 @@ export const BranchsMapModal = ({ isOpen, onClose, location, availableStores, ea
           </VStack>
         </SafeAreaView>
       </ModalContent>
-    </Modal>
+    </Modal >
   );
 };

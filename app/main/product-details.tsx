@@ -247,7 +247,10 @@ export default function ProductDetails() {
             onClose={() => setShowBranchsMapModal(false)}
             location={location}
             availableStores={productData?.availableStores || []}
-            ean={productData?.product.ean || ''}
+            product={{
+              name: productData?.product.name || '',
+              ean: productData?.product.ean || ''
+            }}
           />
         </>
       )}
