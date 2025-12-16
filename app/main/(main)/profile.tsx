@@ -195,7 +195,10 @@ export default function Profile() {
             </HStack>
           </TouchableOpacity>
           <Divider className="w-[95%] self-center" />
-          <TouchableOpacity className='px-4 py-3'>
+          <TouchableOpacity 
+            className='px-4 py-3'
+            onPress={() => router.push('/main/manage-locations')}
+          >
             <HStack className='items-center justify-between'>
               <HStack className='items-center' space='md'>
                 <Ionicons 

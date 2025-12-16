@@ -102,6 +102,9 @@
     },
     "personalData": {
       "title": "Datos Personales"
+    },
+    "manage-locations": {
+      "title": "Administrar Ubicaciones"
     }
   },
   "general": {

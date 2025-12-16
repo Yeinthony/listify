@@ -1,0 +1,101 @@
+import { Center } from '@/components/ui/center';
+import { Divider } from '@/components/ui/divider';
+import { Heading } from '@/components/ui/heading';
+import { Text } from '@/components/ui/text';
+import { useTranslation } from 'react-i18next';
+import { SafeAreaView, useSafeAreaInsets } from 'react-native-safe-area-context';
+import { VStack } from '@/components/ui/vstack';
+import { HStack } from '@/components/ui/hstack';
+import { TouchableOpacity } from 'react-native';
+import { useManageLocations } from '@/hooks/screens/useManageLocations';
+import { Spinner } from '@/components/ui/spinner';
+import { AddLocationModal } from '@/components/modals/AddLocationMapModal';
+import Ionicons from '@expo/vector-icons/Ionicons';
+import CustomHeader from '@/components/generals/CustomHeader';
+
+
+export default function ManageLocations() {
+  const { 
+    loading,
+    locations,
+    showAddLocationModal,
+    setShowAddLocationModal
+   } = useManageLocations()
+  const { t } = useTranslation()
+  const insets = useSafeAreaInsets();
+
+  return (
+    <VStack className='flex-1 bg-background-100'>
+      <VStack 
+        className='w-full bg-primary-500 rounded-b-[15%] relative pb-4'
+        style={{ paddingTop: insets.top }}
+      >
+        <CustomHeader 
+          title={t('screen.manage-locations.title')} 
+          white
+        />
+        <VStack className='mx-5 py-3'>
+          <Text 
+            className='text-md 
+            text-white font-light'
+          >
+            Lorem, ipsum dolor sit amet consectetur adipisicing elit. Qui maiores voluptas consequatur commodi.      
+          </Text>
+        </VStack>
+      </VStack>
+
+      <SafeAreaView className='flex-1'>
+        <VStack 
+          className='flex-1 m-4'
+        >
+          {loading ? (
+            <Center className="flex-1">
+              <Spinner
+                size="large"
+                className="mr-2 mt-3"
+                color="#e44b5e"
+              />
+              <Text className='text-lg mt-4'>
+                Cargando ubicaciones     
+              </Text>
+            </Center>
+          ) : (
+            locations.length === 0 ? (
+              <Center className="flex-1">
+                <Center className='p-8 rounded-full bg-primary-500/20'>
+                  <Ionicons 
+                    name="location-outline" 
+                    size={60} 
+                    color="#e44b5e" 
+                  />
+                </Center>
+                <Text className='text-lg mt-4'>
+                  Sin ubicaciones registradas     
+                </Text>
+              </Center>
+            ) : (
+              <VStack className='flex-1'>
+
+              </VStack>
+            )
+          )}
+          <TouchableOpacity onPress={() => setShowAddLocationModal(true)}>
+            <Center 
+              className={
+                `bg-primary-500 rounded-2xl px-4 h-14`
+              }
+            >
+              <Text className="font-medium text-white">
+                Agregar ubicación
+              </Text>
+            </Center>
+          </TouchableOpacity>
+        </VStack>
+      </SafeAreaView>
+      <AddLocationModal 
+        isOpen={showAddLocationModal}
+        onClose={() => setShowAddLocationModal(false)}
+      />
+    </VStack>
+  );
+}

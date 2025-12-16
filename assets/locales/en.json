@@ -101,6 +101,9 @@
     },
     "personalData": {
       "title": "Personal Data"
+    },
+    "manage-locations": {
+      "title": "Manage Locations"
     }
   },
   "general": {

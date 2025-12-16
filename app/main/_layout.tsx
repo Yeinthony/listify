@@ -31,6 +31,10 @@ export default function AppLayout() {
           name="product-details" 
           options={{ headerShown: false }} 
         />
+        <Stack.Screen 
+          name="manage-locations" 
+          options={{ headerShown: false }} 
+        />
       </Stack>
     </GestureHandlerRootView>
   );

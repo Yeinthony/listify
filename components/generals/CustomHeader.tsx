@@ -47,7 +47,7 @@ const CustomHeader = ({ title, leftButtom = null, white = false }: CustomHeaderP
             )}
             <Heading 
               className={`
-                font-semibold text-lg 
+                font-semibold text-xl 
                 ${white && 'text-white'}
               `}
             >

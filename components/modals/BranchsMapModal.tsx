@@ -73,6 +73,9 @@ export const BranchsMapModal = ({ isOpen, onClose, location, availableStores, pr
               zoomControlsEnabled: false
             }}
             markers={markersbranches}
+            onPOIClick={(poi) => {
+              console.log('POI clicked: ', poi);
+            }}
             circles={[{
               center: {
                 latitude: currentLocation.lat,
