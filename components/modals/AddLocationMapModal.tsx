@@ -6,7 +6,7 @@ import {
 import { Heading } from "@/components/ui/heading";
 import { Text } from "@/components/ui/text";
 import { AppleMaps, GoogleMaps } from "expo-maps";
-import { Platform, StyleSheet, useColorScheme } from "react-native";
+import { Platform, StyleSheet, useColorScheme, Keyboard } from "react-native";
 import { TouchableOpacity } from "react-native";
 import { VStack } from "../ui/vstack";
 import { HStack } from "../ui/hstack";
@@ -21,7 +21,7 @@ import { StatusBar } from "expo-status-bar";
 export const AddLocationModal = ({ isOpen, onClose }: ModalProps) => {
   const colorScheme = useColorScheme();
   const {
-     t,
+    t,
     insets,
     currentLocation,
     zoom,
@@ -32,18 +32,23 @@ export const AddLocationModal = ({ isOpen, onClose }: ModalProps) => {
     zoomOn,
     zoomOut,
     centerOnCurrentLocation,
-  } = useAddLocationsMapModal(isOpen);
+    handlerClose
+  } = useAddLocationsMapModal({ isOpen, onClose });
 
   return (
-    <Modal isOpen={isOpen} onClose={onClose} size="full">
+    <Modal
+      isOpen={isOpen}
+      onClose={handlerClose}
+      size="full"
+    >
       <ModalBackdrop />
-      <ModalContent 
+      <ModalContent
         className={`
           ${showMap ? 'bg-background-0' : 'bg-background-100'} 
           flex-1 border-0 p-0
         `}
       >
-        <StatusBar 
+        <StatusBar
           style={showMap ? 'light' : 'auto'}
         />
         {showMap && (
@@ -79,22 +84,31 @@ export const AddLocationModal = ({ isOpen, onClose }: ModalProps) => {
               onPOIClick={(poi) => {
                 console.log('POI clicked: ', poi);
               }}
+              onMapClick={(event) => {
+                console.log('Map clicked: ', event);
+              }}
             />
           )
         )}
         <SafeAreaView className="flex-1" pointerEvents="box-none">
-          <HStack 
-            space="md" 
+          <HStack
+            space="md"
             className={`
               items-center mx-4 mt-2
             `}
           >
-            <SearchText 
+            <SearchText
               className='flex-1 data-[focus=true]:border-background-0'
               value=''
-              onTextChange={() => {}}
+              onTextChange={() => { }}
               onFocus={() => setShowMap(false)}
-              onBlur={() => setShowMap(true)}
+              icon={
+                <Ionicons
+                  onPress={() => !showMap && handlerClose()} 
+                  name={showMap ? 'location' : 'arrow-back'} 
+                  size={24} 
+                  color={showMap ? '#e44b5e' : 'black'} 
+                />}
             />
           </HStack>
           {showMap ? (
@@ -138,7 +152,7 @@ export const AddLocationModal = ({ isOpen, onClose }: ModalProps) => {
             </VStack>
           ) : (
             <VStack className="flex-1">
-
+              
             </VStack>
           )}
         </SafeAreaView>

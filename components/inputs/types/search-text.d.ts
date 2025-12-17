@@ -1,3 +1,5 @@
+import { ReactNode } from "react";
+
 export interface SearchTextProps
   extends Omit<
     ComponentPropsWithoutRef<typeof Input>,
@@ -6,4 +8,5 @@ export interface SearchTextProps
   value: string;
   onTextChange: (text: string) => void;
   className?: string;
+  icon?: ReactNode
 }
