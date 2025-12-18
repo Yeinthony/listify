@@ -6,6 +6,18 @@ export interface Location {
   longitude: number;
 }
 
+export interface Marker {
+  id: string;
+  coordinates: {
+    latitude: number;
+    longitude: number
+  },
+  title: string;
+  snippet: string;
+  icon: SharedRefType<'image'> | undefined;
+  draggable: boolean
+}
+
 export interface ManageLocationsState {
   locations: Location[]
   setLocation: (newLocation: Location) => void

@@ -8,7 +8,8 @@ import { getNearbyBranches } from "@/api/products.api";
 
 import * as Location from "expo-location";
 import helpers from "@/utils/helpers";
-import { set } from "zod";
+import { useImage } from "expo-image";
+
 export const useBranchsMapModal = ({ 
   isOpen, 
   location, 
@@ -18,6 +19,11 @@ export const useBranchsMapModal = ({
   const { t } = useTranslation();
   const insets = useSafeAreaInsets();
   const showSpinnerModal = useSpinnerModal();
+  const image = useImage(require('@/assets/images/shopping-area.png'), {
+    onError(error) {
+      console.error('Loading failed:', error.message);
+    }
+  });
 
   const [currentLocation, setCurrentLocation] = useState(location);
   const [locationSelected, setLocationSelected] = useState(location);
@@ -146,7 +152,7 @@ export const useBranchsMapModal = ({
             },
             title: `$${branch.price.listPrice} - ${branch.store.name}`,
             snippet: `${branch.branch.name}, ${branch.branch.province.name} | a ${branch.distanceKm.toFixed(2)} km`,
-            icon: require("../../../assets/images/store.png"),
+            icon: image ? image : undefined,
           }
         });
         setMarkersBranches(marksBranches);
