@@ -79,3 +79,16 @@ export const ForgotPassword1Scheme = (t: TFunction) => z.object({
       message: t('rules.email')
     })
 })
+
+export const registerLocation = (t: TFunction) => z.object({
+  title: z.string().min(1, {
+      message: t('rules.required')
+    }),
+  latitude: z.string().min(1, {
+      message: t('rules.required')
+    }),
+  longitude: z.string().min(1, {
+      message: t('rules.required')
+    }),
+  address: z.string().optional()
+})

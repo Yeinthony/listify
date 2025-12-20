@@ -5,35 +5,36 @@ import { useSpinnerModal } from "@/contexts/SpinnerModalContext";
 import { Location as Locations, Marker } from "@/store/types/manage-location.store";
 import { Loc } from "../types/store-by-product";
 import { ModalProps } from "../types/modal";
+import { useForm } from "react-hook-form";
+import { zodResolver } from "@hookform/resolvers/zod";
+import { register2Scheme, registerLocation } from "@/utils/formSchemes";
 
+import MapView, { Region } from "react-native-maps";
 import * as Location from "expo-location";
 import helpers from "@/utils/helpers";
-import { Keyboard } from "react-native";
-import { useImage } from "expo-image";
 
 export const useAddLocationsMapModal = ({ isOpen, onClose }: ModalProps) => {
   const { t } = useTranslation();
   const insets = useSafeAreaInsets();
   const showSpinnerModal = useSpinnerModal();
 
-  const image = useImage(require('@/assets/images/favorite-location.png'), {
-    onError(error) {
-      console.error('Loading failed:', error.message);
-    }
+  const { control, handleSubmit, formState: { errors }, reset, setValue } = useForm({
+    resolver: zodResolver(registerLocation(t)),
+    defaultValues: {
+      title: '',
+      latitude: '',
+      longitude: ''
+    },
   });
 
   const [currentLocation, setCurrentLocation] = useState<Loc>({ lat: 0, lng: 0 });
   const [locationSelected, setLocationSelected] = useState(location);
   const [zoom, setZoom] = useState<number>(15)
-  const [markersLocations, setMarkersLocations] = useState<Marker[]>([])
-
-  const zoomOn = () => {
-    if (zoom < 21) setZoom(zoom + 1);
-  }
-
-  const zoomOut = () => {
-    if (zoom > 1) setZoom(zoom - 1);
-  }
+  const [markerLocation, setMarkerLocation] = useState<Marker>({ latitude: 0, longitude: 0 })
+  const [isMarkerMove, setIsMarkerMove] = useState<boolean>(false)
+  
+  const mapRef = useRef<MapView>(null);
+  const markerLocationRef = useRef<Marker>({ latitude: 0, longitude: 0 })
 
   const centerOnCurrentLocation = async () => {
     try {
@@ -43,13 +44,22 @@ export const useAddLocationsMapModal = ({ isOpen, onClose }: ModalProps) => {
         return;
       }
 
+      const camera = await mapRef.current?.getCamera();
+      if (!camera) return;
+
       const location = await Location.getCurrentPositionAsync({
         accuracy: Location.Accuracy.High,
       });
 
-      setCurrentLocation({
-        lat: location.coords.latitude,
-        lng: location.coords.longitude,
+      const coords = {
+        latitude: location.coords.latitude,
+        longitude: location.coords.longitude,
+      };
+
+      // 2️⃣ Movés la cámara del mapa
+      mapRef.current?.animateCamera({
+        ...camera,
+        center: coords,
       });
 
     } catch (error) {
@@ -57,43 +67,42 @@ export const useAddLocationsMapModal = ({ isOpen, onClose }: ModalProps) => {
     }
   };
 
+  const handlerRegionChangeComplete = (region: Region) => {
+    setMarkerLocation({
+      latitude: region.latitude,
+      longitude: region.longitude
+    })
+    setValue("latitude", `${region.latitude}`)
+    setValue("longitude", `${region.longitude}`)
+    setIsMarkerMove(false)
+  }
 
-  useEffect(() => {
-    if(isOpen) {
-      centerOnCurrentLocation()
-      if(markersLocations.length === 0) {
-        setMarkersLocations([
-          {
-            id: 'marker-1',
-            coordinates: {
-              latitude: -34.60926903688196, 
-              longitude: -58.390340377259875
-            },
-            title: "Marcador",
-            snippet: "descripcion",
-            icon: image ? image : undefined,
-            draggable: true
-          }
-        ])
-      }
-    } 
-  }, [isOpen]);
+  const onSubmit = handleSubmit(async(data) => {
+    console.log('data: ', data);
+  })
 
-  useEffect(() => {
-    console.log('locations: ', markersLocations);
-    
-  }, [markersLocations])
+  const handleClose = () => {
+    onClose()
+    reset()
+  }
   
-
   return {
     t,
     insets,
     currentLocation,
     zoom,
     locationSelected,
-    markersLocations,
-    zoomOn,
-    zoomOut,
+    markerLocation,
+    mapRef,
+    markerLocationRef,
+    isMarkerMove,
+    errors,
+    control,
+    setIsMarkerMove,
+    setMarkerLocation,
     centerOnCurrentLocation,
+    onSubmit,
+    handlerRegionChangeComplete,
+    handleClose
   }
 }

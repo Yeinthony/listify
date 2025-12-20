@@ -7,15 +7,8 @@ export interface Location {
 }
 
 export interface Marker {
-  id: string;
-  coordinates: {
-    latitude: number;
-    longitude: number
-  },
-  title: string;
-  snippet: string;
-  icon: SharedRefType<'image'> | undefined;
-  draggable: boolean
+ latitude: number;
+  longitude: number
 }
 
 export interface ManageLocationsState {
