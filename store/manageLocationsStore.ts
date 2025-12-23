@@ -1,13 +1,10 @@
 import { create } from "zustand";
 import { ManageLocationsState } from "./types/manage-location.store";
-import { locationsByUserId } from "@/api/user.api";
+import { createLocation, locationsByUserId } from "@/api/user.api";
 import { useUserStore } from "./userStore";
 
 const useManageLocationsStore = create<ManageLocationsState>((set) => ({
   locations: [],
-  setLocation: async(newLocation) => {
-
-  },
   loadLocations: async (setLoading) => {
     try {
       setLoading(true)
@@ -25,6 +22,26 @@ const useManageLocationsStore = create<ManageLocationsState>((set) => ({
       console.log('error load locations: ', error);
     } finally {
       setLoading(false)
+    }
+  },
+  pushLocation: async(locationParams) => {
+    const { location, snackbar, spinner } = locationParams
+
+    try {
+      spinner(true)
+
+      const res = await createLocation(location)
+
+      if(res.status === 200){
+        snackbar({
+          message: "Ubicación guardada con éxito",
+          type: "success"
+        })
+      }
+    } catch (error) {
+      console.log('error: ', error);
+    } finally {
+      spinner(false)
     }
   }
 }))

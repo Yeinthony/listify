@@ -1,3 +1,5 @@
+import { ActionDeps } from "@/types/action-deps";
+
 export interface Location {
   id: string;
   name: string; 
@@ -11,8 +13,12 @@ export interface Marker {
   longitude: number
 }
 
+export interface PushLocationParams extends ActionDeps {
+  location: Location
+}
+
 export interface ManageLocationsState {
   locations: Location[]
-  setLocation: (newLocation: Location) => void
+  pushLocation: (locationParams: PushLocationParams) => void
   loadLocations: (setLoading: (loading: boolean) => void) => void
 }

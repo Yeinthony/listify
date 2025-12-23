@@ -49,3 +49,14 @@ export const locationsByUserId = async(userId: string): Promise<AxiosResponse<Lo
     return Promise.reject(error as AxiosError)
   }
 }
+
+export const createLocation = async(location: Location): Promise<AxiosResponse<Location>> => {
+  try {
+    const response = await axios.post<Location>(`${URL}/create-location`, location)
+    console.log(response);
+
+    return response
+  } catch (error) {
+    return Promise.reject(error as AxiosError)
+  }
+}

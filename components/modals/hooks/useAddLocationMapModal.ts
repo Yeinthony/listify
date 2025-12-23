@@ -1,24 +1,29 @@
 import { useTranslation } from "react-i18next";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
-import { useEffect, useRef, useState } from "react";
+import { useRef, useState } from "react";
 import { useSpinnerModal } from "@/contexts/SpinnerModalContext";
-import { Location as Locations, Marker } from "@/store/types/manage-location.store";
-import { Loc } from "../types/store-by-product";
+import { Marker, Location as LocationParams, PushLocationParams } from "@/store/types/manage-location.store";
 import { ModalProps } from "../types/modal";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { register2Scheme, registerLocation } from "@/utils/formSchemes";
+import { registerLocation } from "@/utils/formSchemes";
+import { createLocation } from "@/api/user.api";
+import { useUserStore } from "@/store/userStore";
 
 import MapView, { Region } from "react-native-maps";
 import * as Location from "expo-location";
-import helpers from "@/utils/helpers";
+import useSnackbarStore from "@/store/snackbarStore";
+import useManageLocationsStore from "@/store/manageLocationsStore";
 
 export const useAddLocationsMapModal = ({ isOpen, onClose }: ModalProps) => {
   const { t } = useTranslation();
+  const { user } = useUserStore()
+  const { locations, pushLocation } = useManageLocationsStore()
+  const { showSnackbar } = useSnackbarStore()
   const insets = useSafeAreaInsets();
   const showSpinnerModal = useSpinnerModal();
 
-  const { control, handleSubmit, formState: { errors }, reset, setValue } = useForm({
+  const { control, formState: { errors }, handleSubmit, reset, setValue, getValues } = useForm({
     resolver: zodResolver(registerLocation(t)),
     defaultValues: {
       title: '',
@@ -27,14 +32,13 @@ export const useAddLocationsMapModal = ({ isOpen, onClose }: ModalProps) => {
     },
   });
 
-  const [currentLocation, setCurrentLocation] = useState<Loc>({ lat: 0, lng: 0 });
-  const [locationSelected, setLocationSelected] = useState(location);
-  const [zoom, setZoom] = useState<number>(15)
-  const [markerLocation, setMarkerLocation] = useState<Marker>({ latitude: 0, longitude: 0 })
   const [isMarkerMove, setIsMarkerMove] = useState<boolean>(false)
   
   const mapRef = useRef<MapView>(null);
-  const markerLocationRef = useRef<Marker>({ latitude: 0, longitude: 0 })
+  const markerLocation = useRef<Marker>({ latitude: 0, longitude: 0 })
+  const timeoutLatRef = useRef<number | null>(null);
+  const timeoutLngRef = useRef<number | null>(null);
+  const isManualUpdate = useRef<boolean>(true)
 
   const centerOnCurrentLocation = async () => {
     try {
@@ -56,7 +60,6 @@ export const useAddLocationsMapModal = ({ isOpen, onClose }: ModalProps) => {
         longitude: location.coords.longitude,
       };
 
-      // 2️⃣ Movés la cámara del mapa
       mapRef.current?.animateCamera({
         ...camera,
         center: coords,
@@ -68,40 +71,92 @@ export const useAddLocationsMapModal = ({ isOpen, onClose }: ModalProps) => {
   };
 
   const handlerRegionChangeComplete = (region: Region) => {
-    setMarkerLocation({
-      latitude: region.latitude,
-      longitude: region.longitude
-    })
-    setValue("latitude", `${region.latitude}`)
-    setValue("longitude", `${region.longitude}`)
+    if(isManualUpdate.current){
+      setValue("latitude", `${region.latitude}`)
+      setValue("longitude", `${region.longitude}`)
+    }else isManualUpdate.current = true
     setIsMarkerMove(false)
   }
-
-  const onSubmit = handleSubmit(async(data) => {
-    console.log('data: ', data);
-  })
-
+  
   const handleClose = () => {
     onClose()
     reset()
   }
   
+  const onChangeLat = async(newLat: string) => {
+    const camera = await mapRef.current?.getCamera();
+    if (!camera) return;
+    
+    if(timeoutLatRef.current) clearTimeout(timeoutLatRef.current)
+      isManualUpdate.current = false
+    
+    const latitude = Number(newLat)
+    const longitude = Number(getValues('longitude'))
+    
+    timeoutLatRef.current = setTimeout(() => {
+      mapRef.current?.animateCamera({
+        ...camera,
+        center: {
+          latitude: latitude,
+          longitude: longitude
+        },
+      });
+    }, 3000);
+  }
+  
+  const onChangeLng = async(newLng: string) => {
+    const camera = await mapRef.current?.getCamera();
+    if (!camera) return;
+    
+    if(timeoutLngRef.current) clearTimeout(timeoutLngRef.current)
+      isManualUpdate.current = false
+    
+    const latitude = Number(getValues('latitude'))
+    const longitude = Number(newLng)
+    
+    timeoutLngRef.current = setTimeout(() => {
+      mapRef.current?.animateCamera({
+        ...camera,
+        center: {
+          latitude: latitude,
+          longitude: longitude
+        },
+      });
+    }, 3000);
+  }
+
+  const createLocation = async() => {
+    const payload: PushLocationParams = {
+      location: {
+        id: user?.id || "",
+        name: getValues('title'), 
+        address: getValues('address') || "",
+        latitude: Number(getValues('latitude')),
+        longitude: Number(getValues('longitude')),
+      },
+      snackbar: showSnackbar,
+      spinner: showSpinnerModal
+    }
+    pushLocation(payload)
+  }
+  
+  const onSubmit = handleSubmit(async(data) => {
+    console.log('data: ', data);
+  })
+
   return {
     t,
     insets,
-    currentLocation,
-    zoom,
-    locationSelected,
     markerLocation,
     mapRef,
-    markerLocationRef,
     isMarkerMove,
     errors,
     control,
     setIsMarkerMove,
-    setMarkerLocation,
     centerOnCurrentLocation,
     onSubmit,
+    onChangeLat,
+    onChangeLng,
     handlerRegionChangeComplete,
     handleClose
   }
