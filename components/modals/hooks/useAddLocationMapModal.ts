@@ -33,6 +33,7 @@ export const useAddLocationsMapModal = ({ isOpen, onClose }: ModalProps) => {
   });
 
   const [isMarkerMove, setIsMarkerMove] = useState<boolean>(false)
+  const [showAlertModal, setShowAlertModal] = useState<boolean>(false)
   
   const mapRef = useRef<MapView>(null);
   const markerLocation = useRef<Marker>({ latitude: 0, longitude: 0 })
@@ -128,20 +129,20 @@ export const useAddLocationsMapModal = ({ isOpen, onClose }: ModalProps) => {
   const createLocation = async() => {
     const payload: PushLocationParams = {
       location: {
-        id: user?.id || "",
+        userId: user?.id || "",
         name: getValues('title'), 
-        address: getValues('address') || "",
         latitude: Number(getValues('latitude')),
         longitude: Number(getValues('longitude')),
       },
       snackbar: showSnackbar,
-      spinner: showSpinnerModal
+      spinner: showSpinnerModal,
+      onSuccess: handleClose
     }
     pushLocation(payload)
   }
   
   const onSubmit = handleSubmit(async(data) => {
-    console.log('data: ', data);
+    setShowAlertModal(true)
   })
 
   return {
@@ -152,12 +153,15 @@ export const useAddLocationsMapModal = ({ isOpen, onClose }: ModalProps) => {
     isMarkerMove,
     errors,
     control,
+    showAlertModal,
+    setShowAlertModal,
     setIsMarkerMove,
     centerOnCurrentLocation,
     onSubmit,
     onChangeLat,
     onChangeLng,
     handlerRegionChangeComplete,
-    handleClose
+    handleClose,
+    createLocation
   }
 }

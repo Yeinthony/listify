@@ -1,9 +1,9 @@
 import { ActionDeps } from "@/types/action-deps";
 
 export interface Location {
-  id: string;
+  userId: string;
   name: string; 
-  address: string;
+  address?: string;
   latitude: number;
   longitude: number;
 }
@@ -14,7 +14,8 @@ export interface Marker {
 }
 
 export interface PushLocationParams extends ActionDeps {
-  location: Location
+  location: Location,
+  onSuccess: () => void
 }
 
 export interface ManageLocationsState {

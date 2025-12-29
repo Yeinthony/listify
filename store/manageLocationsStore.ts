@@ -16,6 +16,8 @@ const useManageLocationsStore = create<ManageLocationsState>((set) => ({
 
       if (res.status === 200) {
         set({locations: res.data})
+        console.log('locations: ', res.data);
+        
       }
       
     } catch (error) {
@@ -25,7 +27,7 @@ const useManageLocationsStore = create<ManageLocationsState>((set) => ({
     }
   },
   pushLocation: async(locationParams) => {
-    const { location, snackbar, spinner } = locationParams
+    const { location, snackbar, spinner, onSuccess } = locationParams
 
     try {
       spinner(true)
@@ -37,6 +39,7 @@ const useManageLocationsStore = create<ManageLocationsState>((set) => ({
           message: "Ubicación guardada con éxito",
           type: "success"
         })
+        onSuccess()
       }
     } catch (error) {
       console.log('error: ', error);

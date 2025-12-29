@@ -5,8 +5,7 @@ import {
 } from "@/components/ui/modal";
 import { Heading } from "@/components/ui/heading";
 import { Text } from "@/components/ui/text";
-import { AppleMaps, GoogleMaps } from "expo-maps";
-import { Platform, StyleSheet, useColorScheme, Keyboard, View } from "react-native";
+import { StyleSheet, useColorScheme, View } from "react-native";
 import { TouchableOpacity } from "react-native";
 import { VStack } from "../ui/vstack";
 import { HStack } from "../ui/hstack";
@@ -15,15 +14,13 @@ import { SafeAreaView } from "react-native-safe-area-context";
 import { ModalProps } from "./types/modal";
 import { useAddLocationsMapModal } from "./hooks/useAddLocationMapModal";
 import { StatusBar } from "expo-status-bar";
-import { useImage } from 'expo-image';
 import { Image } from "../ui/image";
-import { Box } from "../ui/box";
-import { Canvas, Oval } from "@shopify/react-native-skia";
-import MapView, { Marker } from "react-native-maps";
-import Ionicons from "@expo/vector-icons/Ionicons";
 import { FormControl, FormControlError, FormControlErrorText } from "../ui/form-control";
 import { Input, InputField } from "../ui/input";
 import { Controller } from "react-hook-form";
+import MapView from "react-native-maps";
+import Ionicons from "@expo/vector-icons/Ionicons";
+import AlertModal from "./AlertModal";
 
 export const AddLocationModal = ({ isOpen, onClose }: ModalProps) => {
   const colorScheme = useColorScheme();
@@ -35,13 +32,16 @@ export const AddLocationModal = ({ isOpen, onClose }: ModalProps) => {
     isMarkerMove,
     errors,
     control,
+    showAlertModal,
+    setShowAlertModal,
     setIsMarkerMove,
     centerOnCurrentLocation,
     onSubmit,
     onChangeLat,
     onChangeLng,
     handlerRegionChangeComplete,
-    handleClose
+    handleClose,
+    createLocation
   } = useAddLocationsMapModal({ isOpen, onClose });
 
   return (
@@ -232,6 +232,15 @@ export const AddLocationModal = ({ isOpen, onClose }: ModalProps) => {
                 </Text>
               </Center>
             </TouchableOpacity>
+
+            <AlertModal 
+              type="info"
+              title="¿Confirmar dirección?"
+              description="Al presionar aceptar quedara registrada esta dirección."
+              isOpen={showAlertModal}
+              onClose={() => setShowAlertModal(false)}
+              onAction={createLocation}
+            />
           </VStack>
         </VStack>
         <HStack

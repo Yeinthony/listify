@@ -44,11 +44,11 @@ const AlertModal = ({
     <AlertDialog 
       isOpen={isOpen}
       onClose={onClose}
-      size="md"
+      size="sm"
     >
       <AlertDialogBackdrop />
       <AlertDialogContent 
-        className="w-full max-w-[320px] gap-4 items-center rounded-2xl"
+        className="w-full max-w-[300px] gap-4 items-center rounded-2xl"
       >
         <Box 
           className={

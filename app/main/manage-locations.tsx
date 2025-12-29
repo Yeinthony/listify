@@ -6,12 +6,13 @@ import { useTranslation } from 'react-i18next';
 import { SafeAreaView, useSafeAreaInsets } from 'react-native-safe-area-context';
 import { VStack } from '@/components/ui/vstack';
 import { HStack } from '@/components/ui/hstack';
-import { TouchableOpacity } from 'react-native';
+import { ScrollView, TouchableOpacity } from 'react-native';
 import { useManageLocations } from '@/hooks/screens/useManageLocations';
 import { Spinner } from '@/components/ui/spinner';
 import { AddLocationModal } from '@/components/modals/AddLocationMapModal';
 import Ionicons from '@expo/vector-icons/Ionicons';
 import CustomHeader from '@/components/generals/CustomHeader';
+import LocationCard from '@/components/cards/LocationCard';
 
 
 export default function ManageLocations() {
@@ -74,9 +75,16 @@ export default function ManageLocations() {
                 </Text>
               </Center>
             ) : (
-              <VStack className='flex-1'>
-
-              </VStack>
+                <ScrollView className='flex-1'>
+                  <VStack className='flex-1'>
+                    {locations.map(location => (
+                      <LocationCard 
+                        key={location.name}
+                        location={location}
+                      />
+                    ))}
+                  </VStack>
+                </ScrollView>
             )
           )}
           <TouchableOpacity onPress={() => setShowAddLocationModal(true)}>
