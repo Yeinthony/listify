@@ -11,14 +11,11 @@ import { Text } from "@/components/ui/text";
 import { VStack } from "@/components/ui/vstack";
 import { HStack } from "@/components/ui/hstack";
 import { Center } from "@/components/ui/center";
-import { Image } from "@/components/ui/image";
 import { TouchableOpacity } from "react-native";
 import { useEffect, useState } from "react";
 import { useTranslation } from "react-i18next";
 import Ionicons from '@expo/vector-icons/Ionicons';
 import { UpdateItemModalProps } from "./types/update-item-modal";
-
-const PLACEHOLDER_IMG = 'https://picsum.photos/200/300';
 
 const UpdateItemModal = ({ isOpen, item, onClose, onSave, saving }: UpdateItemModalProps) => {
   const { t } = useTranslation();
@@ -42,24 +39,6 @@ const UpdateItemModal = ({ isOpen, item, onClose, onSave, saving }: UpdateItemMo
         </ModalHeader>
         <ModalBody>
           <VStack space="xl">
-            {item && (
-              <HStack space="md" className="items-center">
-                <Image
-                  source={{ uri: item.product.imageUrl || PLACEHOLDER_IMG }}
-                  className="w-12 h-12 rounded-xl"
-                  alt={item.product.name}
-                />
-                <VStack className="flex-1">
-                  <Heading className="text-[14px] font-bold uppercase" numberOfLines={2}>
-                    {item.product.name}
-                  </Heading>
-                  <Text className="text-sm text-typography-600 capitalize">
-                    {`${item.product.presentationQty} ${item.product.presentationUnit}`}
-                  </Text>
-                </VStack>
-              </HStack>
-            )}
-
             <HStack className="items-center justify-center" space="2xl">
               <TouchableOpacity
                 onPress={() => setQuantity((q) => Math.max(1, q - 1))}
