@@ -10,7 +10,7 @@ import { Platform, StyleSheet, TouchableOpacity, useColorScheme } from 'react-na
 import { SafeAreaView } from 'react-native-safe-area-context';
 import Ionicons from '@expo/vector-icons/Ionicons';
 import { router, useLocalSearchParams } from 'expo-router';
-import { useMemo, useState } from 'react';
+import { useEffect, useMemo, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { useListBranchPrices } from '@/hooks/screens/useListBranchPrices';
 import { useListDetail } from '@/hooks/screens/useListDetail';
@@ -18,6 +18,7 @@ import { DISTANCES_FILTER } from '@/assets/globalsConst';
 import { BranchMapMarker } from '@/components/modals/types/branchs-map';
 import { BranchPriceEntry } from '@/types/shopping-lists';
 import BranchPriceDetailModal from '@/components/modals/BranchPriceDetailModal';
+import MapLoadingOverlay, { MapLoadingPhase } from '@/components/generals/MapLoadingOverlay';
 
 const money = (n: number) => `$${Math.round(n).toLocaleString('es-AR')}`;
 
@@ -32,9 +33,26 @@ export default function ListBranchPrices() {
   const [chosen, setChosen] = useState<BranchPriceEntry | null>(null);
   const [showDetail, setShowDetail] = useState(false);
   const [focus, setFocus] = useState<{ lat: number; lng: number } | null>(null);
+  const [rendering, setRendering] = useState(false);
 
   const { coords, permissionDenied, branches, totalItems, loading } = useListBranchPrices(id, km);
   const { list } = useListDetail(id);
+
+  useEffect(() => {
+    if (coords && !loading) {
+      setRendering(true);
+      const id = setTimeout(() => setRendering(false), 900);
+      return () => clearTimeout(id);
+    }
+  }, [coords, loading]);
+
+  const phase: MapLoadingPhase | 'denied' | 'ready' =
+    permissionDenied ? 'denied'
+      : !coords ? 'locating'
+        : loading ? 'fetching'
+          : rendering ? 'rendering'
+            : 'ready';
+  const showOverlay = phase === 'locating' || phase === 'fetching' || phase === 'rendering';
 
   const productNameById = useMemo(() => {
     const map: Record<string, string> = {};
@@ -275,6 +293,10 @@ export default function ListBranchPrices() {
         productNameById={productNameById}
         totalItems={totalItems}
       />
+
+      {showOverlay && (
+        <MapLoadingOverlay phase={phase as MapLoadingPhase} onBack={() => router.back()} />
+      )}
     </VStack>
   );
 }
