@@ -44,11 +44,6 @@ export interface Stats {
   avg: string
 }
 
-export interface PriceBranchByProduct {
-  branch: Branch
-  price: Price
-}
-
 export interface Branch {
   id: string
   storeId: string
