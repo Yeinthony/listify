@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
-import { StyleSheet, TouchableOpacity, useColorScheme } from "react-native";
+import { StyleSheet, TouchableOpacity, useColorScheme, View } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
+import { Motion, AnimatePresence } from "@legendapp/motion";
 import { VStack } from "../ui/vstack";
 import { HStack } from "../ui/hstack";
 import { Center } from "../ui/center";
@@ -16,6 +17,8 @@ interface MapLoadingOverlayProps {
   phase: MapLoadingPhase;
   onBack: () => void;
 }
+
+const MotionView = Motion.View as any;
 
 const FETCHING_KEYS = [
   'screen.lists.loadingFetching1',
@@ -33,7 +36,7 @@ export default function MapLoadingOverlay({ phase, onBack }: MapLoadingOverlayPr
       setIdx(0);
       return;
     }
-    const id = setInterval(() => setIdx((i) => (i + 1) % FETCHING_KEYS.length), 2200);
+    const id = setInterval(() => setIdx((i) => (i + 1) % FETCHING_KEYS.length), 2600);
     return () => clearInterval(id);
   }, [phase]);
 
@@ -62,9 +65,21 @@ export default function MapLoadingOverlay({ phase, onBack }: MapLoadingOverlayPr
         <Heading className="text-center text-lg font-bold mt-5">
           {t('screen.lists.branchPrices')}
         </Heading>
-        <Text className="text-center text-typography-600 mt-2">
-          {message}
-        </Text>
+
+        <View style={{ height: 44, marginTop: 8, alignSelf: 'stretch', justifyContent: 'center' }}>
+          <AnimatePresence>
+            <MotionView
+              key={message}
+              initial={{ opacity: 0, translateY: 8 }}
+              animate={{ opacity: 1, translateY: 0 }}
+              exit={{ opacity: 0, translateY: -8 }}
+              transition={{ type: 'timing', duration: 320 }}
+              style={{ position: 'absolute', left: 0, right: 0 }}
+            >
+              <Text className="text-center text-typography-600">{message}</Text>
+            </MotionView>
+          </AnimatePresence>
+        </View>
       </Center>
     </VStack>
   );

@@ -19,6 +19,9 @@ import { BranchMapMarker } from '@/components/modals/types/branchs-map';
 import { BranchPriceEntry } from '@/types/shopping-lists';
 import BranchPriceDetailModal from '@/components/modals/BranchPriceDetailModal';
 import MapLoadingOverlay, { MapLoadingPhase } from '@/components/generals/MapLoadingOverlay';
+import { Motion, AnimatePresence } from '@legendapp/motion';
+
+const MotionView = Motion.View as any;
 
 const money = (n: number) => `$${Math.round(n).toLocaleString('es-AR')}`;
 
@@ -294,9 +297,20 @@ export default function ListBranchPrices() {
         totalItems={totalItems}
       />
 
-      {showOverlay && (
-        <MapLoadingOverlay phase={phase as MapLoadingPhase} onBack={() => router.back()} />
-      )}
+      <AnimatePresence>
+        {showOverlay && (
+          <MotionView
+            key='map-loading'
+            style={StyleSheet.absoluteFill}
+            initial={{ opacity: 1 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            transition={{ type: 'timing', duration: 350 }}
+          >
+            <MapLoadingOverlay phase={phase as MapLoadingPhase} onBack={() => router.back()} />
+          </MotionView>
+        )}
+      </AnimatePresence>
     </VStack>
   );
 }
