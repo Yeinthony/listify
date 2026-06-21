@@ -3,6 +3,7 @@ import http from '@/utils/httpClient';
 import { Paginated } from '@/api/types/common';
 import {
   CreatedList,
+  ListBranchPrices,
   ListCollaborator,
   ListDetail,
   ListItem,
@@ -13,6 +14,7 @@ import {
 import {
   AddCollaboratorPayload,
   AddItemPayload,
+  BranchPricesPayload,
   CreateListPayload,
   OptimizePayload,
   UpdateCollaboratorRolePayload,
@@ -37,6 +39,9 @@ export const deleteList = (id: string): Promise<AxiosResponse<void>> =>
 
 export const optimizeList = (id: string, data: OptimizePayload): Promise<AxiosResponse<OptimizeResult>> =>
   http.post<OptimizeResult>(`/shopping-lists/${id}/optimize`, data);
+
+export const getListBranchPrices = (id: string, data: BranchPricesPayload): Promise<AxiosResponse<ListBranchPrices>> =>
+  http.post<ListBranchPrices>(`/shopping-lists/${id}/branch-prices`, data);
 
 export const addListItem = (id: string, data: AddItemPayload): Promise<AxiosResponse<ListItem>> =>
   http.post<ListItem>(`/shopping-lists/${id}/items`, data);

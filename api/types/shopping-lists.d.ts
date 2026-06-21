@@ -38,6 +38,17 @@ export interface OptimizePayload {
   exchangeType?: ExchangeType;
 }
 
+export interface BranchPricesPayload {
+  lat: number;
+  lng: number;
+  km: number;
+  limit?: number;
+  channel?: Channel;
+  applyDiscounts?: boolean;
+  currency?: Currency;
+  exchangeType?: ExchangeType;
+}
+
 export interface AddCollaboratorPayload {
   email: string;
   role: ListRole;

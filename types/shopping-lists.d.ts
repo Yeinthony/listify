@@ -1,4 +1,5 @@
 import { Product } from "@/types/products";
+import { Channel } from "@/api/types/products";
 
 export type ListRole = 'reader' | 'editor' | 'owner';
 
@@ -99,4 +100,35 @@ export interface OptimizeResult {
   savings: number;
   coveredItems: number;
   notCovered: NotCoveredItem[];
+}
+
+export interface BranchPriceItem {
+  productId: string;
+  quantity: number;
+  unitPrice: number;
+  subtotal: number;
+}
+
+export interface BranchPriceEntry {
+  branchId: string;
+  storeId: string;
+  storeName: string;
+  brandId: number;
+  branchName: string | null;
+  address: string | null;
+  latitude: number | null;
+  longitude: number | null;
+  distanceMeters: number;
+  coveredItems: number;
+  total: number;
+  appliedDiscount: AppliedDiscount | null;
+  totalWithDiscount: number;
+  items: BranchPriceItem[];
+}
+
+export interface ListBranchPrices {
+  channel: Channel;
+  currency: 'ars' | 'all' | 'usd';
+  totalItems: number;
+  branches: BranchPriceEntry[];
 }
