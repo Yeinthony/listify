@@ -1,6 +1,6 @@
 import { Text } from '@/components/ui/text';
 import { useTranslation } from 'react-i18next';
-import { SafeAreaView } from 'react-native-safe-area-context';
+import { SafeAreaView, useSafeAreaInsets } from 'react-native-safe-area-context';
 import CustomHeader from '@/components/generals/CustomHeader';
 import { VStack } from '@/components/ui/vstack';
 import { HStack } from '@/components/ui/hstack';
@@ -20,6 +20,7 @@ import { ListItem } from '@/types/shopping-lists';
 export default function ListDetail() {
   const { t } = useTranslation();
   const params = useLocalSearchParams();
+  const insets = useSafeAreaInsets();
   const id = Array.isArray(params.id) ? params.id[0] : params.id || '';
 
   const { list, loading, refreshing, refetch, updateItem, updatingItem, removeItem } = useListDetail(id);
@@ -55,16 +56,6 @@ export default function ListDetail() {
         </TouchableOpacity>
       </HStack>
 
-      {canEdit && (
-        <TouchableOpacity
-          className='mx-4 mb-1 bg-background-0 rounded-2xl h-12 items-center justify-center flex-row'
-          onPress={() => setShowScan(true)}
-        >
-          <Ionicons name="add-circle-outline" size={20} color="#e44b5e" />
-          <Text className='font-medium ml-2'>{t('screen.lists.addProducts')}</Text>
-        </TouchableOpacity>
-      )}
-
       <VStack className='flex-1'>
         {loading ? (
           <Center className='flex-1'>
@@ -74,7 +65,7 @@ export default function ListDetail() {
           <FlatList
             data={list?.items ?? []}
             keyExtractor={(item) => item.id}
-            contentContainerStyle={{ padding: 16, gap: 12, flexGrow: 1 }}
+            contentContainerStyle={{ padding: 16, paddingBottom: insets.bottom + 96, gap: 12, flexGrow: 1 }}
             refreshControl={<RefreshControl refreshing={refreshing} onRefresh={refetch} />}
             ListEmptyComponent={
               <Center className='flex-1'>
@@ -112,6 +103,17 @@ export default function ListDetail() {
           setToRemove(null);
         }}
       />
+
+      {canEdit && (
+        <TouchableOpacity
+          onPress={() => setShowScan(true)}
+          className='absolute self-center bg-primary-500 rounded-full h-14 px-6 flex-row items-center justify-center shadow-xl'
+          style={{ bottom: insets.bottom + 20 }}
+        >
+          <Ionicons name="add-circle-outline" size={22} color="white" />
+          <Text className='text-white font-medium ml-2'>{t('screen.lists.addProducts')}</Text>
+        </TouchableOpacity>
+      )}
 
       <BarcodeScanModal
         isOpen={showScan}
