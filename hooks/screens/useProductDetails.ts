@@ -1,6 +1,8 @@
 import { getProductByEanAll } from "@/api/products.api";
-import useSnackbarStore from "@/store/snackbarStore";
-import { Branch, ProductAll, Store } from "@/types/products";
+import { productKeys } from "@/api/queryKeys";
+import { DEFAULT_CHANNEL } from "@/assets/globalsConst";
+import { Store } from "@/types/products";
+import { useQuery } from "@tanstack/react-query";
 import { useLocalSearchParams } from "expo-router";
 import { useEffect, useState, useCallback } from "react"
 import { Loc } from "@/components/modals/types/store-by-product";
@@ -35,52 +37,37 @@ const bannerImages = [
 ]
 
 export const useProductDetails = () => {
-  const { showSnackbar } = useSnackbarStore()
   const params = useLocalSearchParams();
 
-  const [loading, setloading] = useState<boolean>(true)
   const [location, setLocation] = useState<Loc>({ lat: 0, lng: 0 });
   const [showStoreByProductModal, setShowStoreByProductModal] = useState<boolean>(false)
   const [showBranchsMapModal, setShowBranchsMapModal] = useState<boolean>(false)
-  const [productData, setproductData] = useState<ProductAll | null>(null)
   const [selectedStore, setSelectedStore] = useState<Store | null>(null)
 
   const ean = Array.isArray(params.ean) ? params.ean[0] : params.ean || "";
 
-  const loadProduct = async() => {
-    try {
-      const res = await getProductByEanAll(ean)
-      console.log('product all: ', res);
+  const { data: productData = null, isLoading } = useQuery({
+    queryKey: productKeys.detail(ean, { channel: DEFAULT_CHANNEL }),
+    queryFn: () => getProductByEanAll(ean).then(res => res.data),
+    enabled: !!ean,
+  })
 
-      if(res.status === 200){
-        setproductData(res.data)
-      }
-      
-    } catch (error) {
-      console.log('Error al cargar producto: ', error);
-    } finally {
-      setloading(false)
-    }
-  }
+  const loading = ean ? isLoading : false
 
   const getCurrentLocation = async() => {
     let { status } = await Location.requestForegroundPermissionsAsync();
     if (status !== 'granted') {
-      console.log('Permiso de geolocalizacion denegado');
       return;
     }
 
     let location = await Location.getCurrentPositionAsync({});
-    console.log('location: ', location);
-    
     setLocation({ lat: location.coords.latitude, lng: location.coords.longitude });
   }
 
   useEffect(() => {
     getCurrentLocation()
-    loadProduct()
   }, [])
-  
+
 
   const handleSetShowStoreByProductModal = useCallback((value: boolean) => {
     setShowStoreByProductModal(value);
