@@ -1,4 +1,5 @@
 import { Text } from '@/components/ui/text';
+import { Heading } from '@/components/ui/heading';
 import { useTranslation } from 'react-i18next';
 import { SafeAreaView, useSafeAreaInsets } from 'react-native-safe-area-context';
 import CustomHeader from '@/components/generals/CustomHeader';
@@ -11,11 +12,14 @@ import Ionicons from '@expo/vector-icons/Ionicons';
 import { router, useLocalSearchParams } from 'expo-router';
 import { useState } from 'react';
 import { useListDetail } from '@/hooks/screens/useListDetail';
+import { useListItemPrices } from '@/hooks/screens/useListItemPrices';
 import { ListItemCard } from '@/components/cards/ListItemCard';
 import UpdateItemModal from '@/components/modals/UpdateItemModal';
 import AlertModal from '@/components/modals/AlertModal';
 import { BarcodeScanModal } from '@/components/modals/BarcodeScanModal';
 import { ListItem } from '@/types/shopping-lists';
+
+const money = (n: number) => `$${Math.round(n).toLocaleString('es-AR')}`;
 
 export default function ListDetail() {
   const { t } = useTranslation();
@@ -24,6 +28,7 @@ export default function ListDetail() {
   const id = Array.isArray(params.id) ? params.id[0] : params.id || '';
 
   const { list, loading, refreshing, refetch, updateItem, updatingItem, removeItem } = useListDetail(id);
+  const { priceByProductId, total } = useListItemPrices(list?.items ?? []);
 
   const [editItem, setEditItem] = useState<ListItem | null>(null);
   const [toRemove, setToRemove] = useState<ListItem | null>(null);
@@ -56,6 +61,15 @@ export default function ListDetail() {
         </TouchableOpacity>
       </HStack>
 
+      {!!list?.items?.length && (
+        <HStack className='mx-4 mb-1 bg-background-0 rounded-2xl px-4 h-14 items-center justify-between'>
+          <Text className='text-typography-600'>{t('screen.lists.estimatedTotal')}</Text>
+          <Heading className='text-xl font-extrabold' style={{ fontVariant: ['tabular-nums'] }}>
+            {money(total)}
+          </Heading>
+        </HStack>
+      )}
+
       <VStack className='flex-1'>
         {loading ? (
           <Center className='flex-1'>
@@ -76,6 +90,7 @@ export default function ListDetail() {
               <ListItemCard
                 item={item}
                 canEdit={!!canEdit}
+                unitPrice={priceByProductId[item.product.id]}
                 onEdit={() => setEditItem(item)}
                 onRemove={() => setToRemove(item)}
               />

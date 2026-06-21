@@ -4,9 +4,15 @@ import { Heading } from "../ui/heading";
 import { Text } from "../ui/text";
 import { TouchableOpacity } from "react-native";
 import Ionicons from '@expo/vector-icons/Ionicons';
+import { useTranslation } from "react-i18next";
 import { ListItemCardProps } from "./types/list-item-card";
 
-export const ListItemCard = ({ item, canEdit, onEdit, onRemove }: ListItemCardProps) => {
+const money = (n: number) => `$${Math.round(n).toLocaleString('es-AR')}`;
+
+export const ListItemCard = ({ item, canEdit, unitPrice, onEdit, onRemove }: ListItemCardProps) => {
+  const { t } = useTranslation();
+  const hasPrice = unitPrice != null;
+
   return (
     <HStack className="bg-background-0 rounded-2xl w-full p-4 items-center" space="md">
       <VStack className="flex-1" space="xs">
@@ -23,12 +29,26 @@ export const ListItemCard = ({ item, canEdit, onEdit, onRemove }: ListItemCardPr
         ) : null}
       </VStack>
 
-      <VStack className="items-center" space="xs">
-        <Text className="text-lg font-extrabold" style={{ fontVariant: ['tabular-nums'] }}>
-          x{item.quantity}
-        </Text>
+      <VStack className="items-end" space="xs">
+        {hasPrice ? (
+          <>
+            <Text className="text-lg font-extrabold" style={{ fontVariant: ['tabular-nums'] }}>
+              {money(unitPrice! * item.quantity)}
+            </Text>
+            <Text className="text-xs text-typography-500" style={{ fontVariant: ['tabular-nums'] }}>
+              {`x${item.quantity} · ${money(unitPrice!)} ${t('screen.lists.perUnit')}`}
+            </Text>
+          </>
+        ) : (
+          <>
+            <Text className="text-base font-extrabold" style={{ fontVariant: ['tabular-nums'] }}>
+              x{item.quantity}
+            </Text>
+            <Text className="text-xs text-typography-500">{t('screen.lists.noPrice')}</Text>
+          </>
+        )}
         {canEdit && (
-          <HStack space="sm">
+          <HStack space="sm" className="mt-1">
             <TouchableOpacity onPress={onEdit} className="p-1">
               <Ionicons name="create-outline" size={20} color="#6b7280" />
             </TouchableOpacity>
