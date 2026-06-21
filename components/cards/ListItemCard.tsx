@@ -5,6 +5,7 @@ import { Text } from "../ui/text";
 import { Image } from "../ui/image";
 import { TouchableOpacity } from "react-native";
 import Ionicons from '@expo/vector-icons/Ionicons';
+import MaterialCommunityIcons from '@expo/vector-icons/MaterialCommunityIcons';
 import { useTranslation } from "react-i18next";
 import { ListItemCardProps } from "./types/list-item-card";
 
@@ -36,17 +37,9 @@ export const ListItemCard = ({ item, canEdit, unitPrice, onEdit, onRemove }: Lis
               {`· ${money(unitPrice!)} ${t('screen.lists.perUnit')}`}
             </Text>
           )}
-          {canEdit ? (
-            <TouchableOpacity onPress={onEdit} hitSlop={6}>
-              <Text className="text-sm font-bold text-primary-600" style={{ fontVariant: ['tabular-nums'] }}>
-                {`· x${item.quantity}`}
-              </Text>
-            </TouchableOpacity>
-          ) : (
-            <Text className="text-sm font-bold text-primary-600" style={{ fontVariant: ['tabular-nums'] }}>
-              {`· x${item.quantity}`}
-            </Text>
-          )}
+          <Text className="text-sm font-bold text-primary-600" style={{ fontVariant: ['tabular-nums'] }}>
+            {`· x${item.quantity}`}
+          </Text>
         </HStack>
         {item.notes ? (
           <Text className="text-xs text-typography-500" numberOfLines={1}>
@@ -64,9 +57,14 @@ export const ListItemCard = ({ item, canEdit, unitPrice, onEdit, onRemove }: Lis
           <Text className="text-xs text-typography-500">{t('screen.lists.noPrice')}</Text>
         )}
         {canEdit && (
-          <TouchableOpacity onPress={onRemove} hitSlop={8}>
-            <Ionicons name="trash-outline" size={20} color="#E63535" />
-          </TouchableOpacity>
+          <HStack space="md">
+            <TouchableOpacity onPress={onEdit} hitSlop={8}>
+              <MaterialCommunityIcons name="plus-minus-variant" size={20} color="#6b7280" />
+            </TouchableOpacity>
+            <TouchableOpacity onPress={onRemove} hitSlop={8}>
+              <Ionicons name="trash-outline" size={20} color="#E63535" />
+            </TouchableOpacity>
+          </HStack>
         )}
       </VStack>
     </HStack>
