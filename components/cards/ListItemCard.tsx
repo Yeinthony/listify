@@ -2,19 +2,27 @@ import { HStack } from "../ui/hstack";
 import { VStack } from "../ui/vstack";
 import { Heading } from "../ui/heading";
 import { Text } from "../ui/text";
+import { Image } from "../ui/image";
 import { TouchableOpacity } from "react-native";
 import Ionicons from '@expo/vector-icons/Ionicons';
 import { useTranslation } from "react-i18next";
 import { ListItemCardProps } from "./types/list-item-card";
 
 const money = (n: number) => `$${Math.round(n).toLocaleString('es-AR')}`;
+const PLACEHOLDER_IMG = 'https://picsum.photos/200/300';
 
 export const ListItemCard = ({ item, canEdit, unitPrice, onEdit, onRemove }: ListItemCardProps) => {
   const { t } = useTranslation();
   const hasPrice = unitPrice != null;
 
   return (
-    <HStack className="bg-background-0 rounded-2xl w-full p-4 items-center" space="md">
+    <HStack className="bg-background-0 rounded-2xl w-full p-3 items-center" space="md">
+      <Image
+        source={{ uri: item.product.imageUrl || PLACEHOLDER_IMG }}
+        className="w-14 h-14 rounded-xl"
+        alt={item.product.name}
+      />
+
       <VStack className="flex-1" space="xs">
         <Heading className="text-[14px] font-bold uppercase" numberOfLines={2}>
           {item.product.name}
@@ -36,23 +44,28 @@ export const ListItemCard = ({ item, canEdit, unitPrice, onEdit, onRemove }: Lis
         ) : null}
       </VStack>
 
-      <VStack className="items-end" space="xs">
+      <VStack className="items-end" space="sm">
         {hasPrice ? (
           <Heading className="text-lg font-extrabold" style={{ fontVariant: ['tabular-nums'] }}>
             {money(unitPrice! * item.quantity)}
+            <Text className="text-xs text-typography-500 pl-2" style={{ fontVariant: ['tabular-nums'] }}>
+              x{item.quantity}
+            </Text>
           </Heading>
         ) : (
-          <Text className="text-xs text-typography-500">{t('screen.lists.noPrice')}</Text>
+          <HStack space="xs" className="items-center">
+            <Text className="text-xs text-typography-500">{t('screen.lists.noPrice')}</Text>
+            <Text className="text-xs text-typography-500" style={{ fontVariant: ['tabular-nums'] }}>
+              x{item.quantity}
+            </Text>
+          </HStack>
         )}
-        <Text className="text-xs text-typography-500" style={{ fontVariant: ['tabular-nums'] }}>
-          x{item.quantity}
-        </Text>
         {canEdit && (
-          <HStack space="sm" className="mt-1">
-            <TouchableOpacity onPress={onEdit} className="p-1">
+          <HStack space="md" className="mt-1">
+            <TouchableOpacity onPress={onEdit} hitSlop={8}>
               <Ionicons name="create-outline" size={20} color="#6b7280" />
             </TouchableOpacity>
-            <TouchableOpacity onPress={onRemove} className="p-1">
+            <TouchableOpacity onPress={onRemove} hitSlop={8}>
               <Ionicons name="trash-outline" size={20} color="#E63535" />
             </TouchableOpacity>
           </HStack>
