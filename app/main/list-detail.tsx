@@ -65,7 +65,7 @@ export default function ListDetail() {
         <HStack
           className='mx-4 mb-1 bg-primary-500/10 rounded-2xl p-4 items-center'
           space='md'
-          style={{ boxShadow: '0 4px 12px rgba(228, 75, 94, 0.15)', borderCurve: 'continuous' }}
+          style={{ borderCurve: 'continuous' }}
         >
           <Center className='h-11 w-11 rounded-xl bg-primary-500'>
             <Ionicons name='wallet-outline' size={22} color='white' />
