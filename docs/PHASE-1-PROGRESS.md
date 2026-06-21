@@ -5,10 +5,10 @@
 
 ## Estado actual
 
-**FASE 1 CERRADA (pendiente verificación en runtime contra backend).** Infra HTTP + tipos + TanStack Query + contrato de auth alineados. Sin pantallas nuevas.
+**FASE 1 CERRADA Y VERIFICADA EN RUNTIME.** Infra HTTP + tipos + TanStack Query + contrato de auth alineados. Sin pantallas nuevas. Flujo auth real (login/whoami/401) probado OK contra el backend.
 
 - `tsc --noEmit`: **0 errores nuevos**. Quedan **8 errores pre-existentes** en componentes vendored de gluestack (`components/ui/bottomsheet`, `components/ui/table`) y `components/generals/Snackbar.tsx`, fuera de alcance de esta fase (deuda).
-- Pasos: 6/6 (código). Verificación en runtime (login/whoami/401) pendiente de correr la app contra el backend.
+- Pasos: 6/6 (código). Verificación en runtime (login/whoami/401) **OK**.
 
 **Siguiente:** Fase 2 — Productos / Escaneo / Mapa (migrar hooks a `useQuery`/`useMutation`, retirar `brach-prices`, alinear tipos de precios).
 
@@ -66,7 +66,7 @@
 - Migración de hooks de pantalla a `useQuery`/`useMutation`: Fases 2+.
 - **Lint no configurado** en el repo móvil (no hay eslint config ni script). Verificación de tipos vía `tsc`. Configurar ESLint queda como deuda.
 - **8 errores `tsc` pre-existentes** en componentes vendored de gluestack + `Snackbar.tsx` (no introducidos por Fase 1). Limpiarlos es deuda aparte.
-- Verificación en runtime (login/whoami/401 contra backend real) pendiente de correr la app.
+- Verificación en runtime (login/whoami/401 contra backend real): **OK**.
 
 ---
 

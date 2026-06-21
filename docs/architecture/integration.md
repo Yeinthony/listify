@@ -76,8 +76,8 @@ graph TD
 | Fase | Alcance | Estado |
 |------|---------|--------|
 | 0 | Documentación: arquitectura + ADRs 0001–0007 + spec de Recetas | **En revisión** |
-| 1 | Fundación/infra: `httpClient`, TanStack Query, tipos, contrato de auth | Pendiente |
-| 2 | Productos / escaneo / mapa (incluye retirar `brach-prices`, migrar hooks a `useQuery`) | Pendiente |
+| 1 | Fundación/infra: `httpClient`, TanStack Query, tipos, contrato de auth | **Hecha** (verificada en runtime) |
+| 2 | Productos / escaneo / mapa (incluye retirar `brach-prices`, migrar hooks a `useQuery`) | **En curso** |
 | 3 | Listas de compras (+ optimizador) | Pendiente |
 | 4 | Ubicaciones paginadas, pagos/descuentos, alertas, cotizaciones, push (FCM) | Pendiente |
 | 5 | Recetas (bloqueada por backend) | Bloqueada |
