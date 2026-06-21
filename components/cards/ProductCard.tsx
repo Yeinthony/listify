@@ -1,19 +1,19 @@
 import { HStack } from "../ui/hstack"
 import { Image } from "../ui/image"
-import { Box } from "../ui/box"
 import { VStack } from "../ui/vstack"
 import { Heading } from "../ui/heading"
 import { Text } from "../ui/text"
+import { Divider } from "../ui/divider"
 import helpers from "@/utils/helpers"
-import { TouchableOpacity, View } from "react-native"
+import { TouchableOpacity } from "react-native"
 import Ionicons from '@expo/vector-icons/Ionicons';
-import MaterialIcons from '@expo/vector-icons/MaterialIcons';
 import { router } from "expo-router"
 import { useState } from "react"
 import { ProductCardProps } from "./types/product-card"
 import AddToListModal from "../modals/AddToListModal"
 import { useAddToList } from "@/hooks/screens/useAddToList"
 
+const PLACEHOLDER_IMG = 'https://picsum.photos/200/300';
 
 export const ProductCard = (props: ProductCardProps) => {
   const [showAddToList, setShowAddToList] = useState(false)
@@ -28,80 +28,96 @@ export const ProductCard = (props: ProductCardProps) => {
     }
   }
 
+  if (!props.data) return null
+
+  const { product, stats } = props.data
+
   return (
-    <HStack 
-      className="bg-background-0 rounded-2xl w-full overflow-hidden relative h-[120px]"
-      space="xs"
+    <VStack
+      className="bg-background-0 rounded-2xl w-full p-4"
+      space="md"
+      style={{ boxShadow: '0 6px 16px rgba(0, 0, 0, 0.18)', borderCurve: 'continuous' }}
     >
-      {props.data && (
-        <>
-          <View 
-            className="w-[90px] h-full"
+      <HStack space="md" className="items-center">
+        <Image
+          source={{ uri: product.imageUrl || PLACEHOLDER_IMG }}
+          className="w-16 h-16 rounded-xl"
+          alt={product.name}
+        />
+        <VStack className="flex-1">
+          <Heading className="text-[15px] font-bold uppercase" numberOfLines={2}>
+            {product.name}
+          </Heading>
+          <Text className="text-sm text-typography-600 capitalize" numberOfLines={1}>
+            {[product.brand, `${product.presentationQty} ${product.presentationUnit}`]
+              .filter(Boolean)
+              .join(' · ')}
+          </Text>
+        </VStack>
+      </HStack>
+
+      <Divider />
+
+      <HStack className="justify-between">
+        <VStack className="items-center flex-1" space="xs">
+          <Text className="text-xs text-typography-500">Mín</Text>
+          <Text
+            className="text-success-500 text-lg font-extrabold"
+            style={{ fontVariant: ['tabular-nums'] }}
           >
-            <Image
-              source={{
-                uri: 'https://picsum.photos/200/300',
-              }}
-              className="flex-1 w-full"
-              alt="phone-1"
-            />
-          </View>
-          <VStack className="flex-1 p-2 justify-between">
-            <Heading className="text-[13px] font-bold uppercase">
-              {props.data.product.name} 
-            </Heading>
-            <HStack className="flex-1 items-center justify-between">
-              <Text className="text-success-500 text-lg font-extrabold">
-                ${helpers.roundOrDecimals(props.data.stats.min)}
-              </Text>
-              <Text className="text-xl font-extrabold">
-                ${helpers.roundOrDecimals(props.data.stats.avg)}
-              </Text>
-              <Text className="text-error-500 text-lg font-extrabold">
-                ${helpers.roundOrDecimals(props.data.stats.max)}
-              </Text>
-            </HStack>
-            <HStack className="justify-between items-center">
-              <Text className="capitalize text-sm font-medium">
-                {`${props.data.product.presentationQty} ${props.data.product.presentationUnit}`}
-              </Text>
-              <HStack space="xs" className="">
-                <TouchableOpacity
-                  onPress={() => {
-                    if(props.onCloseModal) props.onCloseModal()
-                    router.push({
-                      pathname: '/main/product-details',
-                      params: {
-                        ean: props.data.product.ean
-                      }
-                    })
-                  }}
-                >
-                  <HStack  
-                    className="bg-primary-500 px-4 py-1.5 rounded-xl justify-center items-center"
-                  >
-                    <Text className="text-sm text-white">Ver mas</Text>
-                  </HStack>
-                </TouchableOpacity>
-                <TouchableOpacity onPress={onAdd} disabled={adding}>
-                  <HStack
-                    className="bg-primary-500 px-4 py-1.5 rounded-xl justify-center items-center"
-                  >
-                    <Text className="text-sm text-white">Agregar</Text>
-                  </HStack>
-                </TouchableOpacity>
-              </HStack>
-            </HStack>
-          </VStack>
-          {!props.targetListId && (
-            <AddToListModal
-              isOpen={showAddToList}
-              onClose={() => setShowAddToList(false)}
-              productId={props.data.product.id}
-            />
-          )}
-        </>
+            ${helpers.roundOrDecimals(stats.min)}
+          </Text>
+        </VStack>
+        <VStack className="items-center flex-1" space="xs">
+          <Text className="text-xs text-typography-500">Prom</Text>
+          <Text
+            className="text-lg font-extrabold"
+            style={{ fontVariant: ['tabular-nums'] }}
+          >
+            ${helpers.roundOrDecimals(stats.avg)}
+          </Text>
+        </VStack>
+        <VStack className="items-center flex-1" space="xs">
+          <Text className="text-xs text-typography-500">Máx</Text>
+          <Text
+            className="text-error-500 text-lg font-extrabold"
+            style={{ fontVariant: ['tabular-nums'] }}
+          >
+            ${helpers.roundOrDecimals(stats.max)}
+          </Text>
+        </VStack>
+      </HStack>
+
+      <HStack space="sm" className="mt-1">
+        <TouchableOpacity
+          className="flex-1 h-12 rounded-2xl border-[1.5px] border-primary-500 items-center justify-center flex-row"
+          onPress={() => {
+            if (props.onCloseModal) props.onCloseModal()
+            router.push({
+              pathname: '/main/product-details',
+              params: { ean: product.ean },
+            })
+          }}
+        >
+          <Text className="text-primary-500 font-medium">Ver más</Text>
+        </TouchableOpacity>
+        <TouchableOpacity
+          className="flex-1 h-12 rounded-2xl bg-primary-500 items-center justify-center flex-row"
+          onPress={onAdd}
+          disabled={adding}
+        >
+          <Ionicons name="add" size={20} color="white" />
+          <Text className="text-white font-medium ml-1">Agregar</Text>
+        </TouchableOpacity>
+      </HStack>
+
+      {!props.targetListId && (
+        <AddToListModal
+          isOpen={showAddToList}
+          onClose={() => setShowAddToList(false)}
+          productId={product.id}
+        />
       )}
-    </HStack>
+    </VStack>
   )
 }
