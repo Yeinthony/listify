@@ -31,9 +31,21 @@ export default function AppLayout() {
           name="product-details" 
           options={{ headerShown: false }} 
         />
-        <Stack.Screen 
-          name="manage-locations" 
-          options={{ headerShown: false }} 
+        <Stack.Screen
+          name="manage-locations"
+          options={{ headerShown: false }}
+        />
+        <Stack.Screen
+          name="list-detail"
+          options={{ headerShown: false }}
+        />
+        <Stack.Screen
+          name="list-optimizer"
+          options={{ headerShown: false }}
+        />
+        <Stack.Screen
+          name="list-collaborators"
+          options={{ headerShown: false }}
         />
       </Stack>
     </GestureHandlerRootView>
