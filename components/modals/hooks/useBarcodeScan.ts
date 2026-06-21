@@ -6,9 +6,10 @@ import { useCallback, useEffect, useMemo, useState } from "react";
 import { useTranslation } from "react-i18next";
 import { Dimensions } from "react-native";
 import { getProductByEanLight } from "@/api/products.api";
+import { productKeys } from "@/api/queryKeys";
 import { ModalProps } from "../types/modal";
-import { ProductLight } from "@/types/products";
 import useSnackbarStore from "@/store/snackbarStore";
+import { useQuery } from "@tanstack/react-query";
 
 
 export const useBarcodeScan = ({ isOpen, onClose }: ModalProps) => {
@@ -19,9 +20,14 @@ export const useBarcodeScan = ({ isOpen, onClose }: ModalProps) => {
   const showSpinnerModal = useSpinnerModal();
 
   const [facing] = useState<CameraType>('back');
-  const [eanScanned, setEanScanned] = useState(''); 
-  const [product, setProduct] = useState<ProductLight | null>(null)
+  const [eanScanned, setEanScanned] = useState('');
   const [detectedBounds, setDetectedBounds] = useState<Bounds | null>(null);
+
+  const { data: product = null, isFetching } = useQuery({
+    queryKey: productKeys.light(eanScanned),
+    queryFn: () => getProductByEanLight(eanScanned).then(res => res.data),
+    enabled: !!eanScanned,
+  })
 
   // Rectángulo central de escaneo
   const RECT_W = width - 60;
@@ -61,24 +67,6 @@ export const useBarcodeScan = ({ isOpen, onClose }: ModalProps) => {
     console.log("Código detectado:", result.data, isInsideRect ? "dentro" : "fuera");
   }, [eanScanned, RECT_X, RECT_Y, RECT_W, RECT_H, width]);
 
-  const loadProductByEan = async() => {
-    showSpinnerModal(true)
-    try {
-      const res = await getProductByEanLight(eanScanned)
-      if(res.status === 200) {
-        setProduct(res.data)
-        if (!res.data) showSnackbar({message: "Producto no encontrado."})
-      }
-      console.log('Product: ', res);
-      
-    } catch (error) {
-      console.log('Error obteniendo producto por ean', error);
-      
-    } finally {
-      showSpinnerModal(false)
-    }
-  }
-
   const getAnimationProps = useCallback(() => {
     const hiddenY = height + 200; // un poco más abajo del borde
 
@@ -96,16 +84,19 @@ export const useBarcodeScan = ({ isOpen, onClose }: ModalProps) => {
     if (isOpen) {
       setDetectedBounds(null);
       setEanScanned('')
-      setProduct(null)
       if (permission && !permission.granted) requestPermission();
     }
   }, [isOpen]);
 
   useEffect(() => {
-    if(eanScanned) {
-      loadProductByEan()
+    showSpinnerModal(isFetching)
+  }, [isFetching])
+
+  useEffect(() => {
+    if (eanScanned && !isFetching && !product) {
+      showSnackbar({ message: "Producto no encontrado." })
     }
-  }, [eanScanned])
+  }, [eanScanned, isFetching, product])
 
   const rectPath = useMemo(() => {
     const p = Skia.Path.Make();
