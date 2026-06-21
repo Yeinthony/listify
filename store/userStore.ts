@@ -4,7 +4,7 @@ import { register, resendUserCode, verifyUser } from "@/api/user.api";
 import { changePassword, login, logout, resendPassCode, sendPassCode, verifyPassCode, whoami } from "@/api/auth.api";
 import { router } from 'expo-router';
 import * as SecureStore from 'expo-secure-store';
-import axios, { AxiosError } from "axios";
+import { ApiError } from "@/utils/apiError";
 
 export const useUserStore = create<UserState>((set) => ({
   user: null,
@@ -99,18 +99,12 @@ export const useUserStore = create<UserState>((set) => ({
         router.replace('/main');
       }
     } catch (error) {
-      if (axios.isAxiosError(error)) {
-        if (error.response?.status === 401) {
-          await SecureStore.deleteItemAsync("sessionToken");
-          set({ user: null });
-          router.replace("/signin");
-          return;
-        }
-
-        console.log("Axios error:", error.response);
-      } else {
-        console.log("Unknown error:", error);
+      if (error instanceof ApiError && error.statusCode === 401) {
+        await SecureStore.deleteItemAsync("sessionToken");
+        set({ user: null });
+        router.replace("/signin");
       }
+      // Otros errores ya muestran feedback vía el interceptor (snackbar).
     }
   },
   logoutSession: async(logoutProps) => {
@@ -121,7 +115,7 @@ export const useUserStore = create<UserState>((set) => ({
      try {
       const response = await logout();
       if (response.status === 200) {
-        await SecureStore.setItemAsync('sessionToken', '');
+        await SecureStore.deleteItemAsync('sessionToken');
         set({user: null})
         router.replace('/signin');
       }
