@@ -66,14 +66,14 @@ sucursal y ve la lista repreciada ahí.
 - `hooks/screens/useListBranchPrices.ts`: toma ubicación (`expo-location`) + `km` (estado de pantalla)
   y consulta vía `useQuery` (key por `listId`/coords/km/channel; refetch al cambiar `km`).
 
-### UI (pendiente)
+### UI (hecho)
 
-- Entrada en el detalle de lista → pantalla `app/main/list-branch-prices.tsx` con **mapa** (`expo-maps`,
-  reusando el patrón de `BranchsMapModal`): markers de sucursales + ubicación del usuario + filtro de
-  distancia.
-- Selección de sucursal (lista/carrusel inferior sobre el mapa, robusto frente a la detección de tap
-  en markers de `expo-maps`) → repreciar la lista en esa sucursal (por producto + total + descuento),
-  marcando los items no disponibles.
+- Entrada: en el detalle, la card de **Total estimado** es tappable → `app/main/list-branch-prices.tsx`.
+- Pantalla con **mapa** (`expo-maps`): markers de sucursales (filtrando coords null) + ubicación del
+  usuario + círculo de radio + chips de distancia (`km`).
+- **Carrusel inferior** de sucursales (tienda, distancia, cobertura, total); al elegir una se centra el
+  mapa y se abre `BranchPriceDetailModal` con el **repreciado por producto + total + descuento** y los
+  items **no disponibles** (cruzando con el detalle de la lista para los nombres).
 
 ### Notas
 
@@ -85,4 +85,4 @@ sucursal y ve la lista repreciada ahí.
 ## Estado
 
 - Backend: **hecho** (revisado, coincide con el contrato).
-- Mobile: capa de datos **en curso**; UI pendiente.
+- Mobile: capa de datos + UI **hechas** (pendiente verificación en runtime contra el backend).
