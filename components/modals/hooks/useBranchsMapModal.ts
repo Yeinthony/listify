@@ -1,10 +1,12 @@
 import { useTranslation } from "react-i18next";
-import { BranchMapMarker, useBranchsMapModalProps } from "../types/branchs-map"; 
+import { BranchMapMarker, useBranchsMapModalProps } from "../types/branchs-map";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 import { DEFAULT_CHANNEL, DISTANCES_FILTER } from "@/assets/globalsConst";
 import { useSpinnerModal } from "@/contexts/SpinnerModalContext";
 import { getNearbyBranches } from "@/api/products.api";
+import { productKeys } from "@/api/queryKeys";
+import { useQuery } from "@tanstack/react-query";
 
 import * as Location from "expo-location";
 import helpers from "@/utils/helpers";
@@ -31,13 +33,45 @@ export const useBranchsMapModal = ({
   const [selectedStoresName, setSelectedStoresName] = useState<string>("Todos los comercios");
   const [zoom, setZoom] = useState<number>(12)
   const [distance, setDistance] = useState<number>(2.5)
-  const [markersbranches, setMarkersBranches] = useState<BranchMapMarker[]>([])
+  const [appliedStoresId, setAppliedStoresId] = useState<string[]>([])
 
-  const prevStoresId = useRef<string[]>([])
-  
   const locationSubscription = useRef<Location.LocationSubscription | null>(null);
 
   const distances = DISTANCES_FILTER
+
+  const { data, isFetching, refetch } = useQuery({
+    queryKey: productKeys.nearby(ean, {
+      lat: location.lat,
+      lng: location.lng,
+      km: distance,
+      channel: DEFAULT_CHANNEL,
+      storeId: appliedStoresId.length > 0 ? appliedStoresId : undefined,
+    }),
+    queryFn: () => getNearbyBranches({
+      ean,
+      body: {
+        lat: location.lat,
+        lng: location.lng,
+        km: distance,
+        channel: DEFAULT_CHANNEL,
+        ...(appliedStoresId.length > 0 && { storeId: appliedStoresId }),
+      },
+    }).then(res => res.data),
+    enabled: isOpen,
+  })
+
+  const markersbranches = useMemo<BranchMapMarker[]>(() => {
+    if (!data) return []
+    return data.map(branch => ({
+      coordinates: {
+        latitude: branch.branch.latitude,
+        longitude: branch.branch.longitude,
+      },
+      title: `$${branch.price.listPrice} - ${branch.store.name}`,
+      snippet: `${branch.branch.name}, ${branch.branch.province.name} | a ${branch.distanceKm.toFixed(2)} km`,
+      icon: image ? image : undefined,
+    }))
+  }, [data, image])
 
   const startLocationTracking = async () => {
     try {
@@ -129,45 +163,6 @@ export const useBranchsMapModal = ({
     }
   }
 
-  const loadBranchesByLocation = async() => {
-    try {
-      showSpinnerModal(true);
-
-      const payload = {
-        ean,
-        body: {
-          lat: location.lat,
-          lng: location.lng,
-          km: distance,
-          channel: DEFAULT_CHANNEL,
-          ...(storesId.length > 0 && { storeId: storesId })
-        }
-      }
-
-      const res = await getNearbyBranches(payload)
-      console.log('res loadBranchesByLocation: ', res);
-      if(res.status === 200) {
-        const marksBranches = res.data.map(branch => {
-          return {
-            coordinates: {
-              latitude: branch.branch.latitude,
-              longitude: branch.branch.longitude
-            },
-            title: `$${branch.price.listPrice} - ${branch.store.name}`,
-            snippet: `${branch.branch.name}, ${branch.branch.province.name} | a ${branch.distanceKm.toFixed(2)} km`,
-            icon: image ? image : undefined,
-          }
-        });
-        setMarkersBranches(marksBranches);
-        prevStoresId.current = [...storesId];
-      } 
-    } catch (error) {
-      console.log('error loadBranchesByLocation: ', error);
-    } finally {
-      showSpinnerModal(false);
-    }
-  }
-
   const zoomLevelsByDistance = () => {
     switch (distance) {
       case 1:
@@ -231,23 +226,22 @@ export const useBranchsMapModal = ({
   }
 
   const handleCloseMenuStore = () => {
-    const isSame = storesId.length === prevStoresId.current.length && 
-                   storesId.every(id => prevStoresId.current.includes(id));
-    
-    if (!isSame) {
-      loadBranchesByLocation();
-    }
+    setAppliedStoresId(storesId)
   }
 
   useEffect(() => {
+    showSpinnerModal(isFetching)
+  }, [isFetching])
+
+  useEffect(() => {
     if (isOpen) {
-      loadBranchesByLocation()
       zoomLevelsByDistance()
     } else {
       setDistance(2.5)
       setStoresId([]);
+      setAppliedStoresId([]);
       return;
-    } 
+    }
 
     if(!locationSubscription.current) startLocationTracking();
 
@@ -286,7 +280,7 @@ export const useBranchsMapModal = ({
     zoomOn,
     zoomOut,
     centerOnCurrentLocation,
-    loadBranchesByLocation,
+    loadBranchesByLocation: refetch,
     handleCloseMenuStore
   }
 }
