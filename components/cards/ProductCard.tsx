@@ -9,10 +9,14 @@ import { TouchableOpacity, View } from "react-native"
 import Ionicons from '@expo/vector-icons/Ionicons';
 import MaterialIcons from '@expo/vector-icons/MaterialIcons';
 import { router } from "expo-router"
+import { useState } from "react"
 import { ProductCardProps } from "./types/product-card"
+import AddToListModal from "../modals/AddToListModal"
 
 
 export const ProductCard = (props: ProductCardProps) => {
+  const [showAddToList, setShowAddToList] = useState(false)
+
   return (
     <HStack 
       className="bg-background-0 rounded-2xl w-full overflow-hidden relative h-[120px]"
@@ -68,16 +72,21 @@ export const ProductCard = (props: ProductCardProps) => {
                     <Text className="text-sm text-white">Ver mas</Text>
                   </HStack>
                 </TouchableOpacity>
-                <TouchableOpacity>
-                  <HStack  
+                <TouchableOpacity onPress={() => setShowAddToList(true)}>
+                  <HStack
                     className="bg-primary-500 px-4 py-1.5 rounded-xl justify-center items-center"
                   >
                     <Text className="text-sm text-white">Agregar</Text>
                   </HStack>
                 </TouchableOpacity>
               </HStack>
-            </HStack>        
+            </HStack>
           </VStack>
+          <AddToListModal
+            isOpen={showAddToList}
+            onClose={() => setShowAddToList(false)}
+            productId={props.data.product.id}
+          />
         </>
       )}
     </HStack>

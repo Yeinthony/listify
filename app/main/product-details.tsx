@@ -20,9 +20,12 @@ import { Divider } from '@/components/ui/divider';
 import { StoreByProductModal } from "@/components/modals/StoreByProductModal";
 import helpers from "@/utils/helpers";
 import { BranchsMapModal } from "@/components/modals/BranchsMapModal";
+import AddToListModal from "@/components/modals/AddToListModal";
+import { useState } from "react";
 
 
 export default function ProductDetails() {
+  const [showAddToList, setShowAddToList] = useState(false)
   const { 
     bannerImages,
     loading,
@@ -218,14 +221,14 @@ export default function ProductDetails() {
                   </VStack>
                 </ScrollView>
               </VStack>
-              <TouchableOpacity className="mx-4">
-                <HStack 
+              <TouchableOpacity className="mx-4" onPress={() => setShowAddToList(true)}>
+                <HStack
                   className="w-full h-14 rounded-2xl bg-primary-500 justify-center items-center"
                   space="md"
                 >
-                  <Ionicons 
-                    name="add-circle-outline" 
-                    size={26} 
+                  <Ionicons
+                    name="add-circle-outline"
+                    size={26}
                     color="white"
                   />
                   <Text className="text-white text-md">
@@ -242,7 +245,7 @@ export default function ProductDetails() {
             location={location}
             onClose={() => setShowStoreByProductModal(false)}
           />
-          <BranchsMapModal 
+          <BranchsMapModal
             isOpen={showBranchsMapModal}
             onClose={() => setShowBranchsMapModal(false)}
             location={location}
@@ -251,6 +254,11 @@ export default function ProductDetails() {
               name: productData?.product.name || '',
               ean: productData?.product.ean || ''
             }}
+          />
+          <AddToListModal
+            isOpen={showAddToList}
+            onClose={() => setShowAddToList(false)}
+            productId={productData?.product.id || ''}
           />
         </>
       )}
