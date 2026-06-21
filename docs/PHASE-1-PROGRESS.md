@@ -5,13 +5,12 @@
 
 ## Estado actual
 
-**FASE 1 EN EJECUCIÓN.** Paso 1 (doc) en curso.
+**FASE 1 CERRADA (pendiente verificación en runtime contra backend).** Infra HTTP + tipos + TanStack Query + contrato de auth alineados. Sin pantallas nuevas.
 
-- Build: —
-- `tsc --noEmit`: —
-- Pasos: 1/6.
+- `tsc --noEmit`: **0 errores nuevos**. Quedan **8 errores pre-existentes** en componentes vendored de gluestack (`components/ui/bottomsheet`, `components/ui/table`) y `components/generals/Snackbar.tsx`, fuera de alcance de esta fase (deuda).
+- Pasos: 6/6 (código). Verificación en runtime (login/whoami/401) pendiente de correr la app contra el backend.
 
-**Siguiente:** Paso 2 — Tipos base (`Paginated<T>`, `ApiError`, `env.d.ts`, corregir `users.d.ts`/`auth-api.d.ts`).
+**Siguiente:** Fase 2 — Productos / Escaneo / Mapa (migrar hooks a `useQuery`/`useMutation`, retirar `brach-prices`, alinear tipos de precios).
 
 ---
 
@@ -39,12 +38,14 @@
 
 ## Pasos
 
-- [ ] **Paso 1 — Doc.** Crear `docs/PHASE-1-PROGRESS.md`.
-- [ ] **Paso 2 — Tipos base.** `api/types/common.d.ts` (`Paginated<T>` + clase `ApiError`); `types/env.d.ts`; corregir `types/users.d.ts`; `api/types/auth-api.d.ts` con `expiresAt`.
-- [ ] **Paso 3 — httpClient.** `utils/httpClient.ts` (axios.create + interceptors → `ApiError`, fix `X-Requested-With`, sin `console.log`); migrar los 3 `*.api.ts` a rutas relativas; retirar `utils/interceptor.ts`.
-- [ ] **Paso 4 — TanStack Query.** Instalar `@tanstack/react-query`; `utils/queryClient.ts`; `QueryClientProvider` en `app/_layout.tsx`.
-- [ ] **Paso 5 — Auth/sesión.** `api/auth.api.ts` tipado real; `store/userStore.ts` (`logout` con `deleteItemAsync`, 401 → `/signin`).
-- [ ] **Paso 6 — Cierre.** `tsc`/lint verdes; `.env.example`; cerrar este doc.
+- [x] **Paso 1 — Doc.** `docs/PHASE-1-PROGRESS.md`. Commit `74b55ef`.
+- [x] **Paso 2 — Tipos base.** `api/types/common.d.ts` (`Paginated<T>`), `utils/apiError.ts` (clase `ApiError`, runtime → en `.ts`, no `.d.ts`), `types/env.d.ts`, corregir `types/users.d.ts`, `api/types/auth-api.d.ts` con `expiresAt`. Commit `bc3fc83`.
+- [x] **Paso 3 — httpClient.** `utils/httpClient.ts` (axios.create + interceptors → `ApiError`, fix `X-Requested-With`, sin `console.log`); los 3 `*.api.ts` a rutas relativas; retirado `utils/interceptor.ts`. Commit `56f27db`.
+- [x] **Paso 4 — TanStack Query.** `@tanstack/react-query` + `utils/queryClient.ts` + `QueryClientProvider` en `app/_layout.tsx`. Commit `01b122b`.
+- [x] **Paso 5 — Auth/sesión.** `userStore`: 401 vía `ApiError`, `logout` con `deleteItemAsync`. (`auth.api.ts` ya quedó tipado en Paso 2/3.) Commit `1e5ce8b`.
+- [x] **Paso 6 — Cierre.** `.env.example` + `tsc` (0 nuevos) + cierre del doc.
+
+> Nota Paso 2: la clase `ApiError` lleva runtime, así que vive en `utils/apiError.ts` (no en un `.d.ts` ambiente como decía el plan).
 
 ---
 
@@ -63,6 +64,9 @@
 - `locationsByUserId` (paginado) y `getPriceBranchByProduct` (código muerto) se corrigen en Fase 2/4, no aquí.
 - `.env.example` nuevo documentando `EXPO_PUBLIC_API_URL` (el `.env` real está gitignored).
 - Migración de hooks de pantalla a `useQuery`/`useMutation`: Fases 2+.
+- **Lint no configurado** en el repo móvil (no hay eslint config ni script). Verificación de tipos vía `tsc`. Configurar ESLint queda como deuda.
+- **8 errores `tsc` pre-existentes** en componentes vendored de gluestack + `Snackbar.tsx` (no introducidos por Fase 1). Limpiarlos es deuda aparte.
+- Verificación en runtime (login/whoami/401 contra backend real) pendiente de correr la app.
 
 ---
 
@@ -76,5 +80,10 @@
 ## Commits de la fase
 
 ```
-(pendiente)
+74b55ef docs(fase-1): plan de Fundación (infra HTTP + auth)
+bc3fc83 fix(types): alinear tipos al contrato del backend + Paginated/ApiError
+56f27db feat(http): cliente axios centralizado con baseURL e interceptors (ApiError)
+01b122b feat(query): integrar TanStack Query (provider + defaults)
+1e5ce8b fix(auth): manejo de sesión con ApiError y logout con deleteItemAsync
+<cierre> docs(fase-1): cerrar Fase 1
 ```
