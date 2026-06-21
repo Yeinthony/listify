@@ -4,8 +4,9 @@ import { VStack } from '@/components/ui/vstack';
 import { HStack } from '@/components/ui/hstack';
 import { Center } from '@/components/ui/center';
 import { Spinner } from '@/components/ui/spinner';
+import { Menu, MenuItem, MenuItemLabel } from '@/components/ui/menu';
 import { AppleMaps, GoogleMaps } from 'expo-maps';
-import { FlatList, Platform, ScrollView, StyleSheet, TouchableOpacity, useColorScheme } from 'react-native';
+import { Platform, StyleSheet, TouchableOpacity, useColorScheme } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import Ionicons from '@expo/vector-icons/Ionicons';
 import { router, useLocalSearchParams } from 'expo-router';
@@ -27,7 +28,8 @@ export default function ListBranchPrices() {
   const id = Array.isArray(params.id) ? params.id[0] : params.id || '';
 
   const [km, setKm] = useState<number>(5);
-  const [selected, setSelected] = useState<BranchPriceEntry | null>(null);
+  const [chosen, setChosen] = useState<BranchPriceEntry | null>(null);
+  const [showDetail, setShowDetail] = useState(false);
   const [focus, setFocus] = useState<{ lat: number; lng: number } | null>(null);
 
   const { coords, permissionDenied, branches, totalItems, loading } = useListBranchPrices(id, km);
@@ -53,7 +55,7 @@ export default function ListBranchPrices() {
   const camera = focus ?? coords;
 
   const onSelectBranch = (branch: BranchPriceEntry) => {
-    setSelected(branch);
+    setChosen(branch);
     if (branch.latitude != null && branch.longitude != null) {
       setFocus({ lat: branch.latitude, lng: branch.longitude });
     }
@@ -94,80 +96,104 @@ export default function ListBranchPrices() {
           </Center>
         </HStack>
 
-        <ScrollView
-          horizontal
-          showsHorizontalScrollIndicator={false}
-          contentContainerStyle={{ paddingHorizontal: 16, paddingVertical: 12, gap: 8 }}
-        >
-          {DISTANCES_FILTER.map((d) => (
-            <TouchableOpacity
-              key={d}
-              onPress={() => setKm(d)}
-              className={`px-3 py-1.5 rounded-full ${km === d ? 'bg-primary-500' : 'bg-background-0/90'}`}
-            >
-              <Text className={km === d ? 'text-white text-sm' : 'text-sm'}>{d} km</Text>
-            </TouchableOpacity>
-          ))}
-        </ScrollView>
-
         <VStack className='flex-1' />
 
-        {loading && (
-          <Center className='mb-4'>
-            <Center className='bg-background-0/90 rounded-full h-12 w-12'>
-              <Spinner />
-            </Center>
-          </Center>
-        )}
+        <VStack className='w-[92%] bg-background-0/95 mx-auto mb-8 px-4 py-4 rounded-2xl' space='md'>
+          {/* Select de distancia */}
+          <HStack space='sm' className='items-center'>
+            <Text className='text-md text-typography-600'>{t('screen.lists.branchesWithin')}</Text>
+            <Menu
+              placement='top'
+              offset={5}
+              closeOnSelect
+              trigger={({ ...triggerProps }) => (
+                <TouchableOpacity {...triggerProps}>
+                  <HStack space='xs' className='items-center bg-primary-500/20 px-3 py-1 rounded-full border-[1px] border-primary-500'>
+                    <Text className='text-sm text-primary-500'>{km} km</Text>
+                    <Ionicons name='chevron-down-outline' size={14} color='#e44b5e' />
+                  </HStack>
+                </TouchableOpacity>
+              )}
+            >
+              {DISTANCES_FILTER.map((d) => (
+                <MenuItem
+                  key={d}
+                  textValue={d.toString()}
+                  className={`justify-center ${km === d && 'bg-primary-500/20'}`}
+                  onPress={() => setKm(d)}
+                >
+                  <MenuItemLabel size='sm' className={`${km === d && 'text-primary-500'}`}>{d} km</MenuItemLabel>
+                </MenuItem>
+              ))}
+            </Menu>
+          </HStack>
 
-        {!loading && permissionDenied && (
-          <Center className='mx-4 mb-6 bg-background-0/90 rounded-2xl p-4'>
+          {/* Select de sucursal */}
+          {loading ? (
+            <Center className='py-3'><Spinner /></Center>
+          ) : permissionDenied ? (
             <Text className='text-typography-600 text-center'>{t('screen.lists.locationDenied')}</Text>
-          </Center>
-        )}
-
-        {!loading && !permissionDenied && branches.length === 0 && (
-          <Center className='mx-4 mb-6 bg-background-0/90 rounded-2xl p-4'>
+          ) : branches.length === 0 ? (
             <Text className='text-typography-600 text-center'>{t('screen.lists.noBranches')}</Text>
-          </Center>
-        )}
-
-        {branches.length > 0 && (
-          <FlatList
-            data={branches}
-            horizontal
-            keyExtractor={(b) => b.branchId}
-            showsHorizontalScrollIndicator={false}
-            contentContainerStyle={{ paddingHorizontal: 16, paddingBottom: 8, gap: 12 }}
-            renderItem={({ item }) => (
-              <TouchableOpacity
-                onPress={() => onSelectBranch(item)}
-                className={`bg-background-0 rounded-2xl p-4 w-64 ${selected?.branchId === item.branchId ? 'border-[1.5px] border-primary-500' : ''}`}
+          ) : (
+            <>
+              <Menu
+                placement='top'
+                offset={5}
+                closeOnSelect
+                style={{ maxHeight: 360 }}
+                trigger={({ ...triggerProps }) => (
+                  <TouchableOpacity {...triggerProps}>
+                    <HStack className='items-center justify-between bg-background-100 px-4 h-12 rounded-2xl'>
+                      <Text className='flex-1' numberOfLines={1}>
+                        {chosen ? chosen.storeName : t('screen.lists.selectBranch')}
+                      </Text>
+                      <Ionicons name='chevron-down-outline' size={18} color='#6b7280' />
+                    </HStack>
+                  </TouchableOpacity>
+                )}
               >
-                <Heading className='text-[15px] font-bold uppercase' numberOfLines={1}>
-                  {item.storeName}
-                </Heading>
-                <Text className='text-sm text-typography-600' numberOfLines={1}>
-                  {[item.branchName, `${(item.distanceMeters / 1000).toFixed(1)} km`].filter(Boolean).join(' · ')}
-                </Text>
-                <HStack className='items-end justify-between mt-2'>
-                  <Text className='text-xs text-typography-500'>
-                    {t('screen.lists.available', { covered: item.coveredItems, total: totalItems })}
-                  </Text>
-                  <Heading className='text-xl font-extrabold text-primary-600' style={{ fontVariant: ['tabular-nums'] }}>
-                    {money(item.totalWithDiscount)}
-                  </Heading>
-                </HStack>
-              </TouchableOpacity>
-            )}
-          />
-        )}
+                {branches.map((b) => (
+                  <MenuItem
+                    key={b.branchId}
+                    textValue={b.branchId}
+                    className={`${chosen?.branchId === b.branchId && 'bg-primary-500/20'}`}
+                    onPress={() => onSelectBranch(b)}
+                  >
+                    <MenuItemLabel size='sm' numberOfLines={1}>
+                      {`${b.storeName} · ${(b.distanceMeters / 1000).toFixed(1)} km · ${money(b.totalWithDiscount)}`}
+                    </MenuItemLabel>
+                  </MenuItem>
+                ))}
+              </Menu>
+
+              {chosen && (
+                <TouchableOpacity onPress={() => setShowDetail(true)}>
+                  <HStack className='items-center justify-between bg-primary-500/10 rounded-2xl p-4'>
+                    <VStack className='flex-1'>
+                      <Text className='text-xs text-typography-600'>
+                        {t('screen.lists.available', { covered: chosen.coveredItems, total: totalItems })}
+                      </Text>
+                      <Heading className='text-xl font-extrabold text-primary-600' style={{ fontVariant: ['tabular-nums'] }}>
+                        {money(chosen.totalWithDiscount)}
+                      </Heading>
+                    </VStack>
+                    <HStack space='xs' className='items-center'>
+                      <Text className='text-sm text-primary-600 font-medium'>{t('screen.lists.viewDetail')}</Text>
+                      <Ionicons name='chevron-forward' size={18} color='#e44b5e' />
+                    </HStack>
+                  </HStack>
+                </TouchableOpacity>
+              )}
+            </>
+          )}
+        </VStack>
       </SafeAreaView>
 
       <BranchPriceDetailModal
-        isOpen={!!selected}
-        onClose={() => setSelected(null)}
-        branch={selected}
+        isOpen={showDetail}
+        onClose={() => setShowDetail(false)}
+        branch={chosen}
         productNameById={productNameById}
         totalItems={totalItems}
       />
