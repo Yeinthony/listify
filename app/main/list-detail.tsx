@@ -62,9 +62,22 @@ export default function ListDetail() {
       </HStack>
 
       {!!list?.items?.length && (
-        <HStack className='mx-4 mb-1 bg-background-0 rounded-2xl px-4 h-14 items-center justify-between'>
-          <Text className='text-typography-600'>{t('screen.lists.estimatedTotal')}</Text>
-          <Heading className='text-xl font-extrabold' style={{ fontVariant: ['tabular-nums'] }}>
+        <HStack
+          className='mx-4 mb-1 bg-primary-500/10 rounded-2xl p-4 items-center'
+          space='md'
+          style={{ boxShadow: '0 4px 12px rgba(228, 75, 94, 0.15)', borderCurve: 'continuous' }}
+        >
+          <Center className='h-11 w-11 rounded-xl bg-primary-500'>
+            <Ionicons name='wallet-outline' size={22} color='white' />
+          </Center>
+          <VStack>
+            <Heading className='text-[15px] font-bold'>{t('screen.lists.estimatedTotal')}</Heading>
+            <Text className='text-xs text-typography-600'>{t('screen.lists.referencePrice')}</Text>
+          </VStack>
+          <Heading
+            className='text-2xl font-extrabold text-primary-600 ml-auto'
+            style={{ fontVariant: ['tabular-nums'] }}
+          >
             {money(total)}
           </Heading>
         </HStack>
