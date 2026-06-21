@@ -11,21 +11,31 @@ import { router } from "expo-router"
 import { useState } from "react"
 import { ProductCardProps } from "./types/product-card"
 import AddToListModal from "../modals/AddToListModal"
+import QuantityPickerModal from "../modals/QuantityPickerModal"
 import { useAddToList } from "@/hooks/screens/useAddToList"
 
 const PLACEHOLDER_IMG = 'https://picsum.photos/200/300';
 
 export const ProductCard = (props: ProductCardProps) => {
   const [showAddToList, setShowAddToList] = useState(false)
-  const { addToList, adding } = useAddToList()
+  const [showQuantity, setShowQuantity] = useState(false)
+  const { addToList, adding } = useAddToList(() => {
+    setShowQuantity(false)
+    props.onAdded?.()
+  })
 
   const onAdd = () => {
     if (!props.data) return
     if (props.targetListId) {
-      addToList({ listId: props.targetListId, productId: props.data.product.id })
+      setShowQuantity(true)
     } else {
       setShowAddToList(true)
     }
+  }
+
+  const onConfirmQuantity = (quantity: number) => {
+    if (!props.data || !props.targetListId) return
+    addToList({ listId: props.targetListId, productId: props.data.product.id, quantity })
   }
 
   if (!props.data) return null
@@ -111,7 +121,14 @@ export const ProductCard = (props: ProductCardProps) => {
         </TouchableOpacity>
       </HStack>
 
-      {!props.targetListId && (
+      {props.targetListId ? (
+        <QuantityPickerModal
+          isOpen={showQuantity}
+          onClose={() => setShowQuantity(false)}
+          onConfirm={onConfirmQuantity}
+          confirming={adding}
+        />
+      ) : (
         <AddToListModal
           isOpen={showAddToList}
           onClose={() => setShowAddToList(false)}

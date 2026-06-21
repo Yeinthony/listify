@@ -122,6 +122,7 @@ export const useBarcodeScan = ({ isOpen, onClose }: ModalProps) => {
     RECT_Y,
     product,
     getAnimationProps,
-    handleBarcodeScanned
+    handleBarcodeScanned,
+    resetScan: () => setEanScanned('')
   }
 }

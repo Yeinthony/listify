@@ -4,4 +4,5 @@ interface ProductCardProps {
   data: ProductLight | null
   onCloseModal?: () => void
   targetListId?: string
+  onAdded?: () => void
 }

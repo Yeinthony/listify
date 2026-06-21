@@ -40,7 +40,8 @@ export const BarcodeScanModal = ({ isOpen, onClose, targetListId }: ModalProps &
     RECT_Y,
     product,
     getAnimationProps,
-    handleBarcodeScanned
+    handleBarcodeScanned,
+    resetScan
   } = useBarcodeScan({isOpen, onClose})
 
   if (!isOpen) return null;
@@ -149,6 +150,7 @@ export const BarcodeScanModal = ({ isOpen, onClose, targetListId }: ModalProps &
                 data={product || null}
                 onCloseModal={onClose}
                 targetListId={targetListId}
+                onAdded={resetScan}
               />
             </MotionView>
           </SafeAreaView>
