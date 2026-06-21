@@ -5,9 +5,13 @@
 
 ## Estado actual
 
-**EN CURSO.** Fases 1–2 cerradas (capa de datos sobre TanStack Query). El tab Lists era placeholder; no existía capa de datos de listas.
+**FASE 3 CERRADA (pendiente verificación en runtime contra backend).** Recurso `shopping-lists` completo: capa de datos + UI (listas, detalle/items, optimizador, colaboradores) + integración "Agregar a lista".
 
-- Bloques: A/B/C/D/E/F/G/H — 0 hechos.
+- Bloques: A/B/C/D/E/F/G/H — **8/8 hechos**.
+- `tsc --noEmit`: **0 errores nuevos** (baseline 8 pre-existentes gluestack/Snackbar).
+- Verificación en runtime pendiente de correr la app.
+
+**Siguiente:** Fase 4 — Ubicaciones paginadas, pagos/descuentos, alertas, cotizaciones, push (FCM).
 
 ---
 
@@ -50,26 +54,16 @@ Verificado en `../listify-backend/src/modules/shopping-lists`. Roles: `reader | 
 
 ## Pasos (bloques)
 
-- [ ] **A1** docs(fase-3): este doc + roadmap.
-- [ ] **A2** feat(types): `types/shopping-lists.d.ts` + `api/types/shopping-lists.d.ts`.
-- [ ] **A3** feat(api): `api/shoppingLists.api.ts` (~13 funciones).
-- [ ] **A4** feat(query): `shoppingListKeys` en `api/queryKeys.ts`.
-- [ ] **A5** feat(schemas): `createListScheme`/`addItemScheme`/`collaboratorScheme` en `utils/formSchemes.ts`.
-- [ ] **B1** feat(query): `hooks/screens/useLists.ts`.
-- [ ] **B2** feat(query): `hooks/screens/useListDetail.ts` (items + update/delete).
-- [ ] **B3** feat(query): `hooks/screens/useListOptimizer.ts`.
-- [ ] **B4** feat(query): `hooks/screens/useListCollaborators.ts`.
-- [ ] **C1** feat(ui): `components/cards/ListCard.tsx`.
-- [ ] **C2** feat(ui): tab `lists.tsx` (FlatList + refresh + empty + FAB).
-- [ ] **C3** feat(ui): `CreateListModal` + `useCreateListForm`.
-- [ ] **D1** feat(ui): registrar + `app/main/list-detail.tsx`.
-- [ ] **D2** feat(ui): `components/cards/ListItemCard.tsx`.
-- [ ] **D3** feat(ui): alta/edición/quitar item.
-- [ ] **E1** feat(ui): UI optimizador.
-- [ ] **F1** feat(ui): colaboradores (listar/invitar/rol/quitar/salir).
-- [ ] **G1** feat(ui): `AddToListModal` + cablear "Agregar" de `ProductCard`/detalle.
-- [ ] **H1** feat(i18n): claves es/en.
-- [ ] **H2** docs(fase-3): tsc + cierre.
+- [x] **A** capa de datos: tipos (`types/shopping-lists.d.ts`, `api/types/shopping-lists.d.ts`), `api/shoppingLists.api.ts`, `shoppingListKeys`, schemas Zod. Commits `90321bc`, `82621de`.
+- [x] **B** hooks TanStack Query: `useLists`, `useListDetail`, `useListOptimizer`, `useListCollaborators`. Commit `72a7877`.
+- [x] **C** UI listas: `ListCard`, tab `lists.tsx` (FlatList + refresh + empty + crear/eliminar), `CreateListModal` + `useCreateListForm`. Commit `d6d2fc4`.
+- [x] **D** UI detalle: `list-detail.tsx`, `ListItemCard`, `UpdateItemModal` (editar/quitar). Commit `bdf87ca`.
+- [x] **E** optimizador: `list-optimizer.tsx` (radio/maxStores + resultado). Commit `3957e8b`.
+- [x] **F** colaboradores: `list-collaborators.tsx` + `useInviteCollaboratorForm` (invitar/rol/quitar/salir, gated por `myRole`). Commit `8f06a6d`.
+- [x] **G** integración: `AddToListModal` + cableado "Agregar" en `ProductCard`/`product-details`. Commit `17a3a9b`.
+- [x] **H** i18n (es/en) + cierre. Commits `92f5818`, `<cierre>`.
+
+> Nota: las pantallas detalle/optimizador/colaboradores se registraron en `app/main/_layout.tsx` (typedRoutes). El "agregar items" desde el detalle se resuelve con el flujo `AddToListModal` desde productos (no hay buscador de productos dentro del detalle).
 
 ---
 
@@ -101,5 +95,14 @@ Verificado en `../listify-backend/src/modules/shopping-lists`. Roles: `reader | 
 ## Commits de la fase
 
 ```
-(pendiente)
+90321bc docs(fase-3): plan de Listas de compras (datos + UI + colaboradores)
+82621de feat(lists): capa de datos de shopping-lists (tipos, api, query keys, schemas)
+72a7877 feat(lists): hooks TanStack Query (listas, detalle/items, optimizador, colaboradores)
+d6d2fc4 feat(lists): tab de listas con crear y eliminar (ListCard + CreateListModal)
+bdf87ca feat(lists): pantalla de detalle con items (editar/quitar)
+3957e8b feat(lists): pantalla de optimizador de canasta
+8f06a6d feat(lists): pantalla de colaboradores (invitar/rol/quitar/salir)
+17a3a9b feat(lists): agregar producto a lista desde ProductCard y detalle (AddToListModal)
+92f5818 feat(i18n): claves de listas/items/optimizador/colaboradores (es/en)
+<cierre> docs(fase-3): cerrar Fase 3
 ```
