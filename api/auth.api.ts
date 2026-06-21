@@ -1,83 +1,25 @@
 import { SigninProps, SigninResponse } from './types/auth-api';
-import { AxiosError, AxiosResponse } from 'axios';
+import { AxiosResponse } from 'axios';
 import { VerifyCode } from '@/types/users';
-import axios from '@/utils/interceptor'
+import http from '@/utils/httpClient';
 
-const URL = `${process.env.EXPO_PUBLIC_API_URL}/auth`
+export const login = (data: SigninProps): Promise<AxiosResponse<SigninResponse>> =>
+  http.post<SigninResponse>('/auth/login', data);
 
-export const login = async(data: SigninProps): Promise<AxiosResponse<SigninResponse>> => {
-  try {
-    const response = await axios.post<SigninResponse>(`${URL}/login`, data)
-    console.log(response);
+export const whoami = (): Promise<AxiosResponse<SigninResponse>> =>
+  http.get<SigninResponse>('/auth/whoami');
 
-    return response
-  } catch (error) {
-    return Promise.reject(error as AxiosError)
-  }
-}
+export const logout = (): Promise<AxiosResponse<{ message: string }>> =>
+  http.post<{ message: string }>('/auth/logout');
 
-export const whoami = async(): Promise<AxiosResponse<SigninResponse>> => {
-  try {
-    const response = await axios.get<SigninResponse>(`${URL}/whoami`)
-    console.log(response);
+export const sendPassCode = (data: { email: string }): Promise<AxiosResponse<{ message: string }>> =>
+  http.post<{ message: string }>('/auth/send-password-code', data);
 
-    return response
-  } catch (error) {
-    return Promise.reject(error as AxiosError)
-  }
-}
+export const verifyPassCode = (verifyData: VerifyCode): Promise<AxiosResponse<{ message: string }>> =>
+  http.post<{ message: string }>('/auth/verify-password-code', verifyData);
 
-export const logout = async(): Promise<AxiosResponse<{ message: string }>> => {
-  try {
-    const response = await axios.post<{ message: string }>(`${URL}/logout`)
-    console.log(response);
+export const resendPassCode = (data: { email: string }): Promise<AxiosResponse<{ message: string }>> =>
+  http.post<{ message: string }>('/auth/resend-password-code', data);
 
-    return response
-  } catch (error) {
-    return Promise.reject(error as AxiosError)
-  }
-}
-
-export const sendPassCode = async(data: {email: string}): Promise<AxiosResponse<{ message: string }>> => {
-  try {
-    const response = await axios.post<{ message: string }>(`${URL}/send-password-code`, data)
-    console.log(response);
-
-    return response
-  } catch (error) {
-    return Promise.reject(error as AxiosError)
-  }
-}
-
-export const verifyPassCode = async(verifyData: VerifyCode): Promise<AxiosResponse<{message: string}>> => {
-  try {
-    const response = await axios.post<{message: string}>(`${URL}/verify-password-code`, verifyData)
-    console.log(response);
-
-    return response
-  } catch (error) {
-    return Promise.reject(error as AxiosError)
-  }
-}
-
-export const resendPassCode = async(data: {email: string}): Promise<AxiosResponse<{message: string}>> => {
-  try {
-    const response = await axios.post<{message: string}>(`${URL}/resend-password-code`, data)
-    console.log(response);
-
-    return response
-  } catch (error) {
-    return Promise.reject(error as AxiosError)
-  }
-}
-
-export const changePassword = async(changePassData: SigninProps): Promise<AxiosResponse<{message: string}>> => {
-  try {
-    const response = await axios.patch<{message: string}>(`${URL}/change-pass`, changePassData)
-    console.log(response);
-
-    return response
-  } catch (error) {
-    return Promise.reject(error as AxiosError)
-  }
-}
+export const changePassword = (changePassData: SigninProps): Promise<AxiosResponse<{ message: string }>> =>
+  http.patch<{ message: string }>('/auth/change-pass', changePassData);

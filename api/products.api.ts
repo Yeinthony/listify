@@ -1,52 +1,16 @@
-import { AxiosError, AxiosResponse } from 'axios'
-import axios from '@/utils/interceptor'
-import { NearbyBranch, PriceBranchByProduct, ProductAll, ProductLight } from '@/types/products'
-import { StoreByProductProps } from '@/components/modals/types/store-by-product'
-import { NearbyBranchesProps, StoreByProductApiProps } from './types/products'
+import { AxiosResponse } from 'axios';
+import http from '@/utils/httpClient';
+import { NearbyBranch, PriceBranchByProduct, ProductAll, ProductLight } from '@/types/products';
+import { NearbyBranchesProps, StoreByProductApiProps } from './types/products';
 
-const URL = `${process.env.EXPO_PUBLIC_API_URL}/products`
+export const getProductByEanAll = (ean: string): Promise<AxiosResponse<ProductAll>> =>
+  http.get<ProductAll>(`/products/ean/${ean}`);
 
+export const getProductByEanLight = (ean: string): Promise<AxiosResponse<ProductLight>> =>
+  http.get<ProductLight>(`/products/ean-light/${ean}`);
 
-export const getProductByEanAll = async(ean: string): Promise<AxiosResponse<ProductAll>> => {
-  try {
-    const response = await axios.get<ProductAll>(`${URL}/ean/${ean}`)
-    console.log(response);
+export const getPriceBranchByProduct = (data: StoreByProductApiProps): Promise<AxiosResponse<PriceBranchByProduct[]>> =>
+  http.post<PriceBranchByProduct[]>('/products/brach-prices', data);
 
-    return response
-  } catch (error) {
-    return Promise.reject(error as AxiosError)
-  }
-}
-
-export const getProductByEanLight = async(ean: string): Promise<AxiosResponse<ProductLight>> => {
-  try {
-    const response = await axios.get<ProductLight>(`${URL}/ean-light/${ean}`)
-    console.log(response);
-
-    return response
-  } catch (error) {
-    return Promise.reject(error as AxiosError)
-  }
-}
-
-export const getPriceBranchByProduct = async(data: StoreByProductApiProps): Promise<AxiosResponse<PriceBranchByProduct[]>> => {
-  try {
-    const response = await axios.post<PriceBranchByProduct[]>(`${URL}/brach-prices`, data)
-    console.log(response);
-
-    return response
-  } catch (error) {
-    return Promise.reject(error as AxiosError)
-  }
-}
-
-export const getNearbyBranches = async(data: NearbyBranchesProps): Promise<AxiosResponse<NearbyBranch[]>> => {
-  try {
-    const response = await axios.post<NearbyBranch[]>(`${URL}/ean/${data.ean}/nearby-prices`, data.body)
-    console.log(response);
-
-    return response
-  } catch (error) {
-    return Promise.reject(error as AxiosError)
-  }
-}
+export const getNearbyBranches = (data: NearbyBranchesProps): Promise<AxiosResponse<NearbyBranch[]>> =>
+  http.post<NearbyBranch[]>(`/products/ean/${data.ean}/nearby-prices`, data.body);
