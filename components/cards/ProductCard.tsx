@@ -19,8 +19,10 @@ const PLACEHOLDER_IMG = 'https://picsum.photos/200/300';
 export const ProductCard = (props: ProductCardProps) => {
   const [showAddToList, setShowAddToList] = useState(false)
   const [showQuantity, setShowQuantity] = useState(false)
+  const [selectedListId, setSelectedListId] = useState<string | null>(null)
   const { addToList, adding } = useAddToList(() => {
     setShowQuantity(false)
+    setSelectedListId(null)
     props.onAdded?.()
   })
 
@@ -33,9 +35,16 @@ export const ProductCard = (props: ProductCardProps) => {
     }
   }
 
+  const onSelectList = (listId: string) => {
+    setSelectedListId(listId)
+    setShowAddToList(false)
+    setTimeout(() => setShowQuantity(true), 250)
+  }
+
   const onConfirmQuantity = (quantity: number) => {
-    if (!props.data || !props.targetListId) return
-    addToList({ listId: props.targetListId, productId: props.data.product.id, quantity })
+    const listId = props.targetListId ?? selectedListId
+    if (!props.data || !listId) return
+    addToList({ listId, productId: props.data.product.id, quantity })
   }
 
   if (!props.data) return null
@@ -121,20 +130,20 @@ export const ProductCard = (props: ProductCardProps) => {
         </TouchableOpacity>
       </HStack>
 
-      {props.targetListId ? (
-        <QuantityPickerModal
-          isOpen={showQuantity}
-          onClose={() => setShowQuantity(false)}
-          onConfirm={onConfirmQuantity}
-          confirming={adding}
-        />
-      ) : (
+      {!props.targetListId && (
         <AddToListModal
           isOpen={showAddToList}
           onClose={() => setShowAddToList(false)}
-          productId={product.id}
+          onSelect={onSelectList}
         />
       )}
+
+      <QuantityPickerModal
+        isOpen={showQuantity}
+        onClose={() => setShowQuantity(false)}
+        onConfirm={onConfirmQuantity}
+        confirming={adding}
+      />
     </VStack>
   )
 }

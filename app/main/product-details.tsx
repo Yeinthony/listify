@@ -21,12 +21,26 @@ import { StoreByProductModal } from "@/components/modals/StoreByProductModal";
 import helpers from "@/utils/helpers";
 import { BranchsMapModal } from "@/components/modals/BranchsMapModal";
 import AddToListModal from "@/components/modals/AddToListModal";
+import QuantityPickerModal from "@/components/modals/QuantityPickerModal";
+import { useAddToList } from "@/hooks/screens/useAddToList";
 import { useState } from "react";
 
 
 export default function ProductDetails() {
   const [showAddToList, setShowAddToList] = useState(false)
-  const { 
+  const [showQuantity, setShowQuantity] = useState(false)
+  const [selectedListId, setSelectedListId] = useState<string | null>(null)
+  const { addToList, adding } = useAddToList(() => {
+    setShowQuantity(false)
+    setSelectedListId(null)
+  })
+
+  const onSelectList = (listId: string) => {
+    setSelectedListId(listId)
+    setShowAddToList(false)
+    setTimeout(() => setShowQuantity(true), 250)
+  }
+  const {
     bannerImages,
     loading,
     productData,
@@ -258,7 +272,17 @@ export default function ProductDetails() {
           <AddToListModal
             isOpen={showAddToList}
             onClose={() => setShowAddToList(false)}
-            productId={productData?.product.id || ''}
+            onSelect={onSelectList}
+          />
+          <QuantityPickerModal
+            isOpen={showQuantity}
+            onClose={() => setShowQuantity(false)}
+            confirming={adding}
+            onConfirm={(quantity) => {
+              if (selectedListId && productData) {
+                addToList({ listId: selectedListId, productId: productData.product.id, quantity })
+              }
+            }}
           />
         </>
       )}

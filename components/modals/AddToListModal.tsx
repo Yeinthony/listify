@@ -13,13 +13,11 @@ import { VStack } from "@/components/ui/vstack";
 import { Center } from "@/components/ui/center";
 import { useTranslation } from "react-i18next";
 import { useLists } from "@/hooks/screens/useLists";
-import { useAddToList } from "@/hooks/screens/useAddToList";
 import { AddToListModalProps } from "./types/add-to-list-modal";
 
-const AddToListModal = ({ isOpen, onClose, productId }: AddToListModalProps) => {
+const AddToListModal = ({ isOpen, onClose, onSelect }: AddToListModalProps) => {
   const { t } = useTranslation();
   const { lists } = useLists();
-  const { addToList, adding } = useAddToList(onClose);
 
   const editableLists = lists.filter((list) => list.myRole !== 'reader');
 
@@ -39,11 +37,7 @@ const AddToListModal = ({ isOpen, onClose, productId }: AddToListModalProps) => 
           </Center>
         ) : (
           editableLists.map((list) => (
-            <ActionsheetItem
-              key={list.id}
-              onPress={() => addToList({ listId: list.id, productId })}
-              isDisabled={adding}
-            >
+            <ActionsheetItem key={list.id} onPress={() => onSelect(list.id)}>
               <ActionsheetItemText>{list.name}</ActionsheetItemText>
             </ActionsheetItem>
           ))
