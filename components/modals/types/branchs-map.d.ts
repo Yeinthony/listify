@@ -19,6 +19,7 @@ export interface useBranchsMapModalProps {
 }
 
 export interface BranchMapMarker {
+  id?: string;
   coordinates: {
     latitude: number;
     longitude: number;

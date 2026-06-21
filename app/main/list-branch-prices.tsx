@@ -67,6 +67,7 @@ export default function ListBranchPrices() {
     filteredBranches
       .filter((b) => b.latitude != null && b.longitude != null)
       .map((b) => ({
+        id: b.branchId,
         coordinates: { latitude: b.latitude as number, longitude: b.longitude as number },
         title: money(b.totalWithDiscount),
         snippet: b.storeName,
@@ -83,10 +84,23 @@ export default function ListBranchPrices() {
     }
   };
 
+  const onMarkerClick = (marker: { id?: string }) => {
+    const branch = filteredBranches.find((b) => b.branchId === marker.id);
+    if (branch) onSelectBranch(branch);
+  };
+
   return (
     <VStack className='flex-1 bg-background-100'>
       {camera && Platform.OS === 'ios' && (
-        <AppleMaps.View style={StyleSheet.absoluteFill} />
+        <AppleMaps.View
+          style={StyleSheet.absoluteFill}
+          cameraPosition={{
+            coordinates: { latitude: camera.lat, longitude: camera.lng },
+            zoom: 13,
+          }}
+          markers={markers}
+          onMarkerClick={onMarkerClick}
+        />
       )}
       {camera && Platform.OS !== 'ios' && (
         <GoogleMaps.View
@@ -98,6 +112,7 @@ export default function ListBranchPrices() {
           properties={{ isMyLocationEnabled: true }}
           uiSettings={{ myLocationButtonEnabled: false, zoomControlsEnabled: false }}
           markers={markers}
+          onMarkerClick={onMarkerClick}
           circles={[{
             center: { latitude: coords!.lat, longitude: coords!.lng },
             radius: km * 1000,
