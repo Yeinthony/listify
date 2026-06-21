@@ -12,7 +12,14 @@
     "total": "Total",
     "back": "Volver",
     "finish": "Finalizar",
-    "next": "Siguiente"
+    "next": "Siguiente",
+    "create": "Crear",
+    "save": "Guardar"
+  },
+  "role": {
+    "reader": "Lector",
+    "editor": "Editor",
+    "owner": "Dueño"
   },
   "input": {
     "placeholder": {
@@ -36,7 +43,10 @@
       "voucher": "Comprobante de pago",
       "firstname": "Nombre",
       "lastname": "Apellido",
-      "username": "Nombre de usuario"
+      "username": "Nombre de usuario",
+      "listName": "Nombre de la lista",
+      "listDescription": "Descripción (opcional)",
+      "itemNotes": "Notas (opcional)"
     }
   },
   "link": {
@@ -47,7 +57,10 @@
     "email": "El correo no es valido",
     "min6": "Mínimo 6 caracteres",
     "exact6": "El código requiere exactamente 6 números",
-    "notMatchPasswords": "Las contraseñas no coinciden"
+    "notMatchPasswords": "Las contraseñas no coinciden",
+    "max": "Máximo {{num}} caracteres",
+    "number": "Debe ser un número",
+    "positive": "Debe ser mayor a 0"
   },
   "snackbar": {
     "emailNotFount": "Correo electrónico no encontrado",
@@ -59,7 +72,9 @@
     "headquartersSelected": "Sede seleccionada con éxito",
     "changePasswordSuccess": "Cambio de contraseña exitoso",
     "updatedTheme": "Tema actualizado con éxito",
-    "updatedLanguage": "Idioma actualizado con éxito"
+    "updatedLanguage": "Idioma actualizado con éxito",
+    "itemAdded": "Producto agregado a la lista",
+    "itemAlreadyInList": "El producto ya está en la lista"
   },
   "tabs": {
 
@@ -77,7 +92,29 @@
       "title": "Inicio"
     },
     "lists": {
-      "title": "Listas"
+      "title": "Listas",
+      "itemCount_one": "{{count}} producto",
+      "itemCount_other": "{{count}} productos",
+      "empty": "Todavía no tenés listas",
+      "emptyItems": "Esta lista no tiene productos",
+      "create": "Crear lista",
+      "deleteTitle": "¿Eliminar lista?",
+      "deleteDescription": "Se eliminará la lista y todos sus productos.",
+      "detailTitle": "Lista",
+      "editItem": "Editar producto",
+      "removeItemTitle": "¿Quitar producto?",
+      "removeItemDescription": "Se quitará el producto de la lista.",
+      "optimize": "Optimizar",
+      "collaborators": "Colaboradores",
+      "addToList": "Agregar a una lista",
+      "radiusKm": "Radio de búsqueda",
+      "maxStores": "Máximo de tiendas",
+      "runOptimize": "Optimizar canasta",
+      "total": "Total",
+      "savings": "Ahorro",
+      "notCovered": "Sin cobertura",
+      "invite": "Invitar",
+      "leave": "Salir de la lista"
     },
     "recipes": {
       "title": "Recetas"

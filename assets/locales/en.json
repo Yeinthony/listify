@@ -12,7 +12,14 @@
     "total": "Total",
     "back": "Back",
     "finish": "Finish",
-    "next": "Next"
+    "next": "Next",
+    "create": "Create",
+    "save": "Save"
+  },
+  "role": {
+    "reader": "Reader",
+    "editor": "Editor",
+    "owner": "Owner"
   },
   "input": {
     "placeholder": {
@@ -36,7 +43,10 @@
       "voucher": "Proof of payment",
       "firstname": "Firtname",
       "lastname": "Lastname",
-      "username": "Username"
+      "username": "Username",
+      "listName": "List name",
+      "listDescription": "Description (optional)",
+      "itemNotes": "Notes (optional)"
     }
   },
   "link": {
@@ -50,7 +60,10 @@
     "email": "The email is not valid",
     "min6": "Minimum 6 characters",
     "exact6": "The code requires exactly 6 numbers",
-    "notMatchPasswords": "Passwords do not match"
+    "notMatchPasswords": "Passwords do not match",
+    "max": "Maximum {{num}} characters",
+    "number": "Must be a number",
+    "positive": "Must be greater than 0"
   },
   "snackbar": {
     "emailNotFount": "Email not found",
@@ -61,7 +74,9 @@
     "headquartersSelected": "Successfully selected headquarters",
     "changePasswordSuccess": "Successful password change",
     "updatedTheme": "Theme updated successfully",
-    "updatedLanguage": "Language updated successfully"
+    "updatedLanguage": "Language updated successfully",
+    "itemAdded": "Product added to the list",
+    "itemAlreadyInList": "The product is already in the list"
   },
   "tabs": {
 
@@ -76,7 +91,29 @@
       "title": "Home"
     },
     "lists": {
-      "title": "Lists"
+      "title": "Lists",
+      "itemCount_one": "{{count}} product",
+      "itemCount_other": "{{count}} products",
+      "empty": "You don't have any lists yet",
+      "emptyItems": "This list has no products",
+      "create": "Create list",
+      "deleteTitle": "Delete list?",
+      "deleteDescription": "The list and all its products will be deleted.",
+      "detailTitle": "List",
+      "editItem": "Edit product",
+      "removeItemTitle": "Remove product?",
+      "removeItemDescription": "The product will be removed from the list.",
+      "optimize": "Optimize",
+      "collaborators": "Collaborators",
+      "addToList": "Add to a list",
+      "radiusKm": "Search radius",
+      "maxStores": "Max stores",
+      "runOptimize": "Optimize basket",
+      "total": "Total",
+      "savings": "Savings",
+      "notCovered": "Not covered",
+      "invite": "Invite",
+      "leave": "Leave list"
     },
     "recipes": {
       "title": "Recipes"
