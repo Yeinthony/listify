@@ -92,6 +92,28 @@ Verificado en `../listify-backend/src/modules/shopping-lists`. Roles: `reader | 
 
 ---
 
+## Mejoras posteriores al cierre
+
+Iteraciones sobre el detalle de lista pedidas tras probar en runtime:
+
+- **Agregar productos directo desde el detalle (por escaneo).** El detalle no permitía sumar
+  productos nuevos (el alta solo existía desde vistas de producto, eligiendo lista). Se agregó un
+  botón **"Agregar productos"** (gated por `myRole` editor/owner) que abre el `BarcodeScanModal`
+  apuntado a esa lista (`targetListId`): cada producto escaneado se agrega **directo** a la lista,
+  el escáner queda abierto para sumar varios y maneja el `409` (ya en la lista). Como la app no
+  tiene buscador de productos, el escáner es el mecanismo de alta.
+  - Se extrajo `hooks/screens/useAddToList.ts` (mutación + invalidación `detail`/`list` + snackbar
+    `itemAdded` + manejo `409`) y se reusó en `AddToListModal` y en `ProductCard`.
+  - `ProductCard` acepta `targetListId`: si viene, "Agregar" suma directo a esa lista; si no,
+    abre `AddToListModal` (elegir lista) — **retrocompatible** con el botón flotante de escaneo del tab.
+  - i18n: `screen.lists.addProducts` (es/en).
+- **Ubicación del botón:** se movió "Agregar productos" a un **botón flotante (pill) abajo al
+  centro** del detalle (respeta safe area; la lista lleva `paddingBottom` para no taparse).
+
+Commits: `ada52d8`, `70bc8dc`, `5210f7d`, `df433e1`.
+
+---
+
 ## Commits de la fase
 
 ```
@@ -104,5 +126,11 @@ bdf87ca feat(lists): pantalla de detalle con items (editar/quitar)
 8f06a6d feat(lists): pantalla de colaboradores (invitar/rol/quitar/salir)
 17a3a9b feat(lists): agregar producto a lista desde ProductCard y detalle (AddToListModal)
 92f5818 feat(i18n): claves de listas/items/optimizador/colaboradores (es/en)
-<cierre> docs(fase-3): cerrar Fase 3
+94c0131 docs(fase-3): cerrar Fase 3
+
+# Mejoras posteriores al cierre
+ada52d8 refactor(lists): extraer useAddToList y usarlo en AddToListModal
+70bc8dc feat(lists): agregar productos por escaneo directo desde el detalle de la lista
+5210f7d feat(i18n): clave addProducts (es/en)
+df433e1 style(lists): botón "Agregar productos" flotante abajo al centro
 ```
