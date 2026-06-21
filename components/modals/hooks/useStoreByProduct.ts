@@ -3,7 +3,7 @@ import { StoreByProductProps } from "../types/store-by-product"
 import { getNearbyBranches } from "@/api/products.api"
 import { NearbyBranch } from "@/types/products"
 import { NearbyBranchesProps } from "@/api/types/products";
-import { DISTANCES_FILTER } from "@/assets/globalsConst";
+import { DEFAULT_CHANNEL, DISTANCES_FILTER } from "@/assets/globalsConst";
 
 export const useStoreByProduct = ({ 
   ean, 
@@ -27,7 +27,7 @@ export const useStoreByProduct = ({
           lat: location.lat,
           lng: location.lng,
           km: distance,
-          channel: 'minorista',
+          channel: DEFAULT_CHANNEL,
           ...(store && { storeId: [store.id] })
         }
       }

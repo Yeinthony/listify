@@ -1,3 +1,5 @@
+export type Channel = 'minorista' | 'mayorista';
+
 export interface NearbyBranchesProps {
   ean:       string;
   body: {
@@ -5,7 +7,7 @@ export interface NearbyBranchesProps {
     lng: number;
     km:  number;
     storeId?: string[];
-    channel?: string;
+    channel?: Channel;
   }
 }
 

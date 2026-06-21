@@ -2,7 +2,7 @@ import { useTranslation } from "react-i18next";
 import { BranchMapMarker, useBranchsMapModalProps } from "../types/branchs-map"; 
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 import { useEffect, useRef, useState } from "react";
-import { DISTANCES_FILTER } from "@/assets/globalsConst";
+import { DEFAULT_CHANNEL, DISTANCES_FILTER } from "@/assets/globalsConst";
 import { useSpinnerModal } from "@/contexts/SpinnerModalContext";
 import { getNearbyBranches } from "@/api/products.api";
 
@@ -139,7 +139,7 @@ export const useBranchsMapModal = ({
           lat: location.lat,
           lng: location.lng,
           km: distance,
-          channel: 'minorista',
+          channel: DEFAULT_CHANNEL,
           ...(storesId.length > 0 && { storeId: storesId })
         }
       }
