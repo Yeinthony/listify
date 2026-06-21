@@ -23,10 +23,13 @@ export const useStoreByProduct = ({
 
       const payload: NearbyBranchesProps = {
         ean,
-        lat: location.lat,
-        lng: location.lng,
-        km: distance,
-        ...(store && { storeId: [store.id] })
+        body: {
+          lat: location.lat,
+          lng: location.lng,
+          km: distance,
+          channel: 'minorista',
+          ...(store && { storeId: [store.id] })
+        }
       }
 
       const res = await getNearbyBranches(payload)

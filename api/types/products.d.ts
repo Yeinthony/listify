@@ -7,10 +7,13 @@ export interface StoreByProductApiProps {
 
 export interface NearbyBranchesProps {
   ean:       string;
-  lat:  number;
-  lng: number;
-  km:  number;
-  storeId?: string[];
+  body: {
+    lat:  number;
+    lng: number;
+    km:  number;
+    storeId?: string[];
+    channel?: string;
+  }
 }
 
 export interface Bounds { x: number; y: number; width: number; height: number }

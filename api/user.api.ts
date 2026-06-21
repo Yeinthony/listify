@@ -8,7 +8,7 @@ const URL = `${process.env.EXPO_PUBLIC_API_URL}/users`
 
 export const register = async(user: RegisterUser): Promise<AxiosResponse<User>> => {
   try {
-    const response = await axios.post<User>(`${URL}/create`, user)
+    const response = await axios.post<User>(`${URL}/register`, user)
     console.log(response);
 
     return response

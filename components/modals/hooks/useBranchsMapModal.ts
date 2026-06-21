@@ -135,10 +135,13 @@ export const useBranchsMapModal = ({
 
       const payload = {
         ean,
-        lat: location.lat,
-        lng: location.lng,
-        km: distance,
-        ...(storesId.length > 0 && { storeId: storesId })
+        body: {
+          lat: location.lat,
+          lng: location.lng,
+          km: distance,
+          channel: 'minorista',
+          ...(storesId.length > 0 && { storeId: storesId })
+        }
       }
 
       const res = await getNearbyBranches(payload)

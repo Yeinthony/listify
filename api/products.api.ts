@@ -42,7 +42,7 @@ export const getPriceBranchByProduct = async(data: StoreByProductApiProps): Prom
 
 export const getNearbyBranches = async(data: NearbyBranchesProps): Promise<AxiosResponse<NearbyBranch[]>> => {
   try {
-    const response = await axios.post<NearbyBranch[]>(`${URL}/nearby-branches`, data)
+    const response = await axios.post<NearbyBranch[]>(`${URL}/ean/${data.ean}/nearby-prices`, data.body)
     console.log(response);
 
     return response
