@@ -9,16 +9,21 @@ export interface RegisterUser {
   password: string;
 }
 
+export type ExchangeType = 'blue' | 'oficial' | 'mep' | 'ccl';
+
 export interface Profile {
-  fullname: string;
-  biography: string;
+  fullName: string | null;
+  bio: string | null;
   avatarUrl: string | null;
+  phone?: string | null;
+  country?: string | null;
+  preferredExchangeRate?: ExchangeType;
 }
 
 export interface User {
   id: string;
   email: string;
   username: string;
-  isVerifyed: boolean;
-  profile: Profile | null
+  isVerified: boolean;
+  profile: Profile | null;
 }

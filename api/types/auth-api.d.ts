@@ -1,8 +1,9 @@
 import { User } from "../users";
 
 export interface SigninResponse {
-  user: User;
   token: string;
+  expiresAt: string;
+  user: User;
 }
 
 export interface SigninProps {
