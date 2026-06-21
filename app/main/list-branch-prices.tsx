@@ -121,16 +121,57 @@ export default function ListBranchPrices() {
         <VStack className='flex-1' />
 
         <VStack className='w-[92%] bg-background-0/95 mx-auto mb-8 px-4 py-4 rounded-2xl' space='md'>
-          {/* Select de distancia */}
+          {/* Comercio + distancia (misma línea) */}
           <HStack space='sm' className='items-center'>
-            <Text className='text-md text-typography-600'>{t('screen.lists.branchesWithin')}</Text>
+            <Menu
+              placement='top'
+              offset={5}
+              closeOnSelect
+              style={{ maxHeight: 360 }}
+              trigger={({ ...triggerProps }) => (
+                <TouchableOpacity className='flex-1' {...triggerProps}>
+                  <HStack space='xs' className='items-center bg-primary-500/20 px-3 py-2 rounded-full border-[1px] border-primary-500'>
+                    <Ionicons name='storefront-outline' size={14} color='#e44b5e' />
+                    <Text className='text-sm text-primary-500 flex-1' numberOfLines={1}>
+                      {selectedStoreName ?? t('screen.lists.allStores')}
+                    </Text>
+                    <Ionicons name='chevron-down-outline' size={14} color='#e44b5e' />
+                  </HStack>
+                </TouchableOpacity>
+              )}
+            >
+              <MenuItem
+                key='all-stores'
+                textValue='all-stores'
+                className={`${!storeFilter && 'bg-primary-500/20'}`}
+                onPress={() => onSelectStore(null)}
+              >
+                <MenuItemLabel size='sm' className={`${!storeFilter && 'text-primary-500'}`}>
+                  {t('screen.lists.allStores')}
+                </MenuItemLabel>
+              </MenuItem>
+              {stores.map((s) => (
+                <MenuItem
+                  key={s.storeId}
+                  textValue={s.storeId}
+                  className={`${storeFilter === s.storeId && 'bg-primary-500/20'}`}
+                  onPress={() => onSelectStore(s.storeId)}
+                >
+                  <MenuItemLabel size='sm' numberOfLines={1} className={`${storeFilter === s.storeId && 'text-primary-500'}`}>
+                    {s.name}
+                  </MenuItemLabel>
+                </MenuItem>
+              ))}
+            </Menu>
+
             <Menu
               placement='top'
               offset={5}
               closeOnSelect
               trigger={({ ...triggerProps }) => (
                 <TouchableOpacity {...triggerProps}>
-                  <HStack space='xs' className='items-center bg-primary-500/20 px-3 py-1 rounded-full border-[1px] border-primary-500'>
+                  <HStack space='xs' className='items-center bg-primary-500/20 px-3 py-2 rounded-full border-[1px] border-primary-500'>
+                    <Ionicons name='navigate-outline' size={14} color='#e44b5e' />
                     <Text className='text-sm text-primary-500'>{km} km</Text>
                     <Ionicons name='chevron-down-outline' size={14} color='#e44b5e' />
                   </HStack>
@@ -159,49 +200,6 @@ export default function ListBranchPrices() {
             <Text className='text-typography-600 text-center'>{t('screen.lists.noBranches')}</Text>
           ) : (
             <>
-              <HStack space='sm' className='items-center'>
-                <Text className='text-md text-typography-600'>{t('screen.lists.store')}</Text>
-                <Menu
-                  placement='top'
-                  offset={5}
-                  closeOnSelect
-                  style={{ maxHeight: 360 }}
-                  trigger={({ ...triggerProps }) => (
-                    <TouchableOpacity className='flex-1' {...triggerProps}>
-                      <HStack space='xs' className='items-center justify-between bg-primary-500/20 px-3 py-1 rounded-full border-[1px] border-primary-500'>
-                        <Text className='text-sm text-primary-500 flex-1' numberOfLines={1}>
-                          {selectedStoreName ?? t('screen.lists.allStores')}
-                        </Text>
-                        <Ionicons name='chevron-down-outline' size={14} color='#e44b5e' />
-                      </HStack>
-                    </TouchableOpacity>
-                  )}
-                >
-                  <MenuItem
-                    key='all-stores'
-                    textValue='all-stores'
-                    className={`${!storeFilter && 'bg-primary-500/20'}`}
-                    onPress={() => onSelectStore(null)}
-                  >
-                    <MenuItemLabel size='sm' className={`${!storeFilter && 'text-primary-500'}`}>
-                      {t('screen.lists.allStores')}
-                    </MenuItemLabel>
-                  </MenuItem>
-                  {stores.map((s) => (
-                    <MenuItem
-                      key={s.storeId}
-                      textValue={s.storeId}
-                      className={`${storeFilter === s.storeId && 'bg-primary-500/20'}`}
-                      onPress={() => onSelectStore(s.storeId)}
-                    >
-                      <MenuItemLabel size='sm' numberOfLines={1} className={`${storeFilter === s.storeId && 'text-primary-500'}`}>
-                        {s.name}
-                      </MenuItemLabel>
-                    </MenuItem>
-                  ))}
-                </Menu>
-              </HStack>
-
               <Menu
                 placement='top'
                 offset={5}
