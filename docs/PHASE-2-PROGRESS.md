@@ -5,9 +5,13 @@
 
 ## Estado actual
 
-**EN CURSO.** Fase 1 cerrada y verificada en runtime (login/whoami/401 OK contra el backend).
+**FASE 2 CERRADA (pendiente verificación en runtime contra backend).** Los 4 hooks de productos/escaneo/mapa migrados a TanStack Query, código muerto retirado y `channel` tipado.
 
-- Pasos: 0/8.
+- Pasos: 8/8 (código).
+- `tsc --noEmit`: **0 errores nuevos** (siguen los 8 pre-existentes de gluestack/Snackbar).
+- Verificación en runtime (escaneo, detalle, modales de tiendas/mapa) pendiente de correr la app.
+
+**Siguiente:** Fase 3 — Listas de compras (+ optimizador).
 
 ---
 
@@ -33,14 +37,16 @@
 
 ## Pasos
 
-- [ ] **Paso 1 — Doc.** `docs/PHASE-2-PROGRESS.md` + cierre runtime de Fase 1 + roadmap.
-- [ ] **Paso 2 — Retirar código muerto.** `getPriceBranchByProduct`, `PriceBranchByProduct`, `StoreByProductApiProps`.
-- [ ] **Paso 3 — Tipos.** `Channel`, `DEFAULT_CHANNEL`, query keys de products.
-- [ ] **Paso 4 — `useProductDetails`** → `useQuery`.
-- [ ] **Paso 5 — `useBarcodeScan`** → `useQuery` (enabled por EAN).
-- [ ] **Paso 6 — `useStoreByProduct`** → `useQuery`.
-- [ ] **Paso 7 — `useBranchsMapModal`** (fetching) → `useQuery`.
-- [ ] **Paso 8 — Cierre.** `tsc` + cierre del doc.
+- [x] **Paso 1 — Doc.** `docs/PHASE-2-PROGRESS.md` + cierre runtime de Fase 1 + roadmap. Commit `6980671`.
+- [x] **Paso 2 — Retirar código muerto.** `getPriceBranchByProduct`, `PriceBranchByProduct`, `StoreByProductApiProps`. Commit `a35e8d8`.
+- [x] **Paso 3 — Tipos.** `Channel`, `DEFAULT_CHANNEL`, query keys de products (`api/queryKeys.ts`). Commit `ba7105a`.
+- [x] **Paso 4 — `useProductDetails`** → `useQuery`. Commit `05f8a28`.
+- [x] **Paso 5 — `useBarcodeScan`** → `useQuery` (enabled por EAN). Commit `8b47285`.
+- [x] **Paso 6 — `useStoreByProduct`** → `useQuery`. Commit `b3c6d81`.
+- [x] **Paso 7 — `useBranchsMapModal`** (fetching) → `useQuery`. Commit `abdc2de`.
+- [x] **Paso 8 — Cierre.** `tsc` (0 nuevos) + cierre del doc.
+
+> Nota Paso 3: el `channel` hardcodeado (`'minorista'`) en `useStoreByProduct`/`useBranchsMapModal` se reemplazó por `DEFAULT_CHANNEL` en este paso (consecuencia directa de endurecer el tipo `Channel`), no en los pasos 6/7.
 
 ---
 
@@ -73,5 +79,12 @@
 ## Commits de la fase
 
 ```
-(pendiente)
+6980671 docs(fase-2): plan de Productos/Escaneo/Mapa + cierre runtime Fase 1
+a35e8d8 refactor(api): retirar código muerto brach-prices y tipos asociados
+ba7105a feat(types): tipar Channel + DEFAULT_CHANNEL y query keys de products
+05f8a28 feat(query): migrar useProductDetails a useQuery
+8b47285 feat(query): migrar useBarcodeScan a useQuery (enabled por EAN escaneado)
+b3c6d81 feat(query): migrar useStoreByProduct a useQuery
+abdc2de feat(query): migrar fetching de useBranchsMapModal a useQuery
+<cierre> docs(fase-2): cerrar Fase 2
 ```
