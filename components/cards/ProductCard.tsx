@@ -12,10 +12,21 @@ import { router } from "expo-router"
 import { useState } from "react"
 import { ProductCardProps } from "./types/product-card"
 import AddToListModal from "../modals/AddToListModal"
+import { useAddToList } from "@/hooks/screens/useAddToList"
 
 
 export const ProductCard = (props: ProductCardProps) => {
   const [showAddToList, setShowAddToList] = useState(false)
+  const { addToList, adding } = useAddToList()
+
+  const onAdd = () => {
+    if (!props.data) return
+    if (props.targetListId) {
+      addToList({ listId: props.targetListId, productId: props.data.product.id })
+    } else {
+      setShowAddToList(true)
+    }
+  }
 
   return (
     <HStack 
@@ -72,7 +83,7 @@ export const ProductCard = (props: ProductCardProps) => {
                     <Text className="text-sm text-white">Ver mas</Text>
                   </HStack>
                 </TouchableOpacity>
-                <TouchableOpacity onPress={() => setShowAddToList(true)}>
+                <TouchableOpacity onPress={onAdd} disabled={adding}>
                   <HStack
                     className="bg-primary-500 px-4 py-1.5 rounded-xl justify-center items-center"
                   >
@@ -82,11 +93,13 @@ export const ProductCard = (props: ProductCardProps) => {
               </HStack>
             </HStack>
           </VStack>
-          <AddToListModal
-            isOpen={showAddToList}
-            onClose={() => setShowAddToList(false)}
-            productId={props.data.product.id}
-          />
+          {!props.targetListId && (
+            <AddToListModal
+              isOpen={showAddToList}
+              onClose={() => setShowAddToList(false)}
+              productId={props.data.product.id}
+            />
+          )}
         </>
       )}
     </HStack>

@@ -14,6 +14,7 @@ import { useListDetail } from '@/hooks/screens/useListDetail';
 import { ListItemCard } from '@/components/cards/ListItemCard';
 import UpdateItemModal from '@/components/modals/UpdateItemModal';
 import AlertModal from '@/components/modals/AlertModal';
+import { BarcodeScanModal } from '@/components/modals/BarcodeScanModal';
 import { ListItem } from '@/types/shopping-lists';
 
 export default function ListDetail() {
@@ -25,6 +26,7 @@ export default function ListDetail() {
 
   const [editItem, setEditItem] = useState<ListItem | null>(null);
   const [toRemove, setToRemove] = useState<ListItem | null>(null);
+  const [showScan, setShowScan] = useState(false);
 
   const canEdit = list?.myRole === 'editor' || list?.myRole === 'owner';
 
@@ -52,6 +54,16 @@ export default function ListDetail() {
           <Text className='font-medium ml-2'>{t('screen.lists.collaborators')}</Text>
         </TouchableOpacity>
       </HStack>
+
+      {canEdit && (
+        <TouchableOpacity
+          className='mx-4 mb-1 bg-background-0 rounded-2xl h-12 items-center justify-center flex-row'
+          onPress={() => setShowScan(true)}
+        >
+          <Ionicons name="add-circle-outline" size={20} color="#e44b5e" />
+          <Text className='font-medium ml-2'>{t('screen.lists.addProducts')}</Text>
+        </TouchableOpacity>
+      )}
 
       <VStack className='flex-1'>
         {loading ? (
@@ -99,6 +111,12 @@ export default function ListDetail() {
           if (toRemove) removeItem(toRemove.id);
           setToRemove(null);
         }}
+      />
+
+      <BarcodeScanModal
+        isOpen={showScan}
+        onClose={() => setShowScan(false)}
+        targetListId={id}
       />
     </VStack>
   );

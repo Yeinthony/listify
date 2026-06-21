@@ -23,7 +23,7 @@ import Ionicons from '@expo/vector-icons/Ionicons';
 
 const MotionView = Motion.View as any;
 
-export const BarcodeScanModal = ({ isOpen, onClose }: ModalProps) => {
+export const BarcodeScanModal = ({ isOpen, onClose, targetListId }: ModalProps & { targetListId?: string }) => {
   const colorScheme = useColorScheme();
   const { 
     permission,
@@ -145,9 +145,10 @@ export const BarcodeScanModal = ({ isOpen, onClose }: ModalProps) => {
               {...getAnimationProps()}
               transition={{ type: 'timing', duration: 500 }}
             >
-              <ProductCard 
-                data={product || null} 
+              <ProductCard
+                data={product || null}
                 onCloseModal={onClose}
+                targetListId={targetListId}
               />
             </MotionView>
           </SafeAreaView>
