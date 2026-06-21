@@ -107,6 +107,7 @@
       "collaborators": "Collaborators",
       "addProducts": "Add products",
       "addToList": "Add to a list",
+      "addToListSubtitle": "Choose which list to add it to",
       "quantityTitle": "Quantity",
       "radiusKm": "Search radius",
       "maxStores": "Max stores",
