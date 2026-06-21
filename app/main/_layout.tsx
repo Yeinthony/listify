@@ -47,6 +47,10 @@ export default function AppLayout() {
           name="list-collaborators"
           options={{ headerShown: false }}
         />
+        <Stack.Screen
+          name="list-branch-prices"
+          options={{ headerShown: false }}
+        />
       </Stack>
     </GestureHandlerRootView>
   );

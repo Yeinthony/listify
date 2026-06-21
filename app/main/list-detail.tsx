@@ -62,17 +62,17 @@ export default function ListDetail() {
       </HStack>
 
       {!!list?.items?.length && (
-        <HStack
-          className='mx-4 mb-1 bg-primary-500/10 rounded-2xl p-4 items-center'
-          space='md'
+        <TouchableOpacity
+          className='mx-4 mb-1 bg-primary-500/10 rounded-2xl p-4 flex-row items-center'
           style={{ borderCurve: 'continuous' }}
+          onPress={() => router.push({ pathname: '/main/list-branch-prices', params: { id } })}
         >
           <Center className='h-11 w-11 rounded-xl bg-primary-500'>
             <Ionicons name='wallet-outline' size={22} color='white' />
           </Center>
-          <VStack>
+          <VStack className='ml-3'>
             <Heading className='text-[15px] font-bold'>{t('screen.lists.estimatedTotal')}</Heading>
-            <Text className='text-xs text-typography-600'>{t('screen.lists.referencePrice')}</Text>
+            <Text className='text-xs text-typography-600'>{t('screen.lists.viewByBranch')}</Text>
           </VStack>
           <Heading
             className='text-2xl font-extrabold text-primary-600 ml-auto'
@@ -80,7 +80,8 @@ export default function ListDetail() {
           >
             {money(total)}
           </Heading>
-        </HStack>
+          <Ionicons name='chevron-forward' size={20} color='#e44b5e' />
+        </TouchableOpacity>
       )}
 
       <VStack className='flex-1'>
