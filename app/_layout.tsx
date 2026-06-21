@@ -14,7 +14,9 @@ import { SpinnerModalProvider } from '@/contexts/SpinnerModalContext';
 import { useColorScheme } from 'react-native';
 import useThemeStore from '@/store/themeStore';
 import Snackbar from '@/components/generals/Snackbar';
-import '@/utils/i18n'; 
+import { QueryClientProvider } from '@tanstack/react-query';
+import { queryClient } from '@/utils/queryClient';
+import '@/utils/i18n';
 
 export {
   // Catch any errors thrown by the Layout component.
@@ -65,13 +67,15 @@ function RootLayoutNav() {
   
 
   return (
-    <GluestackUIProvider mode={theme}>
-      <ThemeProvider value={colorMode === 'dark' ? DarkTheme : DefaultTheme}>
-        <SpinnerModalProvider>
-          <Slot />
-          <Snackbar />
-        </SpinnerModalProvider>
-      </ThemeProvider>
-    </GluestackUIProvider>
+    <QueryClientProvider client={queryClient}>
+      <GluestackUIProvider mode={theme}>
+        <ThemeProvider value={colorMode === 'dark' ? DarkTheme : DefaultTheme}>
+          <SpinnerModalProvider>
+            <Slot />
+            <Snackbar />
+          </SpinnerModalProvider>
+        </ThemeProvider>
+      </GluestackUIProvider>
+    </QueryClientProvider>
   );
 }
