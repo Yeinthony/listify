@@ -34,7 +34,7 @@ const UpdateItemModal = ({ isOpen, item, onClose, onSave, saving }: UpdateItemMo
     <Modal isOpen={isOpen} onClose={onClose} size="sm">
       <ModalBackdrop />
       <ModalContent className="rounded-2xl">
-        <ModalHeader>
+        <ModalHeader className="mb-4">
           <Heading size="md">{t('screen.lists.editQuantity')}</Heading>
         </ModalHeader>
         <ModalBody>
