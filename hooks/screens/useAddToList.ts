@@ -8,6 +8,7 @@ import useSnackbarStore from "@/store/snackbarStore";
 interface AddToListArgs {
   listId: string;
   productId: string;
+  quantity?: number;
 }
 
 export const useAddToList = (onAdded?: () => void) => {
@@ -16,8 +17,8 @@ export const useAddToList = (onAdded?: () => void) => {
   const { t } = useTranslation();
 
   const mutation = useMutation({
-    mutationFn: ({ listId, productId }: AddToListArgs) =>
-      addListItem(listId, { productId }).then(res => res.data),
+    mutationFn: ({ listId, productId, quantity }: AddToListArgs) =>
+      addListItem(listId, { productId, quantity }).then(res => res.data),
     onSuccess: (_data, { listId }) => {
       queryClient.invalidateQueries({ queryKey: shoppingListKeys.detail(listId) });
       queryClient.invalidateQueries({ queryKey: ['shopping-lists'] });
