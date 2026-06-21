@@ -19,9 +19,16 @@ export const ListItemCard = ({ item, canEdit, unitPrice, onEdit, onRemove }: Lis
         <Heading className="text-[14px] font-bold uppercase" numberOfLines={2}>
           {item.product.name}
         </Heading>
-        <Text className="text-sm text-typography-600 capitalize">
-          {`${item.product.presentationQty} ${item.product.presentationUnit}`}
-        </Text>
+        <HStack space="xs" className="items-center flex-wrap">
+          <Text className="text-sm text-typography-600 capitalize">
+            {`${item.product.presentationQty} ${item.product.presentationUnit}`}
+          </Text>
+          {hasPrice && (
+            <Text className="text-sm text-typography-500" style={{ fontVariant: ['tabular-nums'] }}>
+              {`· ${money(unitPrice!)} ${t('screen.lists.perUnit')}`}
+            </Text>
+          )}
+        </HStack>
         {item.notes ? (
           <Text className="text-xs text-typography-500" numberOfLines={2}>
             {item.notes}
@@ -31,22 +38,15 @@ export const ListItemCard = ({ item, canEdit, unitPrice, onEdit, onRemove }: Lis
 
       <VStack className="items-end" space="xs">
         {hasPrice ? (
-          <>
-            <Text className="text-lg font-extrabold" style={{ fontVariant: ['tabular-nums'] }}>
-              {money(unitPrice! * item.quantity)}
-            </Text>
-            <Text className="text-xs text-typography-500" style={{ fontVariant: ['tabular-nums'] }}>
-              {`x${item.quantity} · ${money(unitPrice!)} ${t('screen.lists.perUnit')}`}
-            </Text>
-          </>
+          <Heading className="text-lg font-extrabold" style={{ fontVariant: ['tabular-nums'] }}>
+            {money(unitPrice! * item.quantity)}
+          </Heading>
         ) : (
-          <>
-            <Text className="text-base font-extrabold" style={{ fontVariant: ['tabular-nums'] }}>
-              x{item.quantity}
-            </Text>
-            <Text className="text-xs text-typography-500">{t('screen.lists.noPrice')}</Text>
-          </>
+          <Text className="text-xs text-typography-500">{t('screen.lists.noPrice')}</Text>
         )}
+        <Text className="text-xs text-typography-500" style={{ fontVariant: ['tabular-nums'] }}>
+          x{item.quantity}
+        </Text>
         {canEdit && (
           <HStack space="sm" className="mt-1">
             <TouchableOpacity onPress={onEdit} className="p-1">
