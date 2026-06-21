@@ -36,7 +36,7 @@ export const ListItemCard = ({ item, canEdit, unitPrice, onEdit, onRemove }: Lis
               {`· ${money(unitPrice!)} ${t('screen.lists.perUnit')}`}
             </Text>
           )}
-          <Text className="text-sm text-typography-500" style={{ fontVariant: ['tabular-nums'] }}>
+          <Text className="text-sm font-bold text-primary-600" style={{ fontVariant: ['tabular-nums'] }}>
             {`· x${item.quantity}`}
           </Text>
         </HStack>
