@@ -111,6 +111,8 @@
       "viewByBranch": "View prices by branch",
       "branchPrices": "Branch prices",
       "branchesWithin": "Branches within",
+      "store": "Store",
+      "allStores": "All stores",
       "selectBranch": "Choose a branch",
       "viewDetail": "View detail",
       "noBranches": "No nearby branches",

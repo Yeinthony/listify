@@ -28,6 +28,7 @@ export default function ListBranchPrices() {
   const id = Array.isArray(params.id) ? params.id[0] : params.id || '';
 
   const [km, setKm] = useState<number>(5);
+  const [storeFilter, setStoreFilter] = useState<string | null>(null);
   const [chosen, setChosen] = useState<BranchPriceEntry | null>(null);
   const [showDetail, setShowDetail] = useState(false);
   const [focus, setFocus] = useState<{ lat: number; lng: number } | null>(null);
@@ -41,15 +42,36 @@ export default function ListBranchPrices() {
     return map;
   }, [list?.items]);
 
+  const stores = useMemo(() => {
+    const map = new Map<string, string>();
+    branches.forEach((b) => { if (!map.has(b.storeId)) map.set(b.storeId, b.storeName); });
+    return [...map.entries()]
+      .map(([storeId, name]) => ({ storeId, name }))
+      .sort((a, b) => a.name.localeCompare(b.name));
+  }, [branches]);
+
+  const filteredBranches = useMemo(
+    () => (storeFilter ? branches.filter((b) => b.storeId === storeFilter) : branches),
+    [branches, storeFilter],
+  );
+
+  const selectedStoreName = stores.find((s) => s.storeId === storeFilter)?.name;
+
+  const onSelectStore = (storeId: string | null) => {
+    setStoreFilter(storeId);
+    setChosen(null);
+    setFocus(null);
+  };
+
   const markers = useMemo<BranchMapMarker[]>(() =>
-    branches
+    filteredBranches
       .filter((b) => b.latitude != null && b.longitude != null)
       .map((b) => ({
         coordinates: { latitude: b.latitude as number, longitude: b.longitude as number },
         title: money(b.totalWithDiscount),
         snippet: b.storeName,
       })),
-    [branches],
+    [filteredBranches],
   );
 
   const camera = focus ?? coords;
@@ -128,7 +150,7 @@ export default function ListBranchPrices() {
             </Menu>
           </HStack>
 
-          {/* Select de sucursal */}
+          {/* Select de comercio + sucursal */}
           {loading ? (
             <Center className='py-3'><Spinner /></Center>
           ) : permissionDenied ? (
@@ -137,6 +159,49 @@ export default function ListBranchPrices() {
             <Text className='text-typography-600 text-center'>{t('screen.lists.noBranches')}</Text>
           ) : (
             <>
+              <HStack space='sm' className='items-center'>
+                <Text className='text-md text-typography-600'>{t('screen.lists.store')}</Text>
+                <Menu
+                  placement='top'
+                  offset={5}
+                  closeOnSelect
+                  style={{ maxHeight: 360 }}
+                  trigger={({ ...triggerProps }) => (
+                    <TouchableOpacity className='flex-1' {...triggerProps}>
+                      <HStack space='xs' className='items-center justify-between bg-primary-500/20 px-3 py-1 rounded-full border-[1px] border-primary-500'>
+                        <Text className='text-sm text-primary-500 flex-1' numberOfLines={1}>
+                          {selectedStoreName ?? t('screen.lists.allStores')}
+                        </Text>
+                        <Ionicons name='chevron-down-outline' size={14} color='#e44b5e' />
+                      </HStack>
+                    </TouchableOpacity>
+                  )}
+                >
+                  <MenuItem
+                    key='all-stores'
+                    textValue='all-stores'
+                    className={`${!storeFilter && 'bg-primary-500/20'}`}
+                    onPress={() => onSelectStore(null)}
+                  >
+                    <MenuItemLabel size='sm' className={`${!storeFilter && 'text-primary-500'}`}>
+                      {t('screen.lists.allStores')}
+                    </MenuItemLabel>
+                  </MenuItem>
+                  {stores.map((s) => (
+                    <MenuItem
+                      key={s.storeId}
+                      textValue={s.storeId}
+                      className={`${storeFilter === s.storeId && 'bg-primary-500/20'}`}
+                      onPress={() => onSelectStore(s.storeId)}
+                    >
+                      <MenuItemLabel size='sm' numberOfLines={1} className={`${storeFilter === s.storeId && 'text-primary-500'}`}>
+                        {s.name}
+                      </MenuItemLabel>
+                    </MenuItem>
+                  ))}
+                </Menu>
+              </HStack>
+
               <Menu
                 placement='top'
                 offset={5}
@@ -153,7 +218,7 @@ export default function ListBranchPrices() {
                   </TouchableOpacity>
                 )}
               >
-                {branches.map((b) => (
+                {filteredBranches.map((b) => (
                   <MenuItem
                     key={b.branchId}
                     textValue={b.branchId}
