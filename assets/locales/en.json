@@ -100,7 +100,7 @@
       "deleteTitle": "Delete list?",
       "deleteDescription": "The list and all its products will be deleted.",
       "detailTitle": "List",
-      "editItem": "Edit product",
+      "editQuantity": "Edit quantity",
       "removeItemTitle": "Remove product?",
       "removeItemDescription": "The product will be removed from the list.",
       "optimize": "Optimize",

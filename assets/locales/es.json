@@ -101,7 +101,7 @@
       "deleteTitle": "¿Eliminar lista?",
       "deleteDescription": "Se eliminará la lista y todos sus productos.",
       "detailTitle": "Lista",
-      "editItem": "Editar producto",
+      "editQuantity": "Modificar cantidad",
       "removeItemTitle": "¿Quitar producto?",
       "removeItemDescription": "Se quitará el producto de la lista.",
       "optimize": "Optimizar",

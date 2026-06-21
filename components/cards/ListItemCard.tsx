@@ -36,9 +36,17 @@ export const ListItemCard = ({ item, canEdit, unitPrice, onEdit, onRemove }: Lis
               {`· ${money(unitPrice!)} ${t('screen.lists.perUnit')}`}
             </Text>
           )}
-          <Text className="text-sm font-bold text-primary-600" style={{ fontVariant: ['tabular-nums'] }}>
-            {`· x${item.quantity}`}
-          </Text>
+          {canEdit ? (
+            <TouchableOpacity onPress={onEdit} hitSlop={6}>
+              <Text className="text-sm font-bold text-primary-600" style={{ fontVariant: ['tabular-nums'] }}>
+                {`· x${item.quantity}`}
+              </Text>
+            </TouchableOpacity>
+          ) : (
+            <Text className="text-sm font-bold text-primary-600" style={{ fontVariant: ['tabular-nums'] }}>
+              {`· x${item.quantity}`}
+            </Text>
+          )}
         </HStack>
         {item.notes ? (
           <Text className="text-xs text-typography-500" numberOfLines={1}>
@@ -56,14 +64,9 @@ export const ListItemCard = ({ item, canEdit, unitPrice, onEdit, onRemove }: Lis
           <Text className="text-xs text-typography-500">{t('screen.lists.noPrice')}</Text>
         )}
         {canEdit && (
-          <HStack space="md">
-            <TouchableOpacity onPress={onEdit} hitSlop={8}>
-              <Ionicons name="create-outline" size={20} color="#6b7280" />
-            </TouchableOpacity>
-            <TouchableOpacity onPress={onRemove} hitSlop={8}>
-              <Ionicons name="trash-outline" size={20} color="#E63535" />
-            </TouchableOpacity>
-          </HStack>
+          <TouchableOpacity onPress={onRemove} hitSlop={8}>
+            <Ionicons name="trash-outline" size={20} color="#E63535" />
+          </TouchableOpacity>
         )}
       </VStack>
     </HStack>
