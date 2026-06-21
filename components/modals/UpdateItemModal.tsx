@@ -11,7 +11,6 @@ import { Text } from "@/components/ui/text";
 import { VStack } from "@/components/ui/vstack";
 import { HStack } from "@/components/ui/hstack";
 import { Center } from "@/components/ui/center";
-import { Textarea, TextareaInput } from "@/components/ui/textarea";
 import { TouchableOpacity } from "react-native";
 import { useEffect, useState } from "react";
 import { useTranslation } from "react-i18next";
@@ -21,17 +20,13 @@ import { UpdateItemModalProps } from "./types/update-item-modal";
 const UpdateItemModal = ({ isOpen, item, onClose, onSave, saving }: UpdateItemModalProps) => {
   const { t } = useTranslation();
   const [quantity, setQuantity] = useState(1);
-  const [notes, setNotes] = useState('');
 
   useEffect(() => {
-    if (item) {
-      setQuantity(item.quantity);
-      setNotes(item.notes ?? '');
-    }
+    if (item) setQuantity(item.quantity);
   }, [item]);
 
   const onConfirm = async () => {
-    await onSave({ quantity, notes: notes || undefined });
+    await onSave({ quantity });
     onClose();
   };
 
@@ -61,17 +56,9 @@ const UpdateItemModal = ({ isOpen, item, onClose, onSave, saving }: UpdateItemMo
                 <Ionicons name="add" size={22} color="#6b7280" />
               </TouchableOpacity>
             </HStack>
-
-            <Textarea className="rounded-2xl bg-background-0">
-              <TextareaInput
-                placeholder={t('input.placeholder.itemNotes')}
-                value={notes}
-                onChangeText={setNotes}
-              />
-            </Textarea>
           </VStack>
         </ModalBody>
-        <ModalFooter>
+        <ModalFooter className="justify-center">
           <TouchableOpacity
             onPress={onClose}
             className="px-6 rounded-2xl h-12 border-[1.5px] border-typography-600 justify-center items-center"
