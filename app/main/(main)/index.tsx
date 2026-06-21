@@ -16,7 +16,7 @@ export default function Home() {
 
   return (
     <VStack className='flex-1 bg-background-100'>
-      <VStack className='w-full pb-2 bg-primary-500 rounded-b-[15%] relative'>
+      <VStack className='w-full pb-6 bg-primary-500 rounded-b-[15%] relative'>
         <SafeAreaView>
           <CustomHeader 
             title={t('screen.home.title')} 

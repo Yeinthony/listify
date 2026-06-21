@@ -13,7 +13,7 @@ export default function Lists() {
 
   return (
     <VStack className='flex-1 bg-background-100'>
-      <VStack className='w-full bg-primary-500 rounded-b-[15%] relative'>
+      <VStack className='w-full pb-4 bg-primary-500 rounded-b-[15%] relative'>
         <SafeAreaView>
           <CustomHeader 
             title={t('screen.lists.title')} 

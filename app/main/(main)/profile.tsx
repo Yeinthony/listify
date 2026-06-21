@@ -48,7 +48,7 @@ export default function Profile() {
           />
         </SafeAreaView>
         <HStack 
-          className='mx-6 pb-16 items-center justify-between -mt-4'
+          className='mx-6 pb-16 items-center justify-between mt-2'
         >
           <HStack 
             className='items-center flex-shrink' 
