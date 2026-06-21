@@ -92,3 +92,34 @@ export const registerLocation = (t: TFunction) => z.object({
     }),
   address: z.string().optional()
 })
+
+export const createListScheme = (t: TFunction) => z.object({
+  name: z.string().min(1, {
+      message: t('rules.required')
+    }).max(120, {
+      message: t('rules.max', { num: 120 })
+    }),
+  description: z.string().max(500, {
+      message: t('rules.max', { num: 500 })
+    }).optional(),
+})
+
+export const addItemScheme = (t: TFunction) => z.object({
+  quantity: z.coerce.number({
+      message: t('rules.number')
+    }).int().positive({
+      message: t('rules.positive')
+    }),
+  notes: z.string().max(500, {
+      message: t('rules.max', { num: 500 })
+    }).optional(),
+})
+
+export const collaboratorScheme = (t: TFunction) => z.object({
+  email: z.string().min(1, {
+      message: t('rules.required')
+    }).email({
+      message: t('rules.email')
+    }),
+  role: z.enum(['reader', 'editor']),
+})
