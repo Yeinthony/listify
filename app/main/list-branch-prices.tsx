@@ -222,10 +222,10 @@ export default function ListBranchPrices() {
               <MenuItem
                 key='all-stores'
                 textValue='all-stores'
-                className={`${!storeFilter && 'bg-primary-500/20'}`}
+                className={`justify-center ${!storeFilter && 'bg-primary-500/20'}`}
                 onPress={() => onSelectStore(null)}
               >
-                <MenuItemLabel size='sm' className={`${!storeFilter && 'text-primary-500'}`}>
+                <MenuItemLabel size='sm' className={`text-center ${!storeFilter && 'text-primary-500'}`}>
                   {t('screen.lists.allStores')}
                 </MenuItemLabel>
               </MenuItem>
@@ -233,10 +233,10 @@ export default function ListBranchPrices() {
                 <MenuItem
                   key={s.storeId}
                   textValue={s.storeId}
-                  className={`${storeFilter === s.storeId && 'bg-primary-500/20'}`}
+                  className={`justify-center ${storeFilter === s.storeId && 'bg-primary-500/20'}`}
                   onPress={() => onSelectStore(s.storeId)}
                 >
-                  <MenuItemLabel size='sm' numberOfLines={1} className={`${storeFilter === s.storeId && 'text-primary-500'}`}>
+                  <MenuItemLabel size='sm' numberOfLines={1} className={`text-center ${storeFilter === s.storeId && 'text-primary-500'}`}>
                     {s.name}
                   </MenuItemLabel>
                 </MenuItem>
@@ -295,22 +295,32 @@ export default function ListBranchPrices() {
                   </TouchableOpacity>
                 )}
               >
-                {filteredBranches.map((b) => (
-                  <MenuItem
-                    key={b.branchId}
-                    textValue={b.branchId}
-                    className={`${chosen?.branchId === b.branchId && 'bg-primary-500/20'}`}
-                    onPress={() => onSelectBranch(b)}
-                  >
-                    <MenuItemLabel
-                      size='sm'
-                      numberOfLines={1}
-                      className={`${b.branchId === bestBranch?.branchId && 'text-success-600 font-bold'}`}
+                {filteredBranches.map((b) => {
+                  const isBest = b.branchId === bestBranch?.branchId;
+                  return (
+                    <MenuItem
+                      key={b.branchId}
+                      textValue={b.branchId}
+                      className={`justify-center ${chosen?.branchId === b.branchId && 'bg-primary-500/20'}`}
+                      onPress={() => onSelectBranch(b)}
                     >
-                      {`${b.branchId === bestBranch?.branchId ? '⭐ ' : ''}${b.storeName} · ${(b.distanceMeters / 1000).toFixed(1)} km · ${money(b.totalWithDiscount)}`}
-                    </MenuItemLabel>
-                  </MenuItem>
-                ))}
+                      <VStack className='items-center'>
+                        <Text
+                          numberOfLines={1}
+                          className={`text-sm text-center ${isBest ? 'text-success-600 font-bold' : ''}`}
+                        >
+                          {`${isBest ? '⭐ ' : ''}${b.storeName}`}
+                        </Text>
+                        <Text
+                          className={`text-xs text-center ${isBest ? 'text-success-600' : 'text-typography-600'}`}
+                          style={{ fontVariant: ['tabular-nums'] }}
+                        >
+                          {`${(b.distanceMeters / 1000).toFixed(1)} km · ${money(b.totalWithDiscount)}`}
+                        </Text>
+                      </VStack>
+                    </MenuItem>
+                  );
+                })}
               </Menu>
 
               {chosen && (
