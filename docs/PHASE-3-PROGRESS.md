@@ -94,23 +94,52 @@ Verificado en `../listify-backend/src/modules/shopping-lists`. Roles: `reader | 
 
 ## Mejoras posteriores al cierre
 
-Iteraciones sobre el detalle de lista pedidas tras probar en runtime:
+Iteraciones (UI + features nuevas) tras probar en runtime. El feature mayor (precios por sucursal)
+está documentado aparte en [`docs/architecture/list-branch-prices.md`](./architecture/list-branch-prices.md).
 
-- **Agregar productos directo desde el detalle (por escaneo).** El detalle no permitía sumar
-  productos nuevos (el alta solo existía desde vistas de producto, eligiendo lista). Se agregó un
-  botón **"Agregar productos"** (gated por `myRole` editor/owner) que abre el `BarcodeScanModal`
-  apuntado a esa lista (`targetListId`): cada producto escaneado se agrega **directo** a la lista,
-  el escáner queda abierto para sumar varios y maneja el `409` (ya en la lista). Como la app no
-  tiene buscador de productos, el escáner es el mecanismo de alta.
-  - Se extrajo `hooks/screens/useAddToList.ts` (mutación + invalidación `detail`/`list` + snackbar
-    `itemAdded` + manejo `409`) y se reusó en `AddToListModal` y en `ProductCard`.
-  - `ProductCard` acepta `targetListId`: si viene, "Agregar" suma directo a esa lista; si no,
-    abre `AddToListModal` (elegir lista) — **retrocompatible** con el botón flotante de escaneo del tab.
-  - i18n: `screen.lists.addProducts` (es/en).
-- **Ubicación del botón:** se movió "Agregar productos" a un **botón flotante (pill) abajo al
-  centro** del detalle (respeta safe area; la lista lleva `paddingBottom` para no taparse).
+### 1. Agregar productos al detalle por escaneo
+- Botón flotante **"Agregar productos"** (gated `editor`/`owner`) → `BarcodeScanModal` con `targetListId`:
+  alta **directa** a esa lista, el escáner queda abierto para sumar varios y maneja `409`. La app no
+  tiene buscador de productos, así que el escáner es el mecanismo de alta.
+- Hook compartido `hooks/screens/useAddToList.ts` (mutación + invalidación `detail`/`list` + snackbar
+  `itemAdded` + `409`), reusado en `AddToListModal` y `ProductCard` (retrocompatible con el escáner del tab).
+- i18n `addProducts`. Commits `ada52d8`, `70bc8dc`, `5210f7d`, `df433e1`, `ce6418f`.
 
-Commits: `ada52d8`, `70bc8dc`, `5210f7d`, `df433e1`.
+### 2. Alta por escaneo: cantidad + flujo unificado
+- Al tocar "Agregar" se pide **cantidad** (`QuantityPickerModal`); tras agregar, la tarjeta del escaneo
+  **desaparece** (`useBarcodeScan.resetScan`). `useAddToList` soporta `quantity`.
+- **Flujo unificado** dentro y fuera del detalle: `AddToListModal` pasó a ser **selector de lista**
+  (`onSelect`), y `ProductCard`/`product-details` orquestan elegir lista → cantidad → alta.
+- Rediseño de la tarjeta del producto escaneado (manteniendo rango mín/prom/máx) y del actionsheet de
+  selección de lista (filas con ícono, cantidad y badge de rol).
+- Commits `ae2fd99`, `c98f8c8`, `e966459`, `b6e0992`, `467f276`, `89a7a20`.
+
+### 3. Precios en el detalle de lista (referencia)
+- `hooks/screens/useListItemPrices.ts`: precio de referencia por producto vía `ean-light` (`useQueries`,
+  cache compartido con el escáner) → **precio por producto + total estimado**.
+- Card de **Total estimado** resaltada (tinte primario + ícono) y **tappable → precios por sucursal**.
+- Varias iteraciones de diseño de `ListItemCard` (miniatura del producto, distribución, cantidad junto
+  al precio resaltada). Commits `689291f`, `446adb1`, `b6065f4`, `f89bd6c`, `6121e69`, `d9d1f3d`,
+  `f39403b`, `4890e8c`, `1e06fe8`, `7bdec5a`, `0f75fb7`.
+
+### 4. Modal de cantidad (editar item)
+- Editar item solo cambia la **cantidad** (sin notas), botones centrados, ícono **±** en la card,
+  título "Modificar cantidad", layout equilibrado. Commits `b8e220d`, `266d297`, `4c8ae54`, `702f6bf`, `06284c5`.
+
+### 5. Precios por sucursal (branch-prices) — feature nuevo
+Consume `POST /shopping-lists/:id/branch-prices` (backend). Detalle en `docs/architecture/list-branch-prices.md`.
+- Capa de datos: tipos (`BranchPriceEntry`/`ListBranchPrices`), `getListBranchPrices`,
+  `shoppingListKeys.branchPrices`, `useListBranchPrices` (ubicación + query por `km`).
+- Pantalla `app/main/list-branch-prices.tsx`: mapa (`expo-maps`) + ubicación + radio; **selects**
+  (comercio + distancia en una línea, luego sucursal) en vez de carrusel; `BranchPriceDetailModal`
+  (precio por producto + total + descuento + no disponibles).
+- **Filtro por comercio**, selección por **tap en el marker**, **sucursal más barata** destacada (card
+  verde + ⭐, opción del dropdown y marker con `favorite-pin.png` + `tintColor`), **zoom según km**,
+  items de los selects centrados con nombre + distancia/precio siempre visibles.
+- **Overlay de carga por fases** (`components/generals/MapLoadingOverlay.tsx`): ubicando → buscando
+  comercios/precios (mensajes que ciclan) → renderizando, con cross-fade y fade-out al revelar el mapa.
+- Commits `b0f9443`, `24de4a3`, `7bbd005`, `a0e8aed`, `ed8f5e7`, `c07cc4e`, `dd906e3`, `32e560d`,
+  `9b7005f`, `b9929d3`, `492d99a`, `a366ff6`, `fafc70a`.
 
 ---
 
@@ -133,4 +162,41 @@ ada52d8 refactor(lists): extraer useAddToList y usarlo en AddToListModal
 70bc8dc feat(lists): agregar productos por escaneo directo desde el detalle de la lista
 5210f7d feat(i18n): clave addProducts (es/en)
 df433e1 style(lists): botón "Agregar productos" flotante abajo al centro
+ce6418f docs(fase-3): documentar agregar productos directo desde el detalle
+ae2fd99 style(scan): rediseñar tarjeta de producto escaneado (mantener rango de precios)
+c98f8c8 feat(lists): soportar cantidad en useAddToList
+e966459 feat(scan): elegir cantidad al agregar y ocultar la tarjeta tras agregar
+b6e0992 feat(i18n): clave quantityTitle (es/en)
+467f276 refactor(scan): unificar alta por escaneo (elegir lista + cantidad) dentro y fuera del detalle
+89a7a20 style(lists): rediseñar actionsheet de selección de lista
+689291f feat(lists): hook useListItemPrices (precio de referencia por item)
+446adb1 feat(lists): mostrar precio por producto y total estimado en el detalle
+b6065f4 feat(i18n): claves de precios de lista (es/en)
+f89bd6c style(lists): resaltar card de total estimado
+6121e69 style(lists): quitar box-shadow de la card de total estimado
+d9d1f3d style(lists): rediseñar card de producto en el detalle de lista
+f39403b style(lists): cantidad junto al precio en la card (sin chip)
+4890e8c style(lists): mantener distribución del rediseño sin chip (cantidad junto al precio)
+1e06fe8 style(lists): miniatura del producto en la card del detalle
+7bdec5a style(lists): redistribuir card de producto del detalle (acciones arriba, subtotal abajo)
+0f75fb7 style(lists): ajustar miniatura y cantidad inline en la card del detalle
+5d73aa7 style(lists): resaltar la cantidad en la card del detalle
+b8e220d style(lists): editar item solo modifica cantidad y centra botones
+266d297 style(lists): modal de cantidad equilibrado y editar tocando la cantidad (sin lápiz)
+4c8ae54 style(lists): ícono ± para editar cantidad en la card del detalle
+702f6bf style(lists): quitar info del producto del modal de cantidad
+06284c5 style(lists): separar el título del modal de cantidad (mb-4)
+b0f9443 docs(arquitectura): documentar branch-prices (contrato + integración mobile)
+24de4a3 feat(lists): capa de datos de precios por sucursal (tipos, api, query key, hook)
+7bbd005 feat(lists): pantalla de precios por sucursal (mapa + carrusel + detalle)
+a0e8aed docs(arquitectura): branch-prices UI mobile hecha
+ed8f5e7 style(lists): selects en lugar de carrusel en precios por sucursal
+c07cc4e feat(lists): filtro por comercio en precios por sucursal
+dd906e3 style(lists): comercio y distancia en una línea sobre el select de sucursal
+32e560d feat(lists): seleccionar sucursal al tocar su marker en el mapa
+9b7005f feat(lists): overlay de carga por fases en precios por sucursal
+b9929d3 style(lists): overlay de carga con cross-fade de mensajes y fade-out al revelar el mapa
+492d99a feat(lists): destacar la sucursal más barata (card, dropdown y marker con pin)
+a366ff6 feat(lists): ajustar el zoom del mapa según el radio en km
+fafc70a style(lists): centrar items de los selects y mostrar nombre+distancia/precio en sucursal
 ```
