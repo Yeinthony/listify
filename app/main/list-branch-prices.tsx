@@ -26,6 +26,10 @@ const MotionView = Motion.View as any;
 
 const money = (n: number) => `$${Math.round(n).toLocaleString('es-AR')}`;
 
+const ZOOM_BY_KM: Record<number, number> = {
+  1: 14, 2.5: 13, 5: 12, 10: 11, 20: 10, 40: 9, 80: 8, 160: 7, 320: 6, 640: 5, 900: 4,
+};
+
 export default function ListBranchPrices() {
   const { t } = useTranslation();
   const colorScheme = useColorScheme();
@@ -112,6 +116,7 @@ export default function ListBranchPrices() {
   );
 
   const camera = focus ?? coords;
+  const zoom = ZOOM_BY_KM[km] ?? 12;
 
   const onSelectBranch = (branch: BranchPriceEntry) => {
     setChosen(branch);
@@ -132,7 +137,7 @@ export default function ListBranchPrices() {
           style={StyleSheet.absoluteFill}
           cameraPosition={{
             coordinates: { latitude: camera.lat, longitude: camera.lng },
-            zoom: 13,
+            zoom,
           }}
           markers={markers}
           onMarkerClick={onMarkerClick}
@@ -143,7 +148,7 @@ export default function ListBranchPrices() {
           style={StyleSheet.absoluteFill}
           cameraPosition={{
             coordinates: { latitude: camera.lat, longitude: camera.lng },
-            zoom: 13,
+            zoom,
           }}
           properties={{ isMyLocationEnabled: true }}
           uiSettings={{ myLocationButtonEnabled: false, zoomControlsEnabled: false }}
