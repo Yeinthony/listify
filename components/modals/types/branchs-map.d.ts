@@ -27,4 +27,5 @@ export interface BranchMapMarker {
   title: string;
   snippet?: string;
   icon?: any;
+  tintColor?: string;
 }

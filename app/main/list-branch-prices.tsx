@@ -6,6 +6,7 @@ import { Center } from '@/components/ui/center';
 import { Spinner } from '@/components/ui/spinner';
 import { Menu, MenuItem, MenuItemLabel } from '@/components/ui/menu';
 import { AppleMaps, GoogleMaps } from 'expo-maps';
+import { useImage } from 'expo-image';
 import { Platform, StyleSheet, TouchableOpacity, useColorScheme } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import Ionicons from '@expo/vector-icons/Ionicons';
@@ -40,6 +41,7 @@ export default function ListBranchPrices() {
 
   const { coords, permissionDenied, branches, totalItems, loading } = useListBranchPrices(id, km);
   const { list } = useListDetail(id);
+  const bestPin = useImage(require('@/assets/images/favorite-pin.png'));
 
   useEffect(() => {
     if (coords && !loading) {
@@ -76,6 +78,14 @@ export default function ListBranchPrices() {
     [branches, storeFilter],
   );
 
+  const bestBranch = useMemo(() => {
+    if (filteredBranches.length === 0) return null;
+    const maxCoverage = Math.max(...filteredBranches.map((b) => b.coveredItems));
+    return filteredBranches
+      .filter((b) => b.coveredItems === maxCoverage)
+      .reduce((best, b) => (b.totalWithDiscount < best.totalWithDiscount ? b : best));
+  }, [filteredBranches]);
+
   const selectedStoreName = stores.find((s) => s.storeId === storeFilter)?.name;
 
   const onSelectStore = (storeId: string | null) => {
@@ -87,13 +97,18 @@ export default function ListBranchPrices() {
   const markers = useMemo<BranchMapMarker[]>(() =>
     filteredBranches
       .filter((b) => b.latitude != null && b.longitude != null)
-      .map((b) => ({
-        id: b.branchId,
-        coordinates: { latitude: b.latitude as number, longitude: b.longitude as number },
-        title: money(b.totalWithDiscount),
-        snippet: b.storeName,
-      })),
-    [filteredBranches],
+      .map((b) => {
+        const isBest = b.branchId === bestBranch?.branchId;
+        return {
+          id: b.branchId,
+          coordinates: { latitude: b.latitude as number, longitude: b.longitude as number },
+          title: `${isBest ? '⭐ ' : ''}${money(b.totalWithDiscount)}`,
+          snippet: b.storeName,
+          icon: isBest && bestPin ? bestPin : undefined,
+          tintColor: isBest ? '#16a34a' : undefined,
+        };
+      }),
+    [filteredBranches, bestBranch, bestPin],
   );
 
   const camera = focus ?? coords;
@@ -157,6 +172,29 @@ export default function ListBranchPrices() {
         <VStack className='flex-1' />
 
         <VStack className='w-[92%] bg-background-0/95 mx-auto mb-8 px-4 py-4 rounded-2xl' space='md'>
+          {/* Más barato */}
+          {bestBranch && (
+            <TouchableOpacity
+              onPress={() => { onSelectBranch(bestBranch); setShowDetail(true); }}
+              className='bg-success-500/10 rounded-2xl p-3 flex-row items-center'
+              style={{ borderCurve: 'continuous' }}
+            >
+              <Center className='h-10 w-10 rounded-xl bg-success-500'>
+                <Ionicons name='star' size={18} color='white' />
+              </Center>
+              <VStack className='flex-1 ml-3'>
+                <Text className='text-xs font-bold text-success-600'>{t('screen.lists.cheapest')}</Text>
+                <Text className='text-sm' numberOfLines={1}>
+                  {`${bestBranch.storeName} · ${(bestBranch.distanceMeters / 1000).toFixed(1)} km`}
+                </Text>
+              </VStack>
+              <Heading className='text-lg font-extrabold text-success-600' style={{ fontVariant: ['tabular-nums'] }}>
+                {money(bestBranch.totalWithDiscount)}
+              </Heading>
+              <Ionicons name='chevron-forward' size={18} color='#16a34a' />
+            </TouchableOpacity>
+          )}
+
           {/* Comercio + distancia (misma línea) */}
           <HStack space='sm' className='items-center'>
             <Menu
@@ -259,8 +297,12 @@ export default function ListBranchPrices() {
                     className={`${chosen?.branchId === b.branchId && 'bg-primary-500/20'}`}
                     onPress={() => onSelectBranch(b)}
                   >
-                    <MenuItemLabel size='sm' numberOfLines={1}>
-                      {`${b.storeName} · ${(b.distanceMeters / 1000).toFixed(1)} km · ${money(b.totalWithDiscount)}`}
+                    <MenuItemLabel
+                      size='sm'
+                      numberOfLines={1}
+                      className={`${b.branchId === bestBranch?.branchId && 'text-success-600 font-bold'}`}
+                    >
+                      {`${b.branchId === bestBranch?.branchId ? '⭐ ' : ''}${b.storeName} · ${(b.distanceMeters / 1000).toFixed(1)} km · ${money(b.totalWithDiscount)}`}
                     </MenuItemLabel>
                   </MenuItem>
                 ))}
