@@ -68,7 +68,12 @@ export const ProductCard = (props: ProductCardProps) => {
             {product.name}
           </Heading>
           <Text className="text-sm text-typography-600 capitalize" numberOfLines={1}>
-            {[product.brand, `${product.presentationQty} ${product.presentationUnit}`]
+            {[
+              product.brand,
+              product.presentationQty != null && product.presentationUnit
+                ? `${product.presentationQty} ${product.presentationUnit}`
+                : null,
+            ]
               .filter(Boolean)
               .join(' · ')}
           </Text>
