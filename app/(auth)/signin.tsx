@@ -43,7 +43,7 @@ export default function Signin() {
       </HStack>
       <VStack className="mt-2">
         <TouchableOpacity  
-          onPress={() => router.push('/main')}
+          onPress={() => router.push('/main/lists')}
           className="mb-2"
         >
           <HStack 

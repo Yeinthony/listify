@@ -81,7 +81,7 @@ export const useUserStore = create<UserState>((set) => ({
         const userData = response.data;
         set({ user: userData.user });
         await SecureStore.setItemAsync('sessionToken', userData.token);
-        router.replace('/main');
+        router.replace('/main/lists');
       }
     } catch (error) {
       console.log('error signing in user:', error);
@@ -96,7 +96,7 @@ export const useUserStore = create<UserState>((set) => ({
         const userData = response.data;
         set({ user: userData.user });
         await SecureStore.setItemAsync('sessionToken', userData.token);
-        router.replace('/main');
+        router.replace('/main/lists');
       }
     } catch (error) {
       if (error instanceof ApiError && error.statusCode === 401) {
