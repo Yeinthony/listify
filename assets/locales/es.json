@@ -92,9 +92,14 @@
       "title": "Inicio"
     },
     "search": {
-      "placeholder": "Buscar productos",
+      "title": "Buscar productos",
+      "placeholder": "Ej: leche, arroz, café…",
+      "minTitle": "¿Qué estás buscando?",
       "minChars": "Escribí al menos 2 caracteres",
-      "empty": "No se encontraron productos"
+      "emptyTitle": "Sin resultados",
+      "empty": "No se encontraron productos",
+      "results_one": "{{count}} resultado",
+      "results_other": "{{count}} resultados"
     },
     "lists": {
       "title": "Listas",
@@ -111,7 +116,8 @@
       "removeItemDescription": "Se quitará el producto de la lista.",
       "optimize": "Optimizar",
       "collaborators": "Colaboradores",
-      "addProducts": "Agregar productos",
+      "scan": "Escanear",
+      "search": "Buscar",
       "estimatedTotal": "Total estimado",
       "referencePrice": "Precio de referencia",
       "viewByBranch": "Ver precios por sucursal",

@@ -91,9 +91,14 @@
       "title": "Home"
     },
     "search": {
-      "placeholder": "Search products",
+      "title": "Search products",
+      "placeholder": "e.g. milk, rice, coffee…",
+      "minTitle": "What are you looking for?",
       "minChars": "Type at least 2 characters",
-      "empty": "No products found"
+      "emptyTitle": "No results",
+      "empty": "No products found",
+      "results_one": "{{count}} result",
+      "results_other": "{{count}} results"
     },
     "lists": {
       "title": "Lists",
@@ -110,7 +115,8 @@
       "removeItemDescription": "The product will be removed from the list.",
       "optimize": "Optimize",
       "collaborators": "Collaborators",
-      "addProducts": "Add products",
+      "scan": "Scan",
+      "search": "Search",
       "estimatedTotal": "Estimated total",
       "referencePrice": "Reference price",
       "viewByBranch": "View prices by branch",
