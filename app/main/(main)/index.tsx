@@ -8,7 +8,8 @@ import CustomHeader from '@/components/generals/CustomHeader';
 import { VStack } from '@/components/ui/vstack';
 import { HStack } from '@/components/ui/hstack';
 import { SearchText } from '@/components/inputs/SearchText';
-import { Pressable, TouchableOpacity } from 'react-native';
+import { Pressable, TouchableOpacity, View } from 'react-native';
+import { router } from 'expo-router';
 import Ionicons from '@expo/vector-icons/Ionicons';
 
 export default function Home() {
@@ -26,13 +27,20 @@ export default function Home() {
         <HStack 
           className='absolute -bottom-8 self-center items-center justify-between z-10 mx-6'
         >
-          <SearchText 
+          <Pressable
             className='flex-1'
-            value=''
-            onTextChange={() => {}}
-          />
-          <Pressable 
-            onPress={() => {}}
+            onPress={() => router.push('/main/search-products')}
+          >
+            <View pointerEvents='none' className='w-full'>
+              <SearchText
+                className='w-full'
+                value=''
+                onTextChange={() => {}}
+              />
+            </View>
+          </Pressable>
+          <Pressable
+            onPress={() => router.push('/main/search-products')}
             className='bg-background-0 h-14 w-14 rounded-xl items-center justify-center ml-4'
           >
             <Ionicons 

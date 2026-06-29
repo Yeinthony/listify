@@ -51,6 +51,10 @@ export default function AppLayout() {
           name="list-branch-prices"
           options={{ headerShown: false }}
         />
+        <Stack.Screen
+          name="search-products"
+          options={{ headerShown: false }}
+        />
       </Stack>
     </GestureHandlerRootView>
   );
