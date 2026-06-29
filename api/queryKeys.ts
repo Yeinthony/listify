@@ -13,6 +13,7 @@ export const productKeys = {
   detail: (ean: string, params: { channel: Channel }) => ['product', ean, params] as const,
   light: (ean: string) => ['product-light', ean] as const,
   nearby: (ean: string, params: NearbyParams) => ['nearby-prices', ean, params] as const,
+  search: (search: string) => ['products-search', search] as const,
 };
 
 interface BranchPricesKeyParams {

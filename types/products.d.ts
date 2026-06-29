@@ -9,6 +9,13 @@ export interface ProductLight {
   stats: Stats
 }
 
+export interface ProductSearchResult {
+  product: Product
+  avgPrice: string | null
+  minPrice: string | null
+  maxPrice: string | null
+}
+
 export interface NearbyBranch {
   branch: Branch
   price: Price
