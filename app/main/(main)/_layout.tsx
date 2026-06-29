@@ -87,7 +87,7 @@ export default function TabLayout() {
         }}
       >
         <HStack className="flex-1 bg-background-0 justify-between items-center px-2 border-t-8 border-t-background-100">
-          <TabTrigger 
+          {/* <TabTrigger 
             className='h-full w-[21%] justify-center items-center' 
             name="home"
           >
@@ -106,10 +106,10 @@ export default function TabLayout() {
                 {t('screen.home.title')}
               </Text>
             </VStack>
-          </TabTrigger>
+          </TabTrigger> */}
 
           <TabTrigger 
-            className='h-full w-[21%] justify-center items-center' 
+            className='h-full w-[40%] justify-center items-center' 
             name="lists"
           >
             <VStack className="items-center justify-center flex-1">
@@ -130,9 +130,9 @@ export default function TabLayout() {
           </TabTrigger>
 
           {/* ESPACIO CENTRAL PARA EL BOTÓN FLOANTE */}
-          <View style={{ width: '14%' }} />
+          <View style={{ width: '20%' }} />
 
-          <TabTrigger 
+          {/* <TabTrigger 
             name="recipes"
             className='h-full w-[21%] justify-center items-center'
           >
@@ -151,11 +151,11 @@ export default function TabLayout() {
                 {t('screen.recipes.title')}
               </Text>
             </VStack>
-          </TabTrigger>
+          </TabTrigger> */}
 
           <TabTrigger 
             name="profile"
-            className='h-full w-[21%] justify-center items-center'
+            className='h-full w-[40%] justify-center items-center'
           >
             <VStack className="items-center justify-center flex-1">
               <Ionicons
