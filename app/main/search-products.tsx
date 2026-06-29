@@ -6,7 +6,7 @@ import { Spinner } from '@/components/ui/spinner';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { FlatList, TouchableOpacity, useColorScheme } from 'react-native';
 import Ionicons from '@expo/vector-icons/Ionicons';
-import { router } from 'expo-router';
+import { router, useLocalSearchParams } from 'expo-router';
 import { useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { SearchText } from '@/components/inputs/SearchText';
@@ -16,6 +16,8 @@ import { useSearchProducts } from '@/hooks/screens/useSearchProducts';
 export default function SearchProducts() {
   const { t } = useTranslation();
   const colorScheme = useColorScheme();
+  const params = useLocalSearchParams();
+  const listId = Array.isArray(params.listId) ? params.listId[0] : params.listId;
   const [term, setTerm] = useState('');
 
   const { products, enabled, isLoading, isFetchingNextPage, hasNextPage, fetchNextPage } =
@@ -45,6 +47,7 @@ export default function SearchProducts() {
         keyboardShouldPersistTaps='handled'
         renderItem={({ item }) => (
           <ProductCard
+            targetListId={listId}
             data={{
               product: item.product,
               stats: {

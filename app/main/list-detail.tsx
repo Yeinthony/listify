@@ -135,26 +135,32 @@ export default function ListDetail() {
       />
 
       {canEdit && (
-        <Shadow
-          distance={5}
-          startColor='rgba(0,0,0,0.11)'
-          offset={[0, 3]}
-          style={{ borderRadius: 25 }}
-          containerStyle={{
-            position: 'absolute',
-            alignSelf: 'center',
-            bottom: insets.bottom + 20,
-          }}
+        <HStack
+          space='md'
+          className='absolute self-center items-center'
+          style={{ bottom: insets.bottom + 20 }}
         >
-          <TouchableOpacity
-            onPress={() => setShowScan(true)}
-            activeOpacity={0.9}
-            className='bg-primary-500 rounded-full h-14 px-6 flex-row items-center justify-center'
-          >
-            <Ionicons name="add-circle-outline" size={22} color="white" />
-            <Text className='text-white font-medium ml-2'>{t('screen.lists.addProducts')}</Text>
-          </TouchableOpacity>
-        </Shadow>
+          <Shadow distance={5} startColor='rgba(0,0,0,0.11)' offset={[0, 3]} style={{ borderRadius: 28 }}>
+            <TouchableOpacity
+              onPress={() => router.push({ pathname: '/main/search-products', params: { listId: id } })}
+              activeOpacity={0.9}
+              className='bg-background-0 rounded-full h-14 w-14 items-center justify-center'
+            >
+              <Ionicons name='search' size={22} color='#e44b5e' />
+            </TouchableOpacity>
+          </Shadow>
+
+          <Shadow distance={5} startColor='rgba(0,0,0,0.11)' offset={[0, 3]} style={{ borderRadius: 28 }}>
+            <TouchableOpacity
+              onPress={() => setShowScan(true)}
+              activeOpacity={0.9}
+              className='bg-primary-500 rounded-full h-14 px-6 flex-row items-center justify-center'
+            >
+              <Ionicons name="add-circle-outline" size={22} color="white" />
+              <Text className='text-white font-medium ml-2'>{t('screen.lists.addProducts')}</Text>
+            </TouchableOpacity>
+          </Shadow>
+        </HStack>
       )}
 
       <BarcodeScanModal
