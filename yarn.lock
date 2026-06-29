@@ -7226,6 +7226,13 @@ react-native-is-edge-to-edge@^1.1.6, react-native-is-edge-to-edge@^1.2.1:
   resolved "https://registry.npmjs.org/react-native-is-edge-to-edge/-/react-native-is-edge-to-edge-1.2.1.tgz"
   integrity sha512-FLbPWl/MyYQWz+KwqOZsSyj2JmLKglHatd3xLZWskXOpRaio4LfEDEz8E/A6uD8QoTHW6Aobw1jbEwK7KMgR7Q==
 
+react-native-keyboard-controller@^1.21.13:
+  version "1.21.13"
+  resolved "https://registry.npmjs.org/react-native-keyboard-controller/-/react-native-keyboard-controller-1.21.13.tgz"
+  integrity sha512-FLr0MucraPyCGykRAcPM8Bv0JT5TcG1juQGMI+GLDuuaoOUKUY3SMUnRhHn7IgSM8KlxpcNQmMPNDmGpOw1OcA==
+  dependencies:
+    react-native-is-edge-to-edge "^1.2.1"
+
 react-native-maps@^1.26.20:
   version "1.26.20"
   resolved "https://registry.npmjs.org/react-native-maps/-/react-native-maps-1.26.20.tgz"
