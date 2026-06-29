@@ -1,4 +1,5 @@
 import { Channel } from './types/products';
+import { BranchChannel } from './types/shopping-lists';
 
 interface NearbyParams {
   lat: number;
@@ -18,7 +19,8 @@ interface BranchPricesKeyParams {
   lat: number;
   lng: number;
   km: number;
-  channel: Channel;
+  channel: BranchChannel;
+  limit: number | 'all';
 }
 
 export const shoppingListKeys = {

@@ -3,6 +3,7 @@ import { ListRole } from "@/types/shopping-lists";
 
 export type Currency = 'ars' | 'all' | 'usd';
 export type ExchangeType = 'blue' | 'oficial' | 'mep' | 'ccl';
+export type BranchChannel = Channel | 'all';
 
 export interface CreateListPayload {
   name: string;
@@ -43,7 +44,7 @@ export interface BranchPricesPayload {
   lng: number;
   km: number;
   limit?: number;
-  channel?: Channel;
+  channel?: BranchChannel;
   applyDiscounts?: boolean;
   currency?: Currency;
   exchangeType?: ExchangeType;

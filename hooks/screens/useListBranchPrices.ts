@@ -3,14 +3,20 @@ import { useQuery } from "@tanstack/react-query";
 import * as Location from "expo-location";
 import { shoppingListKeys } from "@/api/queryKeys";
 import { getListBranchPrices } from "@/api/shoppingLists.api";
-import { DEFAULT_CHANNEL } from "@/assets/globalsConst";
+import { BranchChannel } from "@/api/types/shopping-lists";
+import { LimitFilter } from "@/assets/globalsConst";
 
 interface Coords {
   lat: number;
   lng: number;
 }
 
-export const useListBranchPrices = (id: string, km: number) => {
+export const useListBranchPrices = (
+  id: string,
+  km: number,
+  channel: BranchChannel,
+  limit: LimitFilter,
+) => {
   const [coords, setCoords] = useState<Coords | null>(null);
   const [permissionDenied, setPermissionDenied] = useState(false);
 
@@ -31,14 +37,16 @@ export const useListBranchPrices = (id: string, km: number) => {
       lat: coords?.lat ?? 0,
       lng: coords?.lng ?? 0,
       km,
-      channel: DEFAULT_CHANNEL,
+      channel,
+      limit,
     }),
     queryFn: () =>
       getListBranchPrices(id, {
         lat: coords!.lat,
         lng: coords!.lng,
         km,
-        channel: DEFAULT_CHANNEL,
+        channel,
+        ...(limit !== 'all' ? { limit } : {}),
       }).then(res => res.data),
     enabled: !!id && !!coords,
   });

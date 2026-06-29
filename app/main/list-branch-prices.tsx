@@ -15,10 +15,13 @@ import { useEffect, useMemo, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { useListBranchPrices } from '@/hooks/screens/useListBranchPrices';
 import { useListDetail } from '@/hooks/screens/useListDetail';
-import { DISTANCES_FILTER } from '@/assets/globalsConst';
+import { CHANNELS_FILTER, DEFAULT_CHANNEL, DISTANCES_FILTER, LIMITS_FILTER, LimitFilter } from '@/assets/globalsConst';
+import { BranchChannel } from '@/api/types/shopping-lists';
 import { BranchMapMarker } from '@/components/modals/types/branchs-map';
 import { BranchPriceEntry } from '@/types/shopping-lists';
 import BranchPriceDetailModal from '@/components/modals/BranchPriceDetailModal';
+import BranchSelectModal from '@/components/modals/BranchSelectModal';
+import StoreSelectModal from '@/components/modals/StoreSelectModal';
 import MapLoadingOverlay, { MapLoadingPhase } from '@/components/generals/MapLoadingOverlay';
 import { Motion, AnimatePresence } from '@legendapp/motion';
 
@@ -37,13 +40,17 @@ export default function ListBranchPrices() {
   const id = Array.isArray(params.id) ? params.id[0] : params.id || '';
 
   const [km, setKm] = useState<number>(5);
+  const [channel, setChannel] = useState<BranchChannel>(DEFAULT_CHANNEL);
+  const [limit, setLimit] = useState<LimitFilter>(30);
   const [storeFilter, setStoreFilter] = useState<string | null>(null);
   const [chosen, setChosen] = useState<BranchPriceEntry | null>(null);
   const [showDetail, setShowDetail] = useState(false);
+  const [showStoreSelect, setShowStoreSelect] = useState(false);
+  const [showBranchSelect, setShowBranchSelect] = useState(false);
   const [focus, setFocus] = useState<{ lat: number; lng: number } | null>(null);
   const [rendering, setRendering] = useState(false);
 
-  const { coords, permissionDenied, branches, totalItems, loading } = useListBranchPrices(id, km);
+  const { coords, permissionDenied, branches, totalItems, loading } = useListBranchPrices(id, km, channel, limit);
   const { list } = useListDetail(id);
   const bestPin = useImage(require('@/assets/images/favorite-pin.png'));
 
@@ -94,6 +101,27 @@ export default function ListBranchPrices() {
 
   const onSelectStore = (storeId: string | null) => {
     setStoreFilter(storeId);
+    setChosen(null);
+    setFocus(null);
+  };
+
+  const channelLabel = (c: BranchChannel) =>
+    c === 'all' ? t('screen.lists.channelAll')
+      : c === 'mayorista' ? t('screen.lists.channelMayorista')
+        : t('screen.lists.channelMinorista');
+
+  const limitLabel = (l: LimitFilter) =>
+    l === 'all' ? t('screen.lists.limitAll') : String(l);
+
+  const onSelectChannel = (c: BranchChannel) => {
+    setChannel(c);
+    setStoreFilter(null);
+    setChosen(null);
+    setFocus(null);
+  };
+
+  const onSelectLimit = (l: LimitFilter) => {
+    setLimit(l);
     setChosen(null);
     setFocus(null);
   };
@@ -202,46 +230,15 @@ export default function ListBranchPrices() {
 
           {/* Comercio + distancia (misma línea) */}
           <HStack space='sm' className='items-center'>
-            <Menu
-              placement='top'
-              offset={5}
-              closeOnSelect
-              style={{ maxHeight: 360 }}
-              trigger={({ ...triggerProps }) => (
-                <TouchableOpacity className='flex-1' {...triggerProps}>
-                  <HStack space='xs' className='items-center bg-primary-500/20 px-3 py-2 rounded-full border-[1px] border-primary-500'>
-                    <Ionicons name='storefront-outline' size={14} color='#e44b5e' />
-                    <Text className='text-sm text-primary-500 flex-1' numberOfLines={1}>
-                      {selectedStoreName ?? t('screen.lists.allStores')}
-                    </Text>
-                    <Ionicons name='chevron-down-outline' size={14} color='#e44b5e' />
-                  </HStack>
-                </TouchableOpacity>
-              )}
-            >
-              <MenuItem
-                key='all-stores'
-                textValue='all-stores'
-                className={`justify-center ${!storeFilter && 'bg-primary-500/20'}`}
-                onPress={() => onSelectStore(null)}
-              >
-                <MenuItemLabel size='sm' className={`text-center ${!storeFilter && 'text-primary-500'}`}>
-                  {t('screen.lists.allStores')}
-                </MenuItemLabel>
-              </MenuItem>
-              {stores.map((s) => (
-                <MenuItem
-                  key={s.storeId}
-                  textValue={s.storeId}
-                  className={`justify-center ${storeFilter === s.storeId && 'bg-primary-500/20'}`}
-                  onPress={() => onSelectStore(s.storeId)}
-                >
-                  <MenuItemLabel size='sm' numberOfLines={1} className={`text-center ${storeFilter === s.storeId && 'text-primary-500'}`}>
-                    {s.name}
-                  </MenuItemLabel>
-                </MenuItem>
-              ))}
-            </Menu>
+            <TouchableOpacity className='flex-1' onPress={() => setShowStoreSelect(true)}>
+              <HStack space='xs' className='items-center bg-primary-500/20 px-3 py-2 rounded-full border-[1px] border-primary-500'>
+                <Ionicons name='storefront-outline' size={14} color='#e44b5e' />
+                <Text className='text-sm text-primary-500 flex-1' numberOfLines={1}>
+                  {selectedStoreName ?? t('screen.lists.allStores')}
+                </Text>
+                <Ionicons name='chevron-down-outline' size={14} color='#e44b5e' />
+              </HStack>
+            </TouchableOpacity>
 
             <Menu
               placement='top'
@@ -270,6 +267,62 @@ export default function ListBranchPrices() {
             </Menu>
           </HStack>
 
+          {/* Canal + límite (misma línea) */}
+          <HStack space='sm' className='items-center'>
+            <Menu
+              placement='top'
+              offset={5}
+              closeOnSelect
+              trigger={({ ...triggerProps }) => (
+                <TouchableOpacity className='flex-1' {...triggerProps}>
+                  <HStack space='xs' className='items-center justify-center bg-primary-500/20 px-3 py-2 rounded-full border-[1px] border-primary-500'>
+                    <Ionicons name='pricetags-outline' size={14} color='#e44b5e' />
+                    <Text className='text-sm text-primary-500'>{channelLabel(channel)}</Text>
+                    <Ionicons name='chevron-down-outline' size={14} color='#e44b5e' />
+                  </HStack>
+                </TouchableOpacity>
+              )}
+            >
+              {CHANNELS_FILTER.map((c) => (
+                <MenuItem
+                  key={c}
+                  textValue={c}
+                  className={`justify-center ${channel === c && 'bg-primary-500/20'}`}
+                  onPress={() => onSelectChannel(c)}
+                >
+                  <MenuItemLabel size='sm' className={`${channel === c && 'text-primary-500'}`}>{channelLabel(c)}</MenuItemLabel>
+                </MenuItem>
+              ))}
+            </Menu>
+
+            <Menu
+              placement='top'
+              offset={5}
+              closeOnSelect
+              style={{ maxHeight: 360 }}
+              trigger={({ ...triggerProps }) => (
+                <TouchableOpacity {...triggerProps}>
+                  <HStack space='xs' className='items-center bg-primary-500/20 px-3 py-2 rounded-full border-[1px] border-primary-500'>
+                    <Ionicons name='layers-outline' size={14} color='#e44b5e' />
+                    <Text className='text-sm text-primary-500'>{limitLabel(limit)}</Text>
+                    <Ionicons name='chevron-down-outline' size={14} color='#e44b5e' />
+                  </HStack>
+                </TouchableOpacity>
+              )}
+            >
+              {LIMITS_FILTER.map((l) => (
+                <MenuItem
+                  key={l}
+                  textValue={l.toString()}
+                  className={`justify-center ${limit === l && 'bg-primary-500/20'}`}
+                  onPress={() => onSelectLimit(l)}
+                >
+                  <MenuItemLabel size='sm' className={`${limit === l && 'text-primary-500'}`}>{limitLabel(l)}</MenuItemLabel>
+                </MenuItem>
+              ))}
+            </Menu>
+          </HStack>
+
           {/* Select de comercio + sucursal */}
           {loading ? (
             <Center className='py-3'><Spinner /></Center>
@@ -279,49 +332,14 @@ export default function ListBranchPrices() {
             <Text className='text-typography-600 text-center'>{t('screen.lists.noBranches')}</Text>
           ) : (
             <>
-              <Menu
-                placement='top'
-                offset={5}
-                closeOnSelect
-                style={{ maxHeight: 360 }}
-                trigger={({ ...triggerProps }) => (
-                  <TouchableOpacity {...triggerProps}>
-                    <HStack className='items-center justify-between bg-background-100 px-4 h-12 rounded-2xl'>
-                      <Text className='flex-1' numberOfLines={1}>
-                        {chosen ? chosen.storeName : t('screen.lists.selectBranch')}
-                      </Text>
-                      <Ionicons name='chevron-down-outline' size={18} color='#6b7280' />
-                    </HStack>
-                  </TouchableOpacity>
-                )}
-              >
-                {filteredBranches.map((b) => {
-                  const isBest = b.branchId === bestBranch?.branchId;
-                  return (
-                    <MenuItem
-                      key={b.branchId}
-                      textValue={b.branchId}
-                      className={`justify-center ${chosen?.branchId === b.branchId && 'bg-primary-500/20'}`}
-                      onPress={() => onSelectBranch(b)}
-                    >
-                      <VStack className='items-center'>
-                        <Text
-                          numberOfLines={1}
-                          className={`text-sm text-center ${isBest ? 'text-success-600 font-bold' : ''}`}
-                        >
-                          {`${isBest ? '⭐ ' : ''}${b.storeName}`}
-                        </Text>
-                        <Text
-                          className={`text-xs text-center ${isBest ? 'text-success-600' : 'text-typography-600'}`}
-                          style={{ fontVariant: ['tabular-nums'] }}
-                        >
-                          {`${(b.distanceMeters / 1000).toFixed(1)} km · ${money(b.totalWithDiscount)}`}
-                        </Text>
-                      </VStack>
-                    </MenuItem>
-                  );
-                })}
-              </Menu>
+              <TouchableOpacity onPress={() => setShowBranchSelect(true)}>
+                <HStack className='items-center justify-between bg-background-100 px-4 h-12 rounded-2xl'>
+                  <Text className='flex-1' numberOfLines={1}>
+                    {chosen ? chosen.storeName : t('screen.lists.selectBranch')}
+                  </Text>
+                  <Ionicons name='chevron-down-outline' size={18} color='#6b7280' />
+                </HStack>
+              </TouchableOpacity>
 
               {chosen && (
                 <TouchableOpacity onPress={() => setShowDetail(true)}>
@@ -345,6 +363,23 @@ export default function ListBranchPrices() {
           )}
         </VStack>
       </SafeAreaView>
+
+      <StoreSelectModal
+        isOpen={showStoreSelect}
+        onClose={() => setShowStoreSelect(false)}
+        stores={stores}
+        selectedStoreId={storeFilter}
+        onSelect={onSelectStore}
+      />
+
+      <BranchSelectModal
+        isOpen={showBranchSelect}
+        onClose={() => setShowBranchSelect(false)}
+        branches={filteredBranches}
+        bestBranchId={bestBranch?.branchId}
+        chosenId={chosen?.branchId}
+        onSelect={onSelectBranch}
+      />
 
       <BranchPriceDetailModal
         isOpen={showDetail}
