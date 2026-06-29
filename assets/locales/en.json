@@ -90,6 +90,11 @@
     "home": {
       "title": "Home"
     },
+    "search": {
+      "placeholder": "Search products",
+      "minChars": "Type at least 2 characters",
+      "empty": "No products found"
+    },
     "lists": {
       "title": "Lists",
       "itemCount_one": "{{count}} product",

@@ -91,6 +91,11 @@
     "home": {
       "title": "Inicio"
     },
+    "search": {
+      "placeholder": "Buscar productos",
+      "minChars": "Escribí al menos 2 caracteres",
+      "empty": "No se encontraron productos"
+    },
     "lists": {
       "title": "Listas",
       "itemCount_one": "{{count}} producto",
