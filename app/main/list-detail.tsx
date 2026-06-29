@@ -144,9 +144,10 @@ export default function ListDetail() {
             <TouchableOpacity
               onPress={() => router.push({ pathname: '/main/search-products', params: { listId: id } })}
               activeOpacity={0.9}
-              className='bg-background-0 rounded-full h-14 w-14 items-center justify-center'
+              className='bg-background-0 rounded-full h-14 px-6 flex-row items-center justify-center'
             >
               <Ionicons name='search' size={22} color='#e44b5e' />
+              <Text className='text-primary-500 font-medium ml-2'>{t('screen.lists.search')}</Text>
             </TouchableOpacity>
           </Shadow>
 
@@ -156,8 +157,8 @@ export default function ListDetail() {
               activeOpacity={0.9}
               className='bg-primary-500 rounded-full h-14 px-6 flex-row items-center justify-center'
             >
-              <Ionicons name="add-circle-outline" size={22} color="white" />
-              <Text className='text-white font-medium ml-2'>{t('screen.lists.addProducts')}</Text>
+              <Ionicons name="barcode-outline" size={22} color="white" />
+              <Text className='text-white font-medium ml-2'>{t('screen.lists.scan')}</Text>
             </TouchableOpacity>
           </Shadow>
         </HStack>
