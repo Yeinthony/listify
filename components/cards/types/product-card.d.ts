@@ -5,4 +5,5 @@ interface ProductCardProps {
   onCloseModal?: () => void
   targetListId?: string
   onAdded?: () => void
+  flat?: boolean
 }

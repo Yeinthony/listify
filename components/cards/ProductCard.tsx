@@ -55,7 +55,10 @@ export const ProductCard = (props: ProductCardProps) => {
     <VStack
       className="bg-background-0 rounded-2xl w-full p-4"
       space="md"
-      style={{ boxShadow: '0 6px 16px rgba(0, 0, 0, 0.18)', borderCurve: 'continuous' }}
+      style={{
+        borderCurve: 'continuous',
+        ...(props.flat ? {} : { boxShadow: '0 6px 16px rgba(0, 0, 0, 0.18)' }),
+      }}
     >
       <HStack space="md" className="items-center">
         <Image
