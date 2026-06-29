@@ -17,6 +17,7 @@ import { ListItemCard } from '@/components/cards/ListItemCard';
 import UpdateItemModal from '@/components/modals/UpdateItemModal';
 import AlertModal from '@/components/modals/AlertModal';
 import { BarcodeScanModal } from '@/components/modals/BarcodeScanModal';
+import { Shadow } from 'react-native-shadow-2';
 import { ListItem } from '@/types/shopping-lists';
 
 const money = (n: number) => `$${Math.round(n).toLocaleString('es-AR')}`;
@@ -134,14 +135,26 @@ export default function ListDetail() {
       />
 
       {canEdit && (
-        <TouchableOpacity
-          onPress={() => setShowScan(true)}
-          className='absolute self-center bg-primary-500 rounded-full h-14 px-6 flex-row items-center justify-center shadow-xl'
-          style={{ bottom: insets.bottom + 20 }}
+        <Shadow
+          distance={5}
+          startColor='rgba(0,0,0,0.11)'
+          offset={[0, 3]}
+          style={{ borderRadius: 25 }}
+          containerStyle={{
+            position: 'absolute',
+            alignSelf: 'center',
+            bottom: insets.bottom + 20,
+          }}
         >
-          <Ionicons name="add-circle-outline" size={22} color="white" />
-          <Text className='text-white font-medium ml-2'>{t('screen.lists.addProducts')}</Text>
-        </TouchableOpacity>
+          <TouchableOpacity
+            onPress={() => setShowScan(true)}
+            activeOpacity={0.9}
+            className='bg-primary-500 rounded-full h-14 px-6 flex-row items-center justify-center'
+          >
+            <Ionicons name="add-circle-outline" size={22} color="white" />
+            <Text className='text-white font-medium ml-2'>{t('screen.lists.addProducts')}</Text>
+          </TouchableOpacity>
+        </Shadow>
       )}
 
       <BarcodeScanModal
