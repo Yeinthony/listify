@@ -9,4 +9,6 @@ export interface SearchTextProps
   onTextChange: (text: string) => void;
   className?: string;
   icon?: ReactNode
+  placeholder?: string
+  autoFocus?: boolean
 }

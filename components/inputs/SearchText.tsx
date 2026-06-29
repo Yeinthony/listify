@@ -2,12 +2,14 @@ import { Input, InputField, InputIcon, InputSlot } from "@/components/ui/input"
 import { SearchIcon } from "@/components/ui/icon"
 import { SearchTextProps } from "./types/search-text"
 
-export const SearchText: React.FC<SearchTextProps> = ({ 
-  value, 
-  onTextChange, 
-  className, 
+export const SearchText: React.FC<SearchTextProps> = ({
+  value,
+  onTextChange,
+  className,
   icon,
-  ...props 
+  placeholder,
+  autoFocus,
+  ...props
 }) => {
   return (
     <Input
@@ -23,7 +25,8 @@ export const SearchText: React.FC<SearchTextProps> = ({
       </InputSlot>
       <InputField
         className="text-sm"
-        placeholder={`Buscar...`}
+        placeholder={placeholder ?? `Buscar...`}
+        autoFocus={autoFocus}
         value={value}
         onChangeText={(text) => onTextChange(text)}
       />
