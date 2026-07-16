@@ -153,6 +153,7 @@
       "notCovered": "Not covered",
       "invite": "Invite",
       "leave": "Leave list",
+      "sharedBy": "Shared by {{name}}",
       "inviteSearchPlaceholder": "Search by name or email",
       "inviteNoResults": "No users found",
       "you": "You",

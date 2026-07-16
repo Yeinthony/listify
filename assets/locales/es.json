@@ -154,6 +154,7 @@
       "notCovered": "Sin cobertura",
       "invite": "Invitar",
       "leave": "Salir de la lista",
+      "sharedBy": "Compartida por {{name}}",
       "inviteSearchPlaceholder": "Buscar por nombre o email",
       "inviteNoResults": "No se encontraron usuarios",
       "you": "Vos",
