@@ -1,15 +1,10 @@
 import { useEffect, useState } from "react";
 import { useQuery } from "@tanstack/react-query";
-import * as Location from "expo-location";
 import { shoppingListKeys } from "@/api/queryKeys";
 import { getListBranchPrices } from "@/api/shoppingLists.api";
 import { BranchChannel } from "@/api/types/shopping-lists";
 import { LimitFilter } from "@/assets/globalsConst";
-
-interface Coords {
-  lat: number;
-  lng: number;
-}
+import { Coords, requestCurrentCoords } from "@/utils/location";
 
 export const useListBranchPrices = (
   id: string,
@@ -22,13 +17,12 @@ export const useListBranchPrices = (
 
   useEffect(() => {
     (async () => {
-      const { status } = await Location.requestForegroundPermissionsAsync();
-      if (status !== 'granted') {
+      const result = await requestCurrentCoords();
+      if (result.status !== 'granted') {
         setPermissionDenied(true);
         return;
       }
-      const location = await Location.getCurrentPositionAsync({});
-      setCoords({ lat: location.coords.latitude, lng: location.coords.longitude });
+      setCoords(result.coords);
     })();
   }, []);
 

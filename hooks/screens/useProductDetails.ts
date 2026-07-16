@@ -6,7 +6,7 @@ import { useQuery } from "@tanstack/react-query";
 import { useLocalSearchParams } from "expo-router";
 import { useEffect, useState, useCallback } from "react"
 import { Loc } from "@/components/modals/types/store-by-product";
-import * as Location from 'expo-location';
+import { requestCurrentCoords } from "@/utils/location";
 
 const bannerImages = [
   {
@@ -55,13 +55,12 @@ export const useProductDetails = () => {
   const loading = ean ? isLoading : false
 
   const getCurrentLocation = async() => {
-    let { status } = await Location.requestForegroundPermissionsAsync();
-    if (status !== 'granted') {
+    const result = await requestCurrentCoords();
+    if (result.status !== 'granted') {
       return;
     }
 
-    let location = await Location.getCurrentPositionAsync({});
-    setLocation({ lat: location.coords.latitude, lng: location.coords.longitude });
+    setLocation(result.coords);
   }
 
   useEffect(() => {

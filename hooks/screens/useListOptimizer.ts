@@ -1,8 +1,8 @@
 import { useMutation } from "@tanstack/react-query";
-import * as Location from "expo-location";
 import { optimizeList } from "@/api/shoppingLists.api";
 import { OptimizePayload } from "@/api/types/shopping-lists";
 import { DEFAULT_CHANNEL } from "@/assets/globalsConst";
+import { requestCurrentCoords } from "@/utils/location";
 
 interface OptimizeOptions {
   km: number;
@@ -15,14 +15,12 @@ export const useListOptimizer = (id: string) => {
   });
 
   const optimize = async ({ km, maxStores = 1 }: OptimizeOptions) => {
-    const { status } = await Location.requestForegroundPermissionsAsync();
-    if (status !== 'granted') return;
-
-    const location = await Location.getCurrentPositionAsync({});
+    const result = await requestCurrentCoords();
+    if (result.status !== 'granted') return;
 
     return mutation.mutateAsync({
-      lat: location.coords.latitude,
-      lng: location.coords.longitude,
+      lat: result.coords.lat,
+      lng: result.coords.lng,
       km,
       maxStores,
       channel: DEFAULT_CHANNEL,
