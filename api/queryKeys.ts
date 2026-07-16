@@ -27,6 +27,10 @@ interface BranchPricesKeyParams {
   limit: number | 'all';
 }
 
+export const userKeys = {
+  search: (term: string) => ['users-search', term] as const,
+};
+
 export const shoppingListKeys = {
   list: (page = 1) => ['shopping-lists', page] as const,
   detail: (id: string) => ['shopping-list', id] as const,

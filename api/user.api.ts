@@ -1,4 +1,4 @@
-import { RegisterUser, User, VerifyCode } from '@/types/users';
+import { PublicUser, RegisterUser, User, VerifyCode } from '@/types/users';
 import { AxiosResponse } from 'axios';
 import { Location } from '@/store/types/manage-location.store';
 import http from '@/utils/httpClient';
@@ -17,3 +17,6 @@ export const locationsByUserId = (userId: string): Promise<AxiosResponse<Locatio
 
 export const createLocation = (location: Location): Promise<AxiosResponse<Location>> =>
   http.post<Location>('/users/create-location', location);
+
+export const searchUsers = (term: string): Promise<AxiosResponse<PublicUser[]>> =>
+  http.get<PublicUser[]>(`/users/search?search=${encodeURIComponent(term)}`);

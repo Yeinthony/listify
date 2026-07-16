@@ -27,3 +27,9 @@ export interface User {
   isVerified: boolean;
   profile: Profile | null;
 }
+
+export interface PublicUser {
+  id: string;
+  username: string | null;
+  email: string;
+}
