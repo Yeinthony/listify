@@ -11,7 +11,7 @@ interface UseInviteCollaboratorFormProps {
 export const useInviteCollaboratorForm = ({ onInvite }: UseInviteCollaboratorFormProps) => {
   const { t } = useTranslation();
 
-  const { control, handleSubmit, reset, formState: { errors } } = useForm({
+  const { control, handleSubmit, reset, setValue, formState: { errors } } = useForm({
     resolver: zodResolver(collaboratorScheme(t)),
     defaultValues: {
       email: '',
@@ -24,5 +24,5 @@ export const useInviteCollaboratorForm = ({ onInvite }: UseInviteCollaboratorFor
     reset();
   });
 
-  return { control, errors, onSubmit };
+  return { control, errors, onSubmit, setValue };
 };
