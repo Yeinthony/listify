@@ -34,18 +34,6 @@ export default function ListCollaborators() {
   const isOwner = list?.myRole === 'owner';
   const owner = list?.owner;
 
-  const ownerAsCollaborator: ListCollaborator | null = owner
-    ? {
-        id: `owner-${owner.id}`,
-        listId: id,
-        userId: owner.id,
-        role: 'owner',
-        createdAt: '',
-        updatedAt: '',
-        user: owner,
-      }
-    : null;
-
   const excludeUserIds = [
     ...(owner ? [owner.id] : []),
     ...collaborators.map((c) => c.userId),
@@ -55,10 +43,6 @@ export default function ListCollaborators() {
     <VStack space='md'>
       {isOwner && (
         <InviteCollaborator onInvite={invite} inviting={inviting} excludeUserIds={excludeUserIds} />
-      )}
-
-      {ownerAsCollaborator && (
-        <CollaboratorCard collaborator={ownerAsCollaborator} isYou={owner?.id === user?.id} />
       )}
 
       {collaborators.length > 0 && (
