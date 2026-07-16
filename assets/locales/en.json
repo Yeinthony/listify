@@ -152,7 +152,22 @@
       "savings": "Savings",
       "notCovered": "Not covered",
       "invite": "Invite",
-      "leave": "Leave list"
+      "leave": "Leave list",
+      "inviteSearchPlaceholder": "Search by name or email",
+      "inviteNoResults": "No users found",
+      "you": "You",
+      "collaboratorsCount_one": "{{count}} collaborator",
+      "collaboratorsCount_other": "{{count}} collaborators",
+      "emptyCollaboratorsTitle": "No collaborators yet",
+      "emptyCollaborators": "Invite someone by email to share this list.",
+      "emptyCollaboratorsReader": "The owner hasn't invited anyone else yet.",
+      "makeReader": "Make Reader",
+      "makeEditor": "Make Editor",
+      "removeCollaborator": "Remove from list",
+      "removeCollaboratorTitle": "Remove collaborator?",
+      "removeCollaboratorMsg": "They will lose access to this list.",
+      "leaveTitle": "Leave list?",
+      "leaveMsg": "You will lose access to this list."
     },
     "recipes": {
       "title": "Recipes"

@@ -153,7 +153,22 @@
       "savings": "Ahorro",
       "notCovered": "Sin cobertura",
       "invite": "Invitar",
-      "leave": "Salir de la lista"
+      "leave": "Salir de la lista",
+      "inviteSearchPlaceholder": "Buscar por nombre o email",
+      "inviteNoResults": "No se encontraron usuarios",
+      "you": "Vos",
+      "collaboratorsCount_one": "{{count}} colaborador",
+      "collaboratorsCount_other": "{{count}} colaboradores",
+      "emptyCollaboratorsTitle": "Todavía no hay colaboradores",
+      "emptyCollaborators": "Invitá a alguien por email para compartir esta lista.",
+      "emptyCollaboratorsReader": "El dueño todavía no invitó a nadie más.",
+      "makeReader": "Hacer Lector",
+      "makeEditor": "Hacer Editor",
+      "removeCollaborator": "Quitar de la lista",
+      "removeCollaboratorTitle": "¿Quitar colaborador?",
+      "removeCollaboratorMsg": "Perderá el acceso a esta lista.",
+      "leaveTitle": "¿Salir de la lista?",
+      "leaveMsg": "Dejarás de tener acceso a esta lista."
     },
     "recipes": {
       "title": "Recetas"
