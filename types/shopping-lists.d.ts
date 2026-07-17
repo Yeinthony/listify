@@ -76,6 +76,10 @@ export interface PlannedStore {
   branchId: string;
   storeId: string;
   storeName: string;
+  branchName: string | null;
+  address: string | null;
+  latitude: number | null;
+  longitude: number | null;
   distanceMeters: number;
   items: PlannedItem[];
   subtotal: number;

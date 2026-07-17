@@ -2,11 +2,12 @@ import { useMutation } from "@tanstack/react-query";
 import { optimizeList } from "@/api/shoppingLists.api";
 import { OptimizePayload } from "@/api/types/shopping-lists";
 import { DEFAULT_CHANNEL } from "@/assets/globalsConst";
-import { requestCurrentCoords } from "@/utils/location";
 
 interface OptimizeOptions {
   km: number;
   maxStores?: number;
+  lat: number;
+  lng: number;
 }
 
 export const useListOptimizer = (id: string) => {
@@ -14,13 +15,10 @@ export const useListOptimizer = (id: string) => {
     mutationFn: (payload: OptimizePayload) => optimizeList(id, payload).then(res => res.data),
   });
 
-  const optimize = async ({ km, maxStores = 1 }: OptimizeOptions) => {
-    const result = await requestCurrentCoords();
-    if (result.status !== 'granted') return;
-
+  const optimize = async ({ km, maxStores = 1, lat, lng }: OptimizeOptions) => {
     return mutation.mutateAsync({
-      lat: result.coords.lat,
-      lng: result.coords.lng,
+      lat,
+      lng,
       km,
       maxStores,
       channel: DEFAULT_CHANNEL,

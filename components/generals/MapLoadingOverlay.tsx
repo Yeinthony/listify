@@ -16,6 +16,7 @@ export type MapLoadingPhase = 'locating' | 'fetching' | 'rendering';
 interface MapLoadingOverlayProps {
   phase: MapLoadingPhase;
   onBack: () => void;
+  title?: string;
 }
 
 const MotionView = Motion.View as any;
@@ -26,7 +27,7 @@ const FETCHING_KEYS = [
   'screen.lists.loadingFetching3',
 ];
 
-export default function MapLoadingOverlay({ phase, onBack }: MapLoadingOverlayProps) {
+export default function MapLoadingOverlay({ phase, onBack, title }: MapLoadingOverlayProps) {
   const { t } = useTranslation();
   const colorScheme = useColorScheme();
   const [idx, setIdx] = useState(0);
@@ -63,7 +64,7 @@ export default function MapLoadingOverlay({ phase, onBack }: MapLoadingOverlayPr
         </Center>
         <Spinner />
         <Heading className="text-center text-lg font-bold mt-5">
-          {t('screen.lists.branchPrices')}
+          {title ?? t('screen.lists.branchPrices')}
         </Heading>
 
         <View style={{ height: 44, marginTop: 8, alignSelf: 'stretch', justifyContent: 'center' }}>
