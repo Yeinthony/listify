@@ -56,7 +56,7 @@ export const useBranchsMapModal = ({
         channel: DEFAULT_CHANNEL,
         ...(appliedStoresId.length > 0 && { storeId: appliedStoresId }),
       },
-    }).then(res => res.data),
+    }).then(res => res.data.data),
     enabled: isOpen,
   })
 

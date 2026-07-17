@@ -16,7 +16,6 @@ import Ionicons from "@expo/vector-icons/Ionicons";
 import { Center } from "../ui/center";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { Menu, MenuItem, MenuItemLabel } from "../ui/menu";
-import { set } from "zod";
 
 export const BranchsMapModal = ({ isOpen, onClose, location, availableStores, product }: BranchsMapModalProps) => {
   const colorScheme = useColorScheme();

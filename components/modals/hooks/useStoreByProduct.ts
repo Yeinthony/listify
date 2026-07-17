@@ -28,7 +28,7 @@ export const useStoreByProduct = ({
     queryFn: () => getNearbyBranches({
       ean,
       body: { lat: location.lat, lng: location.lng, km: distance, channel: DEFAULT_CHANNEL, ...(storeId && { storeId }) },
-    }).then(res => res.data),
+    }).then(res => res.data.data),
     enabled: isOpen && !!store,
   })
 

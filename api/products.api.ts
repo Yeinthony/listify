@@ -10,8 +10,8 @@ export const getProductByEanAll = (ean: string): Promise<AxiosResponse<ProductAl
 export const getProductByEanLight = (ean: string): Promise<AxiosResponse<ProductLight>> =>
   http.get<ProductLight>(`/products/ean-light/${ean}`);
 
-export const getNearbyBranches = (data: NearbyBranchesProps): Promise<AxiosResponse<NearbyBranch[]>> =>
-  http.post<NearbyBranch[]>(`/products/ean/${data.ean}/nearby-prices`, data.body);
+export const getNearbyBranches = (data: NearbyBranchesProps): Promise<AxiosResponse<Paginated<NearbyBranch>>> =>
+  http.post<Paginated<NearbyBranch>>(`/products/ean/${data.ean}/nearby-prices`, data.body);
 
 export const searchProducts = (
   search: string,
