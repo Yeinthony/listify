@@ -151,6 +151,9 @@
       "runOptimize": "Optimizar canasta",
       "total": "Total",
       "savings": "Ahorro",
+      "coverage": "Cobertura",
+      "optimizeHint": "Ajustá los filtros y tocá Optimizar",
+      "noPlan": "No se encontró un plan para estos filtros",
       "notCovered": "Sin cobertura",
       "invite": "Invitar",
       "leave": "Salir de la lista",
@@ -170,6 +173,16 @@
       "removeCollaboratorMsg": "Perderá el acceso a esta lista.",
       "leaveTitle": "¿Salir de la lista?",
       "leaveMsg": "Dejarás de tener acceso a esta lista."
+    },
+    "product": {
+      "priceRange": "Rango de precios",
+      "min": "Mínimo",
+      "avg": "Promedio",
+      "max": "Máximo",
+      "availableIn": "Disponible en",
+      "viewMap": "Ver mapa",
+      "addToList": "Agregar a lista",
+      "noStores": "No hay comercios disponibles"
     },
     "recipes": {
       "title": "Recetas"

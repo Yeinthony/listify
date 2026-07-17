@@ -150,6 +150,9 @@
       "runOptimize": "Optimize basket",
       "total": "Total",
       "savings": "Savings",
+      "coverage": "Coverage",
+      "optimizeHint": "Adjust the filters and tap Optimize",
+      "noPlan": "No plan found for these filters",
       "notCovered": "Not covered",
       "invite": "Invite",
       "leave": "Leave list",
@@ -169,6 +172,16 @@
       "removeCollaboratorMsg": "They will lose access to this list.",
       "leaveTitle": "Leave list?",
       "leaveMsg": "You will lose access to this list."
+    },
+    "product": {
+      "priceRange": "Price range",
+      "min": "Minimum",
+      "avg": "Average",
+      "max": "Maximum",
+      "availableIn": "Available at",
+      "viewMap": "View map",
+      "addToList": "Add to list",
+      "noStores": "No stores available"
     },
     "recipes": {
       "title": "Recipes"
