@@ -8,34 +8,6 @@ import { useEffect, useState, useCallback } from "react"
 import { Loc } from "@/components/modals/types/store-by-product";
 import { requestCurrentCoords } from "@/utils/location";
 
-const bannerImages = [
-  {
-    url: "https://picsum.photos/id/1026/500/300",
-    mini_url: "https://picsum.photos/id/1026/500/300?blur=10",
-    alt: "Oferta especial en membresías",
-  },
-  {
-    url: "https://picsum.photos/id/1027/500/300",
-    mini_url: "https://picsum.photos/id/1027/500/300?blur=10",
-    alt: "Oferta especial en membresías",
-  },
-  {
-    url: "https://picsum.photos/id/1028/500/300",
-    mini_url: "https://picsum.photos/id/1028/500/300?blur=10",
-    alt: "Reserva tu clase de spinning",
-  },
-  {
-    url: "https://picsum.photos/id/1029/500/300",
-    mini_url: "https://picsum.photos/id/1029/500/300?blur=10",
-    alt: "Oferta especial en membresías",
-  },
-  {
-    url: "https://picsum.photos/id/1031/500/300",
-    mini_url: "https://picsum.photos/id/1031/500/300?blur=10",
-    alt: "Oferta especial en membresías",
-  }
-]
-
 export const useProductDetails = () => {
   const params = useLocalSearchParams();
 
@@ -77,7 +49,6 @@ export const useProductDetails = () => {
   }, []);
 
   return {
-    bannerImages,
     loading,
     productData,
     showStoreByProductModal,
