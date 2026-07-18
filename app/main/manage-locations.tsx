@@ -10,17 +10,24 @@ import { ScrollView, TouchableOpacity } from 'react-native';
 import { useManageLocations } from '@/hooks/screens/useManageLocations';
 import { Spinner } from '@/components/ui/spinner';
 import { AddLocationModal } from '@/components/modals/AddLocationMapModal';
+import AlertModal from '@/components/modals/AlertModal';
 import Ionicons from '@expo/vector-icons/Ionicons';
 import CustomHeader from '@/components/generals/CustomHeader';
 import LocationCard from '@/components/cards/LocationCard';
 
 
 export default function ManageLocations() {
-  const { 
+  const {
     loading,
     locations,
     showAddLocationModal,
-    setShowAddLocationModal
+    setShowAddLocationModal,
+    editingLocation,
+    setEditingLocation,
+    deletingLocation,
+    setDeletingLocation,
+    closeLocationModal,
+    confirmDelete
    } = useManageLocations()
   const { t } = useTranslation()
   const insets = useSafeAreaInsets();
@@ -36,11 +43,11 @@ export default function ManageLocations() {
           white
         />
         <VStack className='mx-5 py-3'>
-          <Text 
-            className='text-md 
+          <Text
+            className='text-md
             text-white font-light'
           >
-            Lorem, ipsum dolor sit amet consectetur adipisicing elit. Qui maiores voluptas consequatur commodi.      
+            {t('screen.manage-locations.subtitle')}
           </Text>
         </VStack>
       </VStack>
@@ -76,11 +83,13 @@ export default function ManageLocations() {
               </Center>
             ) : (
                 <ScrollView className='flex-1'>
-                  <VStack className='flex-1'>
+                  <VStack className='flex-1' space='sm'>
                     {locations.map(location => (
-                      <LocationCard 
-                        key={location.name}
+                      <LocationCard
+                        key={location.id ?? location.name}
                         location={location}
+                        onEdit={setEditingLocation}
+                        onDelete={setDeletingLocation}
                       />
                     ))}
                   </VStack>
@@ -100,9 +109,18 @@ export default function ManageLocations() {
           </TouchableOpacity>
         </VStack>
       </SafeAreaView>
-      <AddLocationModal 
-        isOpen={showAddLocationModal}
-        onClose={() => setShowAddLocationModal(false)}
+      <AddLocationModal
+        isOpen={showAddLocationModal || !!editingLocation}
+        location={editingLocation ?? undefined}
+        onClose={closeLocationModal}
+      />
+      <AlertModal
+        type="error"
+        title={t('screen.manage-locations.deleteTitle')}
+        description={t('screen.manage-locations.deleteDescription')}
+        isOpen={!!deletingLocation}
+        onClose={() => setDeletingLocation(null)}
+        onAction={confirmDelete}
       />
     </VStack>
   );
