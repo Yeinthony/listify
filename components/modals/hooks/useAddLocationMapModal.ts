@@ -1,13 +1,15 @@
 import { useTranslation } from "react-i18next";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
-import { useRef, useState } from "react";
+import { useEffect, useRef, useState } from "react";
+import { useQuery } from "@tanstack/react-query";
 import { useSpinnerModal } from "@/contexts/SpinnerModalContext";
 import { Marker, Location as LocationParams, PushLocationParams } from "@/store/types/manage-location.store";
+import { AddressSuggestion } from "@/api/types/geocoding";
+import { reverseGeocode } from "@/api/geocoding.api";
 import { ModalProps } from "../types/modal";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { registerLocation } from "@/utils/formSchemes";
-import { createLocation } from "@/api/user.api";
 import { useUserStore } from "@/store/userStore";
 
 import MapView, { Region } from "react-native-maps";
@@ -15,10 +17,13 @@ import * as Location from "expo-location";
 import useSnackbarStore from "@/store/snackbarStore";
 import useManageLocationsStore from "@/store/manageLocationsStore";
 
-export const useAddLocationsMapModal = ({ isOpen, onClose }: ModalProps) => {
+type UseAddLocationMapModalProps = ModalProps & { location?: LocationParams };
+
+export const useAddLocationsMapModal = ({ isOpen, onClose, location }: UseAddLocationMapModalProps) => {
   const { t } = useTranslation();
   const { user } = useUserStore()
-  const { locations, pushLocation } = useManageLocationsStore()
+  const { pushLocation, updateLocation } = useManageLocationsStore()
+  const isEdit = !!location?.id
   const { showSnackbar } = useSnackbarStore()
   const insets = useSafeAreaInsets();
   const showSpinnerModal = useSpinnerModal();
@@ -34,12 +39,45 @@ export const useAddLocationsMapModal = ({ isOpen, onClose }: ModalProps) => {
 
   const [isMarkerMove, setIsMarkerMove] = useState<boolean>(false)
   const [showAlertModal, setShowAlertModal] = useState<boolean>(false)
-  
+  const [center, setCenter] = useState<Marker | null>(null)
+
   const mapRef = useRef<MapView>(null);
   const markerLocation = useRef<Marker>({ latitude: 0, longitude: 0 })
-  const timeoutLatRef = useRef<number | null>(null);
-  const timeoutLngRef = useRef<number | null>(null);
   const isManualUpdate = useRef<boolean>(true)
+
+  const { data: reverseAddress, isFetching: isLocating } = useQuery({
+    queryKey: ['geocode-reverse', center?.latitude, center?.longitude],
+    queryFn: ({ signal }) => reverseGeocode(center!.latitude, center!.longitude, signal),
+    enabled: !!center,
+    staleTime: 1000 * 60 * 60,
+  })
+
+  useEffect(() => {
+    if (reverseAddress?.label) setValue("address", reverseAddress.label)
+  }, [reverseAddress, setValue])
+
+  useEffect(() => {
+    if (isOpen && location) {
+      setValue("title", location.name)
+      setValue("address", location.address ?? "")
+      setValue("latitude", `${location.latitude}`)
+      setValue("longitude", `${location.longitude}`)
+    }
+  }, [isOpen, location, setValue])
+
+  const centerOnInitial = async () => {
+    if (!location) {
+      centerOnCurrentLocation()
+      return
+    }
+    const camera = await mapRef.current?.getCamera();
+    if (!camera) return;
+    isManualUpdate.current = false
+    mapRef.current?.animateCamera({
+      ...camera,
+      center: { latitude: location.latitude, longitude: location.longitude },
+    });
+  }
 
   const centerOnCurrentLocation = async () => {
     try {
@@ -71,66 +109,64 @@ export const useAddLocationsMapModal = ({ isOpen, onClose }: ModalProps) => {
     }
   };
 
+  const onSelectAddress = async (suggestion: AddressSuggestion) => {
+    setValue("address", suggestion.label)
+    setValue("latitude", `${suggestion.latitude}`)
+    setValue("longitude", `${suggestion.longitude}`)
+
+    const camera = await mapRef.current?.getCamera();
+    if (!camera) return;
+
+    isManualUpdate.current = false
+    mapRef.current?.animateCamera({
+      ...camera,
+      center: {
+        latitude: suggestion.latitude,
+        longitude: suggestion.longitude,
+      },
+    });
+  }
+
   const handlerRegionChangeComplete = (region: Region) => {
     if(isManualUpdate.current){
       setValue("latitude", `${region.latitude}`)
       setValue("longitude", `${region.longitude}`)
     }else isManualUpdate.current = true
+    setCenter({
+      latitude: Math.round(region.latitude * 1e5) / 1e5,
+      longitude: Math.round(region.longitude * 1e5) / 1e5,
+    })
     setIsMarkerMove(false)
   }
   
   const handleClose = () => {
     onClose()
     reset()
+    setCenter(null)
   }
   
-  const onChangeLat = async(newLat: string) => {
-    const camera = await mapRef.current?.getCamera();
-    if (!camera) return;
-    
-    if(timeoutLatRef.current) clearTimeout(timeoutLatRef.current)
-      isManualUpdate.current = false
-    
-    const latitude = Number(newLat)
-    const longitude = Number(getValues('longitude'))
-    
-    timeoutLatRef.current = setTimeout(() => {
-      mapRef.current?.animateCamera({
-        ...camera,
-        center: {
-          latitude: latitude,
-          longitude: longitude
-        },
-      });
-    }, 3000);
-  }
-  
-  const onChangeLng = async(newLng: string) => {
-    const camera = await mapRef.current?.getCamera();
-    if (!camera) return;
-    
-    if(timeoutLngRef.current) clearTimeout(timeoutLngRef.current)
-      isManualUpdate.current = false
-    
-    const latitude = Number(getValues('latitude'))
-    const longitude = Number(newLng)
-    
-    timeoutLngRef.current = setTimeout(() => {
-      mapRef.current?.animateCamera({
-        ...camera,
-        center: {
-          latitude: latitude,
-          longitude: longitude
-        },
-      });
-    }, 3000);
-  }
-
   const createLocation = async() => {
+    if (isEdit && location?.id) {
+      updateLocation({
+        id: location.id,
+        data: {
+          name: getValues('title'),
+          address: getValues('address') || undefined,
+          latitude: Number(getValues('latitude')),
+          longitude: Number(getValues('longitude')),
+        },
+        snackbar: showSnackbar,
+        spinner: showSpinnerModal,
+        onSuccess: handleClose
+      })
+      return
+    }
+
     const payload: PushLocationParams = {
       location: {
         userId: user?.id || "",
-        name: getValues('title'), 
+        name: getValues('title'),
+        address: getValues('address') || undefined,
         latitude: Number(getValues('latitude')),
         longitude: Number(getValues('longitude')),
       },
@@ -156,10 +192,13 @@ export const useAddLocationsMapModal = ({ isOpen, onClose }: ModalProps) => {
     showAlertModal,
     setShowAlertModal,
     setIsMarkerMove,
+    addressLabel: reverseAddress?.label,
+    isLocating,
+    isEdit,
     centerOnCurrentLocation,
+    centerOnInitial,
+    onSelectAddress,
     onSubmit,
-    onChangeLat,
-    onChangeLng,
     handlerRegionChangeComplete,
     handleClose,
     createLocation
