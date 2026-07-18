@@ -227,44 +227,49 @@ export default function ListOptimizer() {
             <Text className='text-typography-500 text-center text-sm'>{t('screen.lists.optimizeHint')}</Text>
           )}
 
-          <HStack space='sm' className='items-center'>
-            <Menu
-              placement='top'
-              offset={5}
-              closeOnSelect
-              trigger={({ ...triggerProps }) => (
-                <TouchableOpacity {...triggerProps}>
-                  <HStack space='xs' className='items-center bg-primary-500/20 px-3 py-2 rounded-full border-[1px] border-primary-500'>
-                    <Ionicons name='navigate-outline' size={14} color='#e44b5e' />
-                    <Text className='text-sm text-primary-500'>{km} km</Text>
-                    <Ionicons name='chevron-down-outline' size={14} color='#e44b5e' />
-                  </HStack>
-                </TouchableOpacity>
-              )}
-            >
-              {DISTANCES_FILTER.map((d) => (
-                <MenuItem key={d} textValue={d.toString()} className={`justify-center ${km === d && 'bg-primary-500/20'}`} onPress={() => setKm(d)}>
-                  <MenuItemLabel size='sm' className={`${km === d && 'text-primary-500'}`}>{d} km</MenuItemLabel>
-                </MenuItem>
-              ))}
-            </Menu>
+          <HStack className='items-start justify-between'>
+            <VStack space='xs'>
+              <Text className='text-xs text-typography-500'>{t('screen.lists.distance')}</Text>
+              <Menu
+                placement='top'
+                offset={5}
+                closeOnSelect
+                trigger={({ ...triggerProps }) => (
+                  <TouchableOpacity {...triggerProps}>
+                    <HStack space='xs' className='items-center bg-primary-500/20 px-3 py-2 rounded-full border-[1px] border-primary-500'>
+                      <Ionicons name='navigate-outline' size={14} color='#e44b5e' />
+                      <Text className='text-sm text-primary-500'>{km} km</Text>
+                      <Ionicons name='chevron-down-outline' size={14} color='#e44b5e' />
+                    </HStack>
+                  </TouchableOpacity>
+                )}
+              >
+                {DISTANCES_FILTER.map((d) => (
+                  <MenuItem key={d} textValue={d.toString()} className={`justify-center ${km === d && 'bg-primary-500/20'}`} onPress={() => setKm(d)}>
+                    <MenuItemLabel size='sm' className={`${km === d && 'text-primary-500'}`}>{d} km</MenuItemLabel>
+                  </MenuItem>
+                ))}
+              </Menu>
+            </VStack>
 
-            <HStack className='flex-1 items-center justify-end' space='md'>
-              <Text className='text-sm text-typography-600'>{t('screen.lists.maxStores')}</Text>
-              <TouchableOpacity
-                onPress={() => setMaxStores((s) => Math.max(1, s - 1))}
-                className='bg-background-100 h-9 w-9 rounded-full items-center justify-center'
-              >
-                <Ionicons name='remove' size={18} color='#6b7280' />
-              </TouchableOpacity>
-              <Text className='text-lg font-extrabold w-5 text-center' style={{ fontVariant: ['tabular-nums'] }}>{maxStores}</Text>
-              <TouchableOpacity
-                onPress={() => setMaxStores((s) => s + 1)}
-                className='bg-background-100 h-9 w-9 rounded-full items-center justify-center'
-              >
-                <Ionicons name='add' size={18} color='#6b7280' />
-              </TouchableOpacity>
-            </HStack>
+            <VStack space='xs' className='items-end'>
+              <Text className='text-xs text-typography-500'>{t('screen.lists.maxStores')}</Text>
+              <HStack className='items-center' space='md'>
+                <TouchableOpacity
+                  onPress={() => setMaxStores((s) => Math.max(1, s - 1))}
+                  className='bg-background-100 h-9 w-9 rounded-full items-center justify-center'
+                >
+                  <Ionicons name='remove' size={18} color='#6b7280' />
+                </TouchableOpacity>
+                <Text className='text-lg font-extrabold min-w-7 text-center' style={{ fontVariant: ['tabular-nums'] }}>{maxStores}</Text>
+                <TouchableOpacity
+                  onPress={() => setMaxStores((s) => s + 1)}
+                  className='bg-background-100 h-9 w-9 rounded-full items-center justify-center'
+                >
+                  <Ionicons name='add' size={18} color='#6b7280' />
+                </TouchableOpacity>
+              </HStack>
+            </VStack>
           </HStack>
 
           <TouchableOpacity onPress={runOptimize} disabled={optimizing || !coords}>
