@@ -1,6 +1,7 @@
 import { ContainerProps } from '@/components/generals/types/container';
 import React from 'react';
-import { KeyboardAvoidingView, RefreshControl, ScrollView, View, Platform } from 'react-native';
+import { RefreshControl, ScrollView, View, Platform } from 'react-native';
+import { KeyboardAvoidingView } from 'react-native-keyboard-controller';
 
 export const Container: React.FC<ContainerProps> = ({
   children, 

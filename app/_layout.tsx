@@ -16,6 +16,7 @@ import useThemeStore from '@/store/themeStore';
 import Snackbar from '@/components/generals/Snackbar';
 import { QueryClientProvider } from '@tanstack/react-query';
 import { queryClient } from '@/utils/queryClient';
+import { KeyboardProvider } from 'react-native-keyboard-controller';
 import '@/utils/i18n';
 
 export {
@@ -67,15 +68,17 @@ function RootLayoutNav() {
   
 
   return (
-    <QueryClientProvider client={queryClient}>
-      <GluestackUIProvider mode={theme}>
-        <ThemeProvider value={colorMode === 'dark' ? DarkTheme : DefaultTheme}>
-          <SpinnerModalProvider>
-            <Slot />
-            <Snackbar />
-          </SpinnerModalProvider>
-        </ThemeProvider>
-      </GluestackUIProvider>
-    </QueryClientProvider>
+    <KeyboardProvider>
+      <QueryClientProvider client={queryClient}>
+        <GluestackUIProvider mode={theme}>
+          <ThemeProvider value={colorMode === 'dark' ? DarkTheme : DefaultTheme}>
+            <SpinnerModalProvider>
+              <Slot />
+              <Snackbar />
+            </SpinnerModalProvider>
+          </ThemeProvider>
+        </GluestackUIProvider>
+      </QueryClientProvider>
+    </KeyboardProvider>
   );
 }

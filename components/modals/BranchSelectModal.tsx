@@ -15,6 +15,7 @@ import { ListRenderItem } from "react-native";
 import { useMemo, useState } from "react";
 import { useTranslation } from "react-i18next";
 import { SearchText } from "@/components/inputs/SearchText";
+import { KeyboardAvoidingView } from "react-native-keyboard-controller";
 import { BranchPriceEntry } from "@/types/shopping-lists";
 import { BranchSelectModalProps } from "./types/branch-select-modal";
 
@@ -69,25 +70,27 @@ const BranchSelectModal = ({ isOpen, onClose, branches, bestBranchId, chosenId, 
           <ActionsheetDragIndicator />
         </ActionsheetDragIndicatorWrapper>
 
-        <VStack className="w-full px-2 pt-3">
-          <Heading size="md">{t('screen.lists.selectBranch')}</Heading>
-          <SearchText
-            value={query}
-            onTextChange={setQuery}
-            className="bg-background-100 border-outline-200"
-          />
-        </VStack>
+        <KeyboardAvoidingView behavior="padding" style={{ width: '100%' }}>
+          <VStack className="w-full px-2 pt-3">
+            <Heading size="md">{t('screen.lists.selectBranch')}</Heading>
+            <SearchText
+              value={query}
+              onTextChange={setQuery}
+              className="bg-background-100 border-outline-200"
+            />
+          </VStack>
 
-        <ActionsheetFlatList
-          data={filtered}
-          keyExtractor={(item) => (item as BranchPriceEntry).branchId}
-          renderItem={renderItem as ListRenderItem<unknown>}
-          keyboardShouldPersistTaps="handled"
-          initialNumToRender={12}
-          windowSize={10}
-          showsVerticalScrollIndicator={false}
-          style={{ maxHeight: 420, width: '100%' }}
-        />
+          <ActionsheetFlatList
+            data={filtered}
+            keyExtractor={(item) => (item as BranchPriceEntry).branchId}
+            renderItem={renderItem as ListRenderItem<unknown>}
+            keyboardShouldPersistTaps="handled"
+            initialNumToRender={12}
+            windowSize={10}
+            showsVerticalScrollIndicator={false}
+            style={{ maxHeight: 420, width: '100%' }}
+          />
+        </KeyboardAvoidingView>
       </ActionsheetContent>
     </Actionsheet>
   );

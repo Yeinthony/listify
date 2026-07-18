@@ -3,7 +3,6 @@ import { VStack } from "@/components/ui/vstack";
 import { SafeAreaView } from "react-native-safe-area-context"; 
 import {
   View,
-  KeyboardAvoidingView,
   TextInput,
   StyleSheet,
   Text,
@@ -13,6 +12,7 @@ import {
   Keyboard,
   ScrollView
 } from 'react-native';
+import { KeyboardAvoidingView } from 'react-native-keyboard-controller';
 import { Slot } from "expo-router";
 import { StatusBar } from "expo-status-bar";
 import { useColorScheme } from '@/components/useColorScheme';
@@ -25,9 +25,9 @@ export default function AuthLayout() {
   return (
     <SafeAreaView className="w-full h-full" style={{ flex: 1 }}>
       <StatusBar style="auto" />
-      <KeyboardAvoidingView 
-        style={{ flex: 1 }} 
-        behavior={Platform.OS === 'ios' ? 'padding' : undefined}
+      <KeyboardAvoidingView
+        style={{ flex: 1 }}
+        behavior="padding"
         keyboardVerticalOffset={0}
       >
         <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
