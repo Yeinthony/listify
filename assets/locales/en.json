@@ -146,6 +146,7 @@
       "addToListSubtitle": "Choose which list to add it to",
       "quantityTitle": "Quantity",
       "radiusKm": "Search radius",
+      "distance": "Distance",
       "maxStores": "Max stores",
       "runOptimize": "Optimize basket",
       "total": "Total",
@@ -208,7 +209,27 @@
       "title": "Personal Data"
     },
     "manage-locations": {
-      "title": "Manage Locations"
+      "title": "Manage Locations",
+      "subtitle": "Save your frequent locations to compare prices from nearby stores.",
+      "edit": "Edit",
+      "delete": "Delete",
+      "deleteTitle": "Delete location?",
+      "deleteDescription": "This action cannot be undone."
+    },
+    "add-location": {
+      "title": "Confirm your address",
+      "editTitle": "Edit address",
+      "label": "Title",
+      "labelPlaceholder": "Home",
+      "searchPlaceholder": "Search your address",
+      "searching": "Searching…",
+      "locating": "Finding address…",
+      "moveMapHint": "Move the map to set your address",
+      "noResults": "No results",
+      "attribution": "© LocationIQ · OpenStreetMap",
+      "confirm": "Confirm",
+      "confirmTitle": "Confirm address?",
+      "confirmDescription": "Tapping accept will save this address."
     }
   },
   "general": {

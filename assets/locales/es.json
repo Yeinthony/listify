@@ -147,6 +147,7 @@
       "addToListSubtitle": "Elegí a qué lista agregarlo",
       "quantityTitle": "Cantidad",
       "radiusKm": "Radio de búsqueda",
+      "distance": "Distancia",
       "maxStores": "Máximo de tiendas",
       "runOptimize": "Optimizar canasta",
       "total": "Total",
@@ -209,7 +210,27 @@
       "title": "Datos Personales"
     },
     "manage-locations": {
-      "title": "Administrar Ubicaciones"
+      "title": "Administrar Ubicaciones",
+      "subtitle": "Guardá tus ubicaciones frecuentes para comparar precios de comercios cercanos.",
+      "edit": "Editar",
+      "delete": "Eliminar",
+      "deleteTitle": "¿Eliminar ubicación?",
+      "deleteDescription": "Esta acción no se puede deshacer."
+    },
+    "add-location": {
+      "title": "Confirma tu dirección",
+      "editTitle": "Editar dirección",
+      "label": "Título",
+      "labelPlaceholder": "Casa",
+      "searchPlaceholder": "Buscá tu dirección",
+      "searching": "Buscando…",
+      "locating": "Buscando dirección…",
+      "moveMapHint": "Mové el mapa para ubicar tu dirección",
+      "noResults": "Sin resultados",
+      "attribution": "© LocationIQ · OpenStreetMap",
+      "confirm": "Confirmar",
+      "confirmTitle": "¿Confirmar dirección?",
+      "confirmDescription": "Al presionar aceptar quedará registrada esta dirección."
     }
   },
   "general": {
