@@ -5,15 +5,15 @@ import { HStack } from '@/components/ui/hstack';
 import { Center } from '@/components/ui/center';
 import { Spinner } from '@/components/ui/spinner';
 import { Menu, MenuItem, MenuItemLabel } from '@/components/ui/menu';
-import { AppleMaps, GoogleMaps } from 'expo-maps';
-import { useImage } from 'expo-image';
-import { Platform, StyleSheet, TouchableOpacity, useColorScheme } from 'react-native';
+import MapView, { Circle, Marker } from 'react-native-maps';
+import { StyleSheet, TouchableOpacity, useColorScheme } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import Ionicons from '@expo/vector-icons/Ionicons';
 import { router, useLocalSearchParams } from 'expo-router';
-import { useEffect, useMemo, useState } from 'react';
+import { useEffect, useMemo, useRef, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { useListBranchPrices } from '@/hooks/screens/useListBranchPrices';
+import { regionForKm } from '@/utils/mapRegion';
 import { useListDetail } from '@/hooks/screens/useListDetail';
 import { CHANNELS_FILTER, DEFAULT_CHANNEL, DISTANCES_FILTER, LIMITS_FILTER, LimitFilter } from '@/assets/globalsConst';
 import { BranchChannel } from '@/api/types/shopping-lists';
@@ -29,9 +29,7 @@ const MotionView = Motion.View as any;
 
 const money = (n: number) => `$${Math.round(n).toLocaleString('es-AR')}`;
 
-const ZOOM_BY_KM: Record<number, number> = {
-  1: 14, 2.5: 13, 5: 12, 10: 11, 20: 10, 40: 9, 80: 8, 160: 7, 320: 6, 640: 5, 900: 4,
-};
+const BEST_PIN = require('@/assets/images/favorite-pin.png');
 
 export default function ListBranchPrices() {
   const { t } = useTranslation();
@@ -52,7 +50,8 @@ export default function ListBranchPrices() {
 
   const { coords, permissionDenied, branches, totalItems, loading } = useListBranchPrices(id, km, channel, limit);
   const { list } = useListDetail(id);
-  const bestPin = useImage(require('@/assets/images/favorite-pin.png'));
+
+  const mapRef = useRef<MapView>(null);
 
   useEffect(() => {
     if (coords && !loading) {
@@ -133,18 +132,25 @@ export default function ListBranchPrices() {
         const isBest = b.branchId === bestBranch?.branchId;
         return {
           id: b.branchId,
-          coordinates: { latitude: b.latitude as number, longitude: b.longitude as number },
+          coordinate: { latitude: b.latitude as number, longitude: b.longitude as number },
           title: `${isBest ? '⭐ ' : ''}${money(b.totalWithDiscount)}`,
-          snippet: b.storeName,
-          icon: isBest && bestPin ? bestPin : undefined,
-          tintColor: isBest ? '#16a34a' : undefined,
+          description: b.storeName,
+          image: isBest ? BEST_PIN : undefined,
         };
       }),
-    [filteredBranches, bestBranch, bestPin],
+    [filteredBranches, bestBranch],
   );
 
   const camera = focus ?? coords;
-  const zoom = ZOOM_BY_KM[km] ?? 12;
+
+  const region = useMemo(
+    () => (camera ? regionForKm(camera.lat, camera.lng, km) : null),
+    [camera?.lat, camera?.lng, km],
+  );
+
+  useEffect(() => {
+    if (region) mapRef.current?.animateToRegion(region, 350);
+  }, [region]);
 
   const onSelectBranch = (branch: BranchPriceEntry) => {
     setChosen(branch);
@@ -153,43 +159,41 @@ export default function ListBranchPrices() {
     }
   };
 
-  const onMarkerClick = (marker: { id?: string }) => {
-    const branch = filteredBranches.find((b) => b.branchId === marker.id);
-    if (branch) onSelectBranch(branch);
-  };
-
   return (
     <VStack className='flex-1 bg-background-100'>
-      {camera && Platform.OS === 'ios' && (
-        <AppleMaps.View
+      {region && (
+        <MapView
+          ref={mapRef}
           style={StyleSheet.absoluteFill}
-          cameraPosition={{
-            coordinates: { latitude: camera.lat, longitude: camera.lng },
-            zoom,
-          }}
-          markers={markers}
-          onMarkerClick={onMarkerClick}
-        />
-      )}
-      {camera && Platform.OS !== 'ios' && (
-        <GoogleMaps.View
-          style={StyleSheet.absoluteFill}
-          cameraPosition={{
-            coordinates: { latitude: camera.lat, longitude: camera.lng },
-            zoom,
-          }}
-          properties={{ isMyLocationEnabled: true }}
-          uiSettings={{ myLocationButtonEnabled: false, zoomControlsEnabled: false }}
-          markers={markers}
-          onMarkerClick={onMarkerClick}
-          circles={[{
-            center: { latitude: coords!.lat, longitude: coords!.lng },
-            radius: km * 1000,
-            color: 'rgba(228, 75, 94, 0.1)',
-            lineColor: '#e44b5e',
-            lineWidth: 2,
-          }]}
-        />
+          initialRegion={region}
+          showsUserLocation={true}
+          showsMyLocationButton={false}
+          zoomControlEnabled={false}
+          toolbarEnabled={false}
+        >
+          {markers.map((marker) => {
+            const branch = filteredBranches.find((b) => b.branchId === marker.id);
+            return (
+              <Marker
+                key={marker.id}
+                coordinate={marker.coordinate}
+                title={marker.title}
+                description={marker.description}
+                image={marker.image}
+                onPress={() => branch && onSelectBranch(branch)}
+              />
+            );
+          })}
+          {coords && (
+            <Circle
+              center={{ latitude: coords.lat, longitude: coords.lng }}
+              radius={km * 1000}
+              fillColor='rgba(228, 75, 94, 0.1)'
+              strokeColor='#e44b5e'
+              strokeWidth={2}
+            />
+          )}
+        </MapView>
       )}
 
       <SafeAreaView className='flex-1' pointerEvents='box-none'>

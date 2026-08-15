@@ -5,18 +5,19 @@ import { HStack } from '@/components/ui/hstack';
 import { Center } from '@/components/ui/center';
 import { Spinner } from '@/components/ui/spinner';
 import { Menu, MenuItem, MenuItemLabel } from '@/components/ui/menu';
-import { AppleMaps, GoogleMaps } from 'expo-maps';
-import { Platform, StyleSheet, TouchableOpacity, useColorScheme } from 'react-native';
+import MapView, { Circle, Marker } from 'react-native-maps';
+import { StyleSheet, TouchableOpacity, useColorScheme } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import Ionicons from '@expo/vector-icons/Ionicons';
 import { router, useLocalSearchParams } from 'expo-router';
-import { useEffect, useMemo, useState } from 'react';
+import { useEffect, useMemo, useRef, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { Motion, AnimatePresence } from '@legendapp/motion';
 import { useListOptimizer } from '@/hooks/screens/useListOptimizer';
 import { useListDetail } from '@/hooks/screens/useListDetail';
 import { DISTANCES_FILTER } from '@/assets/globalsConst';
 import { requestCurrentCoords, Coords } from '@/utils/location';
+import { regionForKm } from '@/utils/mapRegion';
 import { BranchMapMarker } from '@/components/modals/types/branchs-map';
 import { PlannedStore } from '@/types/shopping-lists';
 import MapLoadingOverlay from '@/components/generals/MapLoadingOverlay';
@@ -25,10 +26,6 @@ import PlannedStoreDetailModal from '@/components/modals/PlannedStoreDetailModal
 const MotionView = Motion.View as any;
 
 const money = (n: number) => `$${Math.round(n).toLocaleString('es-AR')}`;
-
-const ZOOM_BY_KM: Record<number, number> = {
-  1: 14, 2.5: 13, 5: 12, 10: 11, 20: 10, 40: 9, 80: 8, 160: 7, 320: 6, 640: 5, 900: 4,
-};
 
 export default function ListOptimizer() {
   const { t } = useTranslation();
@@ -46,6 +43,8 @@ export default function ListOptimizer() {
   const [chosen, setChosen] = useState<PlannedStore | null>(null);
   const [showDetail, setShowDetail] = useState(false);
   const [focus, setFocus] = useState<{ lat: number; lng: number } | null>(null);
+
+  const mapRef = useRef<MapView>(null);
 
   useEffect(() => {
     (async () => {
@@ -72,16 +71,24 @@ export default function ListOptimizer() {
       .filter((s) => s.latitude != null && s.longitude != null)
       .map((s) => ({
         id: s.branchId,
-        coordinates: { latitude: s.latitude as number, longitude: s.longitude as number },
+        coordinate: { latitude: s.latitude as number, longitude: s.longitude as number },
         title: money(s.subtotalWithDiscount),
-        snippet: s.storeName,
-        tintColor: '#e44b5e',
+        description: s.storeName,
+        pinColor: '#e44b5e',
       })),
     [stores],
   );
 
   const camera = focus ?? coords;
-  const zoom = ZOOM_BY_KM[km] ?? 12;
+
+  const region = useMemo(
+    () => (camera ? regionForKm(camera.lat, camera.lng, km) : null),
+    [camera?.lat, camera?.lng, km],
+  );
+
+  useEffect(() => {
+    if (region) mapRef.current?.animateToRegion(region, 350);
+  }, [region]);
 
   const onSelectStore = (store: PlannedStore) => {
     setChosen(store);
@@ -89,11 +96,6 @@ export default function ListOptimizer() {
       setFocus({ lat: store.latitude, lng: store.longitude });
     }
     setShowDetail(true);
-  };
-
-  const onMarkerClick = (marker: { id?: string }) => {
-    const store = stores.find((s) => s.branchId === marker.id);
-    if (store) onSelectStore(store);
   };
 
   const runOptimize = () => {
@@ -127,30 +129,39 @@ export default function ListOptimizer() {
 
   return (
     <VStack className='flex-1 bg-background-100'>
-      {camera && Platform.OS === 'ios' && (
-        <AppleMaps.View
+      {region && (
+        <MapView
+          ref={mapRef}
           style={StyleSheet.absoluteFill}
-          cameraPosition={{ coordinates: { latitude: camera.lat, longitude: camera.lng }, zoom }}
-          markers={markers}
-          onMarkerClick={onMarkerClick}
-        />
-      )}
-      {camera && Platform.OS !== 'ios' && (
-        <GoogleMaps.View
-          style={StyleSheet.absoluteFill}
-          cameraPosition={{ coordinates: { latitude: camera.lat, longitude: camera.lng }, zoom }}
-          properties={{ isMyLocationEnabled: true }}
-          uiSettings={{ myLocationButtonEnabled: false, zoomControlsEnabled: false }}
-          markers={markers}
-          onMarkerClick={onMarkerClick}
-          circles={[{
-            center: { latitude: coords!.lat, longitude: coords!.lng },
-            radius: km * 1000,
-            color: 'rgba(228, 75, 94, 0.1)',
-            lineColor: '#e44b5e',
-            lineWidth: 2,
-          }]}
-        />
+          initialRegion={region}
+          showsUserLocation={true}
+          showsMyLocationButton={false}
+          zoomControlEnabled={false}
+          toolbarEnabled={false}
+        >
+          {markers.map((marker) => {
+            const store = stores.find((s) => s.branchId === marker.id);
+            return (
+              <Marker
+                key={marker.id}
+                coordinate={marker.coordinate}
+                title={marker.title}
+                description={marker.description}
+                pinColor={marker.pinColor}
+                onPress={() => store && onSelectStore(store)}
+              />
+            );
+          })}
+          {coords && (
+            <Circle
+              center={{ latitude: coords.lat, longitude: coords.lng }}
+              radius={km * 1000}
+              fillColor='rgba(228, 75, 94, 0.1)'
+              strokeColor='#e44b5e'
+              strokeWidth={2}
+            />
+          )}
+        </MapView>
       )}
 
       <SafeAreaView className='flex-1' pointerEvents='box-none'>

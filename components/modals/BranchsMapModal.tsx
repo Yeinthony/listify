@@ -6,8 +6,7 @@ import {
 import { Heading } from "@/components/ui/heading";
 import { Text } from "@/components/ui/text";
 import { BranchsMapModalProps } from "./types/branchs-map";
-import { AppleMaps, GoogleMaps } from "expo-maps";
-import { Platform, StyleSheet, useColorScheme } from "react-native";
+import { StyleSheet, useColorScheme } from "react-native";
 import { TouchableOpacity } from "react-native";
 import { VStack } from "../ui/vstack";
 import { HStack } from "../ui/hstack";
@@ -18,6 +17,7 @@ import { SafeAreaView } from "react-native-safe-area-context";
 import { Menu, MenuItem, MenuItemLabel } from "../ui/menu";
 import { OriginLocationMenu } from "./OriginLocationMenu";
 import { AddLocationModal } from "./AddLocationMapModal";
+import MapView, { Circle, Marker } from "react-native-maps";
 
 export const BranchsMapModal = ({ isOpen, onClose, location, availableStores, product }: BranchsMapModalProps) => {
   const colorScheme = useColorScheme();
@@ -25,7 +25,8 @@ export const BranchsMapModal = ({ isOpen, onClose, location, availableStores, pr
     t,
     insets,
     origin,
-    zoom,
+    mapRef,
+    region,
     distance,
     distances,
     storesId,
@@ -52,50 +53,39 @@ export const BranchsMapModal = ({ isOpen, onClose, location, availableStores, pr
     <Modal isOpen={isOpen} onClose={onClose} size="full">
       <ModalBackdrop />
       <ModalContent className="flex-1 border-0 p-0">
-        {Platform.OS === "ios" ? (
-          <AppleMaps.View
-            style={[
-              StyleSheet.absoluteFill,
-              { bottom: insets.bottom }
-            ]}
+        <MapView
+          ref={mapRef}
+          style={[
+            StyleSheet.absoluteFill,
+            { bottom: insets.bottom }
+          ]}
+          initialRegion={region}
+          mapPadding={{ left: 15, right: 0, top: 0, bottom: 105 }}
+          showsUserLocation={true}
+          showsMyLocationButton={false}
+          zoomControlEnabled={false}
+          toolbarEnabled={false}
+        >
+          {markersbranches.map(marker => (
+            <Marker
+              key={marker.id}
+              coordinate={marker.coordinate}
+              title={marker.title}
+              description={marker.description}
+              image={marker.image}
+            />
+          ))}
+          <Circle
+            center={{
+              latitude: origin.lat,
+              longitude: origin.lng,
+            }}
+            radius={distance * 1000}
+            fillColor='rgba(228, 75, 94, 0.1)'
+            strokeColor='#e44b5e'
+            strokeWidth={2}
           />
-        ) : (
-          <GoogleMaps.View
-            style={[
-              StyleSheet.absoluteFill,
-              { bottom: insets.bottom }
-            ]}
-            contentPadding={{ start: 15, end: 0, top: 0, bottom: 105 }}
-            cameraPosition={{
-              coordinates: {
-                latitude: origin.lat,
-                longitude: origin.lng,
-              },
-              zoom: zoom,
-            }}
-            properties={{
-              isMyLocationEnabled: true,
-            }}
-            uiSettings={{
-              myLocationButtonEnabled: false,
-              zoomControlsEnabled: false
-            }}
-            markers={markersbranches}
-            onPOIClick={(poi) => {
-              console.log('POI clicked: ', poi);
-            }}
-            circles={[{
-              center: {
-                latitude: origin.lat,
-                longitude: origin.lng,
-              },
-              radius: distance * 1000,
-              color: 'rgba(228, 75, 94, 0.1)',
-              lineColor: '#e44b5e',
-              lineWidth: 2,
-            }]}
-          />
-        )}
+        </MapView>
         <SafeAreaView className="flex-1" pointerEvents="box-none">
           <HStack space="md" className="items-start mx-4">
             <TouchableOpacity

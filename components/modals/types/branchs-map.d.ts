@@ -1,4 +1,5 @@
 import { Branch, Store } from "@/types/products";
+import { ImageURISource } from "react-native";
 import { ModalProps } from "./modal";
 import { Loc } from "./store-by-product";
 
@@ -20,12 +21,12 @@ export interface useBranchsMapModalProps {
 
 export interface BranchMapMarker {
   id?: string;
-  coordinates: {
+  coordinate: {
     latitude: number;
     longitude: number;
   };
   title: string;
-  snippet?: string;
-  icon?: any;
-  tintColor?: string;
+  description?: string;
+  image?: ImageURISource | number;
+  pinColor?: string;
 }

@@ -2,40 +2,39 @@ import { useTranslation } from "react-i18next";
 import { BranchMapMarker, useBranchsMapModalProps } from "../types/branchs-map";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 import { useEffect, useMemo, useRef, useState } from "react";
-import { DEFAULT_CHANNEL, DISTANCES_FILTER, ZOOM_BY_DISTANCE } from "@/assets/globalsConst";
+import { DEFAULT_CHANNEL, DISTANCES_FILTER } from "@/assets/globalsConst";
 import { useSpinnerModal } from "@/contexts/SpinnerModalContext";
 import { getNearbyBranches } from "@/api/products.api";
 import { productKeys } from "@/api/queryKeys";
 import { useQuery } from "@tanstack/react-query";
 import { useOriginLocation } from "./useOriginLocation";
+import { regionForKm, zoomInScale, zoomOutScale } from "@/utils/mapRegion";
 
+import MapView from "react-native-maps";
 import * as Location from "expo-location";
 import helpers from "@/utils/helpers";
-import { useImage } from "expo-image";
 
-export const useBranchsMapModal = ({ 
-  isOpen, 
-  location, 
-  availableStores, 
-  ean 
+const BRANCH_PIN = require('@/assets/images/shopping-area.png');
+
+export const useBranchsMapModal = ({
+  isOpen,
+  location,
+  availableStores,
+  ean
 }: useBranchsMapModalProps) => {
   const { t } = useTranslation();
   const insets = useSafeAreaInsets();
   const showSpinnerModal = useSpinnerModal();
-  const image = useImage(require('@/assets/images/shopping-area.png'), {
-    onError(error) {
-      console.error('Loading failed:', error.message);
-    }
-  });
 
   const [currentLocation, setCurrentLocation] = useState(location);
   const [storesId, setStoresId] = useState<string[]>([]);
   const [selectedStoresName, setSelectedStoresName] = useState<string>("Todos los comercios");
-  const [zoom, setZoom] = useState<number>(12)
+  const [scale, setScale] = useState<number>(1)
   const [distance, setDistance] = useState<number>(2.5)
   const [appliedStoresId, setAppliedStoresId] = useState<string[]>([])
 
   const locationSubscription = useRef<Location.LocationSubscription | null>(null);
+  const mapRef = useRef<MapView>(null);
 
   const distances = DISTANCES_FILTER
 
@@ -75,15 +74,16 @@ export const useBranchsMapModal = ({
   const markersbranches = useMemo<BranchMapMarker[]>(() => {
     if (!data) return []
     return data.map(branch => ({
-      coordinates: {
+      id: branch.branch.id,
+      coordinate: {
         latitude: branch.branch.latitude,
         longitude: branch.branch.longitude,
       },
       title: `$${branch.price.listPrice} - ${branch.store.name}`,
-      snippet: `${branch.branch.name}, ${branch.branch.province.name} | a ${branch.distanceKm.toFixed(2)} km`,
-      icon: image ? image : undefined,
+      description: `${branch.branch.name}, ${branch.branch.province.name} | a ${branch.distanceKm.toFixed(2)} km`,
+      image: BRANCH_PIN,
     }))
-  }, [data, image])
+  }, [data])
 
   const startLocationTracking = async () => {
     try {
@@ -125,13 +125,9 @@ export const useBranchsMapModal = ({
     }
   };
 
-  const zoomOn = () => {
-    if (zoom < 21) setZoom(zoom + 1);
-  }
+  const zoomOn = () => setScale(zoomInScale)
 
-  const zoomOut = () => {
-    if (zoom > 1) setZoom(zoom - 1);
-  }
+  const zoomOut = () => setScale(zoomOutScale)
 
   const centerOnCurrentLocation = async () => {
     try {
@@ -176,24 +172,33 @@ export const useBranchsMapModal = ({
     }
   }
 
-  const zoomLevelsByDistance = () => {
-    const level = ZOOM_BY_DISTANCE[distance]
-    if (level) setZoom(level)
+  const changeDistance = (km: number) => {
+    setScale(1)
+    setDistance(km)
   }
 
   const handleCloseMenuStore = () => {
     setAppliedStoresId(storesId)
   }
 
+  const region = useMemo(
+    () => regionForKm(origin.lat, origin.lng, distance, scale),
+    [origin.lat, origin.lng, distance, scale]
+  )
+
   useEffect(() => {
     showSpinnerModal(isFetching)
   }, [isFetching])
 
   useEffect(() => {
-    if (isOpen) {
-      zoomLevelsByDistance()
-    } else {
+    if (!isOpen) return
+    mapRef.current?.animateToRegion(region, 350)
+  }, [isOpen, region])
+
+  useEffect(() => {
+    if (!isOpen) {
       setDistance(2.5)
+      setScale(1)
       setStoresId([]);
       setAppliedStoresId([]);
       return;
@@ -206,7 +211,7 @@ export const useBranchsMapModal = ({
         locationSubscription.current.remove();
       }
     };
-  }, [isOpen, distance]);
+  }, [isOpen]);
 
   useEffect(() => {
     const selectedStoresText = storesId.length === 0
@@ -224,7 +229,8 @@ export const useBranchsMapModal = ({
     t,
     insets,
     origin,
-    zoom,
+    mapRef,
+    region,
     distance,
     distances,
     storesId,
@@ -235,7 +241,7 @@ export const useBranchsMapModal = ({
     originName,
     showAddLocationModal,
     pushStoresId,
-    setDistance,
+    setDistance: changeDistance,
     zoomOn,
     zoomOut,
     centerOnCurrentLocation,
