@@ -2,11 +2,12 @@ import { useTranslation } from "react-i18next";
 import { BranchMapMarker, useBranchsMapModalProps } from "../types/branchs-map";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 import { useEffect, useMemo, useRef, useState } from "react";
-import { DEFAULT_CHANNEL, DISTANCES_FILTER } from "@/assets/globalsConst";
+import { DEFAULT_CHANNEL, DISTANCES_FILTER, ZOOM_BY_DISTANCE } from "@/assets/globalsConst";
 import { useSpinnerModal } from "@/contexts/SpinnerModalContext";
 import { getNearbyBranches } from "@/api/products.api";
 import { productKeys } from "@/api/queryKeys";
 import { useQuery } from "@tanstack/react-query";
+import { useOriginLocation } from "./useOriginLocation";
 
 import * as Location from "expo-location";
 import helpers from "@/utils/helpers";
@@ -28,7 +29,6 @@ export const useBranchsMapModal = ({
   });
 
   const [currentLocation, setCurrentLocation] = useState(location);
-  const [locationSelected, setLocationSelected] = useState(location);
   const [storesId, setStoresId] = useState<string[]>([]);
   const [selectedStoresName, setSelectedStoresName] = useState<string>("Todos los comercios");
   const [zoom, setZoom] = useState<number>(12)
@@ -39,10 +39,22 @@ export const useBranchsMapModal = ({
 
   const distances = DISTANCES_FILTER
 
+  const {
+    savedLocations,
+    selectedId,
+    origin,
+    originName,
+    selectLocation,
+    selectMyLocation,
+    showAddLocationModal,
+    openAddLocation,
+    closeAddLocation
+  } = useOriginLocation({ isOpen, fallback: currentLocation })
+
   const { data, isFetching, refetch } = useQuery({
     queryKey: productKeys.nearby(ean, {
-      lat: location.lat,
-      lng: location.lng,
+      lat: origin.lat,
+      lng: origin.lng,
       km: distance,
       channel: DEFAULT_CHANNEL,
       storeId: appliedStoresId.length > 0 ? appliedStoresId : undefined,
@@ -50,8 +62,8 @@ export const useBranchsMapModal = ({
     queryFn: () => getNearbyBranches({
       ean,
       body: {
-        lat: location.lat,
-        lng: location.lng,
+        lat: origin.lat,
+        lng: origin.lng,
         km: distance,
         channel: DEFAULT_CHANNEL,
         ...(appliedStoresId.length > 0 && { storeId: appliedStoresId }),
@@ -137,6 +149,7 @@ export const useBranchsMapModal = ({
         lat: location.coords.latitude,
         lng: location.coords.longitude,
       });
+      selectMyLocation();
 
     } catch (error) {
       console.error('Error al obtener ubicación actual:', error);
@@ -164,65 +177,8 @@ export const useBranchsMapModal = ({
   }
 
   const zoomLevelsByDistance = () => {
-    switch (distance) {
-      case 1:
-        setZoom(14);
-        centerOnCurrentLocation()
-        break;
-      
-      case 2.5:
-        setZoom(13);
-        centerOnCurrentLocation()
-        break;
-      
-      case 5:
-        setZoom(12);
-        centerOnCurrentLocation()
-        break;
-
-      case 10:
-        setZoom(11);
-        centerOnCurrentLocation()
-        break;
-      
-      case 20:
-        setZoom(10);
-        centerOnCurrentLocation()
-        break;
-      
-      case 40:
-        setZoom(9);
-        centerOnCurrentLocation()
-        break;
-
-      case 80:
-        setZoom(8);
-        centerOnCurrentLocation()
-        break;
-
-      case 160:
-        setZoom(7);
-        centerOnCurrentLocation()
-        break;
-
-      case 320:
-        setZoom(6);
-        centerOnCurrentLocation()
-        break;
-      
-      case 640:
-        setZoom(5);
-        centerOnCurrentLocation()
-        break;
-      
-      case 900:
-        setZoom(4);
-        centerOnCurrentLocation()
-        break;
-    
-      default:
-        break;
-    }
+    const level = ZOOM_BY_DISTANCE[distance]
+    if (level) setZoom(level)
   }
 
   const handleCloseMenuStore = () => {
@@ -267,20 +223,27 @@ export const useBranchsMapModal = ({
   return {
     t,
     insets,
-    currentLocation,
+    origin,
     zoom,
     distance,
     distances,
-    locationSelected,
     storesId,
     selectedStoresName,
     markersbranches,
+    savedLocations,
+    selectedId,
+    originName,
+    showAddLocationModal,
     pushStoresId,
     setDistance,
     zoomOn,
     zoomOut,
     centerOnCurrentLocation,
     loadBranchesByLocation: refetch,
-    handleCloseMenuStore
+    handleCloseMenuStore,
+    selectLocation,
+    selectMyLocation,
+    openAddLocation,
+    closeAddLocation
   }
 }

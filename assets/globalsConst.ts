@@ -3,6 +3,20 @@ import type { BranchChannel } from '@/api/types/shopping-lists';
 
 export const DISTANCES_FILTER = [1, 2.5, 5, 10, 20, 40, 80, 160, 320, 640, 900];
 
+export const ZOOM_BY_DISTANCE: Record<number, number> = {
+  1: 14,
+  2.5: 13,
+  5: 12,
+  10: 11,
+  20: 10,
+  40: 9,
+  80: 8,
+  160: 7,
+  320: 6,
+  640: 5,
+  900: 4
+};
+
 export const DEFAULT_CHANNEL: Channel = 'minorista';
 
 export const CHANNELS_FILTER: BranchChannel[] = ['all', 'minorista', 'mayorista'];

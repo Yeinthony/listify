@@ -16,27 +16,36 @@ import Ionicons from "@expo/vector-icons/Ionicons";
 import { Center } from "../ui/center";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { Menu, MenuItem, MenuItemLabel } from "../ui/menu";
+import { OriginLocationMenu } from "./OriginLocationMenu";
+import { AddLocationModal } from "./AddLocationMapModal";
 
 export const BranchsMapModal = ({ isOpen, onClose, location, availableStores, product }: BranchsMapModalProps) => {
   const colorScheme = useColorScheme();
   const {
     t,
     insets,
-    currentLocation,
+    origin,
     zoom,
     distance,
     distances,
-    locationSelected,
     storesId,
     selectedStoresName,
     markersbranches,
+    savedLocations,
+    selectedId,
+    originName,
+    showAddLocationModal,
     pushStoresId,
     setDistance,
     zoomOn,
     zoomOut,
     centerOnCurrentLocation,
     loadBranchesByLocation,
-    handleCloseMenuStore
+    handleCloseMenuStore,
+    selectLocation,
+    selectMyLocation,
+    openAddLocation,
+    closeAddLocation
   } = useBranchsMapModal({ isOpen, location, availableStores, ean: product.ean });
 
   return (
@@ -59,8 +68,8 @@ export const BranchsMapModal = ({ isOpen, onClose, location, availableStores, pr
             contentPadding={{ start: 15, end: 0, top: 0, bottom: 105 }}
             cameraPosition={{
               coordinates: {
-                latitude: currentLocation.lat,
-                longitude: currentLocation.lng,
+                latitude: origin.lat,
+                longitude: origin.lng,
               },
               zoom: zoom,
             }}
@@ -77,8 +86,8 @@ export const BranchsMapModal = ({ isOpen, onClose, location, availableStores, pr
             }}
             circles={[{
               center: {
-                latitude: currentLocation.lat,
-                longitude: currentLocation.lng,
+                latitude: origin.lat,
+                longitude: origin.lng,
               },
               radius: distance * 1000,
               color: 'rgba(228, 75, 94, 0.1)',
@@ -204,58 +213,16 @@ export const BranchsMapModal = ({ isOpen, onClose, location, availableStores, pr
                 <Text className='text-md text-typography-600'>
                   de
                 </Text>
-                <Menu
+                <OriginLocationMenu
                   placement="top"
                   className='mb-14'
-                  offset={5}
-                  closeOnSelect={true}
-                  trigger={({ ...triggerProps }) => {
-                    return (
-                      <TouchableOpacity {...triggerProps}>
-                        <HStack
-                          space='xs'
-                          className='items-center bg-primary-500/20 px-2 py-0.5 rounded-full border-[1px] border-primary-500'
-                        >
-                          <Text className='text-sm text-primary-500'>
-                            mi ubicación
-                          </Text>
-                          <Ionicons
-                            name="chevron-down-outline"
-                            size={14}
-                            color="#e44b5e"
-                          />
-                        </HStack>
-                      </TouchableOpacity>
-                    );
-                  }}
-                >
-                  <MenuItem
-                    key="my-location"
-                    textValue="my-location"
-                    className={`justify-center`}
-                    onPress={() => { }}
-                  >
-                    <MenuItemLabel
-                      className={``}
-                      size="sm"
-                    >
-                      Mi ubicación
-                    </MenuItemLabel>
-                  </MenuItem>
-                  <MenuItem
-                    key="add-location"
-                    textValue="add-location"
-                    className={`justify-center bg-primary-500 py-1.5`}
-                    onPress={() => { }}
-                  >
-                    <MenuItemLabel
-                      className={`text-white`}
-                      size="sm"
-                    >
-                      Agregar
-                    </MenuItemLabel>
-                  </MenuItem>
-                </Menu>
+                  locations={savedLocations}
+                  selectedId={selectedId}
+                  originName={originName}
+                  onSelect={selectLocation}
+                  onSelectMyLocation={selectMyLocation}
+                  onAddLocation={openAddLocation}
+                />
               </HStack>
             </HStack>
             <HStack
@@ -359,6 +326,10 @@ export const BranchsMapModal = ({ isOpen, onClose, location, availableStores, pr
             </HStack>
           </VStack>
         </SafeAreaView>
+        <AddLocationModal
+          isOpen={showAddLocationModal}
+          onClose={closeAddLocation}
+        />
       </ModalContent>
     </Modal >
   );
