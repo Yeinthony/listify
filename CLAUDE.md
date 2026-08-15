@@ -26,7 +26,7 @@ Para el contexto de integración con el backend lee `docs/architecture/integrati
 - **NativeWind 4** (Tailwind) + Gluestack UI para estilos/componentes
 - **Zustand 5** (estado de sesión + UI), **axios** (HTTP), **react-hook-form 7 + Zod 4** (formularios)
 - **TanStack Query** para estado de servidor (ver ADR-0002)
-- i18next (es/en), expo-secure-store, expo-location, expo-camera, expo-maps
+- i18next (es/en), expo-secure-store, expo-location, expo-camera, react-native-maps (ADR-0009)
 - Gestor de paquetes: **npm** (`npx expo ...`)
 
 ## Comandos frecuentes
