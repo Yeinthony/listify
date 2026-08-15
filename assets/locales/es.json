@@ -231,6 +231,10 @@
       "confirm": "Confirmar",
       "confirmTitle": "¿Confirmar dirección?",
       "confirmDescription": "Al presionar aceptar quedará registrada esta dirección."
+    },
+    "origin-location": {
+      "myLocation": "Mi ubicación",
+      "add": "Agregar"
     }
   },
   "general": {

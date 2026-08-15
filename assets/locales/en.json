@@ -230,6 +230,10 @@
       "confirm": "Confirm",
       "confirmTitle": "Confirm address?",
       "confirmDescription": "Tapping accept will save this address."
+    },
+    "origin-location": {
+      "myLocation": "My location",
+      "add": "Add"
     }
   },
   "general": {
