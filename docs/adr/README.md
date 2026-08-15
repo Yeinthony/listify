@@ -12,5 +12,6 @@ Registro de decisiones de arquitectura de la app móvil (Expo / React Native). F
 | [0006](0006-configuracion-entorno-baseurl.md) | Configuración de entorno y baseURL | Accepted |
 | [0007](0007-modulo-recetas-diferido.md) | Módulo Recetas diferido | Accepted (bloqueado por backend) |
 | [0008](0008-estrategia-testing.md) | Estrategia de Testing (app móvil) | Accepted |
+| [0009](0009-libreria-de-mapas.md) | Una sola librería de mapas (`react-native-maps`) | Accepted |
 
 > Contexto general y mapa de integración en [`../architecture/integration.md`](../architecture/integration.md).
