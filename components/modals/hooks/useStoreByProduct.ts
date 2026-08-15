@@ -4,6 +4,7 @@ import { getNearbyBranches } from "@/api/products.api"
 import { productKeys } from "@/api/queryKeys"
 import { DEFAULT_CHANNEL, DISTANCES_FILTER } from "@/assets/globalsConst";
 import { useQuery } from "@tanstack/react-query";
+import { useOriginLocation } from "./useOriginLocation";
 
 export const useStoreByProduct = ({
   ean,
@@ -17,17 +18,29 @@ export const useStoreByProduct = ({
 
   const storeId = store ? [store.id] : undefined
 
+  const {
+    savedLocations,
+    selectedId,
+    origin,
+    originName,
+    selectLocation,
+    selectMyLocation,
+    showAddLocationModal,
+    openAddLocation,
+    closeAddLocation
+  } = useOriginLocation({ isOpen, fallback: location })
+
   const { data = null, isFetching: loading } = useQuery({
     queryKey: productKeys.nearby(ean, {
-      lat: location.lat,
-      lng: location.lng,
+      lat: origin.lat,
+      lng: origin.lng,
       km: distance,
       channel: DEFAULT_CHANNEL,
       storeId,
     }),
     queryFn: () => getNearbyBranches({
       ean,
-      body: { lat: location.lat, lng: location.lng, km: distance, channel: DEFAULT_CHANNEL, ...(storeId && { storeId }) },
+      body: { lat: origin.lat, lng: origin.lng, km: distance, channel: DEFAULT_CHANNEL, ...(storeId && { storeId }) },
     }).then(res => res.data.data),
     enabled: isOpen && !!store,
   })
@@ -43,5 +56,13 @@ export const useStoreByProduct = ({
     distance,
     distances,
     setDistance,
+    savedLocations,
+    selectedId,
+    originName,
+    showAddLocationModal,
+    selectLocation,
+    selectMyLocation,
+    openAddLocation,
+    closeAddLocation
   }
 }

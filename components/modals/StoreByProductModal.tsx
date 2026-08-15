@@ -29,6 +29,8 @@ import { Spinner } from '../ui/spinner';
 import { HStack } from '../ui/hstack';
 import { VStack } from '../ui/vstack';
 import { Menu, MenuItem, MenuItemLabel } from '@/components/ui/menu';
+import { OriginLocationMenu } from './OriginLocationMenu';
+import { AddLocationModal } from './AddLocationMapModal';
 import Ionicons from '@expo/vector-icons/Ionicons';
 import MaterialCommunityIcons from '@expo/vector-icons/MaterialCommunityIcons';
 
@@ -47,6 +49,14 @@ const StoreByProductModal = ({
     distance,
     distances,
     setDistance,
+    savedLocations,
+    selectedId,
+    originName,
+    showAddLocationModal,
+    selectLocation,
+    selectMyLocation,
+    openAddLocation,
+    closeAddLocation
   } = useStoreByProduct({ isOpen, ean, store, location })
 
   return (
@@ -121,58 +131,16 @@ const StoreByProductModal = ({
               <Text className='text-md text-typography-600'>
                 de
               </Text>
-              <Menu
+              <OriginLocationMenu
                 placement="bottom"
                 className='min-w-[150px]'
-                offset={5}
-                closeOnSelect={true}
-                trigger={({ ...triggerProps }) => {
-                  return (
-                    <TouchableOpacity {...triggerProps}>
-                      <HStack
-                        space='xs'
-                        className='items-center bg-primary-500/20 px-2 py-0.5 rounded-full border-[1px] border-primary-500'
-                      >
-                        <Text className='text-sm text-primary-500'>
-                          mi ubicación
-                        </Text>
-                        <Ionicons
-                          name="chevron-down-outline"
-                          size={14}
-                          color="#e44b5e"
-                        />
-                      </HStack>
-                    </TouchableOpacity>
-                  );
-                }}
-              >
-                <MenuItem
-                  key="my-location"
-                  textValue="my-location"
-                  className={`justify-center`}
-                  onPress={() => {}}
-                >
-                  <MenuItemLabel
-                    className={``}
-                    size="sm"
-                  >
-                    Mi ubicación
-                  </MenuItemLabel>
-                </MenuItem>
-                <MenuItem
-                  key="add-location"
-                  textValue="add-location"
-                  className={`justify-center bg-primary-500 py-1.5`}
-                  onPress={() => {}}
-                >
-                  <MenuItemLabel
-                    className={`text-white`}
-                    size="sm"
-                  >
-                    Agregar
-                  </MenuItemLabel>
-                </MenuItem>
-              </Menu>
+                locations={savedLocations}
+                selectedId={selectedId}
+                originName={originName}
+                onSelect={selectLocation}
+                onSelectMyLocation={selectMyLocation}
+                onAddLocation={openAddLocation}
+              />
             </HStack>
           </VStack>
         </ModalHeader>
@@ -225,6 +193,10 @@ const StoreByProductModal = ({
             </VStack>
           )}
         </ModalBody>
+        <AddLocationModal
+          isOpen={showAddLocationModal}
+          onClose={closeAddLocation}
+        />
       </ModalContent>
     </Modal>
   )
